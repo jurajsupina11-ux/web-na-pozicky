@@ -1,0 +1,33 @@
+{% extends "investor_base.html" %}
+{% block nav_market %}active{% endblock %}
+{% block title %}Sekundárny trh{% endblock %}
+{% block content %}
+<div class="toprow">
+  <h1 style="margin:0;">Sekundárny trh</h1>
+  <a class="btn btn-outline" style="margin:0;" href="{% url 'auctions:investor_dashboard' %}">← Dashboard</a>
+</div>
+<p style="color:#55607a;margin-top:-10px;">Odkúp podiely na pôžičkách od iných investorov, ktorí potrebujú peniaze skôr.</p>
+
+<div class="card">
+  <table>
+    <tr><th>Predávajúci</th><th>Žiadateľ</th><th>Suma</th><th>Úrok</th><th>Splatnosť</th><th></th></tr>
+    {% for listing in listings %}
+    <tr>
+      <td>{{ listing.lender.username }}</td>
+      <td>{{ listing.auction.borrower.username }}</td>
+      <td>{{ listing.amount }} €</td>
+      <td>{{ listing.interest_rate }} %</td>
+      <td>{{ listing.auction.duration_days }} dní</td>
+      <td>
+        <form method="post" action="{% url 'auctions:marketplace_buy' listing.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary" style="padding:6px 14px;font-size:13px;">Odkúpiť</button>
+        </form>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">Momentálne nie je na sekundárnom trhu v ponuke žiadna investícia.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

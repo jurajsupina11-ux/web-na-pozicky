@@ -59,10 +59,23 @@ def place_bid(request, pk):
     if request.method == 'POST':
         form = BidForm(request.POST)
         if form.is_valid():
+            amount = form.cleaned_data['amount']
+            if amount > request.user.wallet_balance:
+                messages.error(
+                    request,
+                    'Na peňaženke nemáš dostatok voľných prostriedkov na túto investíciu. Najprv vlož peniaze na účet.',
+                )
+                return redirect(auction.get_absolute_url())
+
             bid = form.save(commit=False)
             bid.auction = auction
             bid.lender = request.user
             bid.save()
+
+            # Suma investície sa strháva z peňaženky investora hneď pri odoslaní ponuky.
+            request.user.wallet_balance -= amount
+            request.user.save(update_fields=['wallet_balance'])
+
             messages.success(request, 'Vaša ponuka bola odoslaná.')
             # Keď je žiadosť plne vyfinancovaná, pôžička sa automaticky schváli -
             # dlžník sa odblokuje do prostredia pre dlžníkov (Moje pôžičky).
@@ -77,27 +90,130 @@ def place_bid(request, pk):
 
 @login_required
 def investor_dashboard(request):
-    """Prostredie pre investora - prehľad portfólia (čo investor dal) a miesto,
-    kde môže získať ďalšie pôžičky (otvorené aktívne žiadosti)."""
+    """Prostredie pre investora - stav účtu, prehľad portfólia, štatistiky
+    a prístup k ďalším funkciám (vyplatenie, predaj pôžičky, nové príležitosti)."""
     my_bids = Bid.objects.filter(lender=request.user).select_related('auction')
     total_invested = sum((b.amount for b in my_bids), Decimal('0'))
     active_bids = my_bids.filter(auction__status=Auction.Status.ACTIVE)
-    funded_bids = my_bids.filter(auction__status__in=[Auction.Status.FUNDED, Auction.Status.CLOSED])
+    funded_bids = my_bids.filter(auction__status=Auction.Status.FUNDED)
+    closed_bids = my_bids.filter(auction__status=Auction.Status.CLOSED)
     expected_yield = sum(
         (b.amount * (b.interest_rate / Decimal('100')) * (b.auction.duration_days / Decimal('365')) for b in funded_bids),
         Decimal('0'),
     )
-    open_auctions = Auction.objects.filter(status=Auction.Status.ACTIVE).exclude(
-        bids__lender=request.user,
-    ).distinct()
+    realized_yield = sum(
+        (b.amount * (b.interest_rate / Decimal('100')) * (b.auction.duration_days / Decimal('365')) for b in closed_bids),
+        Decimal('0'),
+    )
+    for_sale_count = my_bids.filter(for_sale=True).count()
     context = {
         'my_bids': my_bids,
         'active_bids': active_bids,
         'funded_bids': funded_bids,
+        'closed_bids': closed_bids,
+        'wallet_balance': request.user.wallet_balance,
         'total_invested': total_invested,
-        'active_count': active_bids.count(),
+        'active_count': funded_bids.count(),
         'expected_yield': round(expected_yield, 2),
-        'open_auctions': open_auctions,
+        'realized_yield': round(realized_yield, 2),
+        'for_sale_count': for_sale_count,
+        'bids_count': my_bids.count(),
     }
     return render(request, 'auctions/investor_dashboard.html', context)
+
+
+@login_required
+def open_auctions_view(request):
+    """'Čakáreň' - zoznam otvorených žiadostí o pôžičku, do ktorých investor
+    ešte nefinancoval. Zobrazí sa po kliknutí na 'Získať nové pôžičky'."""
+    open_auctions = Auction.objects.filter(status=Auction.Status.ACTIVE).exclude(
+        bids__lender=request.user,
+    ).distinct()
+    return render(request, 'auctions/open_auctions.html', {'open_auctions': open_auctions})
+
+
+@login_required
+def wallet_deposit(request):
+    """Simulovaný vklad peňazí na investorskú peňaženku."""
+    if request.method == 'POST':
+        try:
+            amount = Decimal(request.POST.get('amount', '0'))
+        except Exception:
+            amount = Decimal('0')
+        if amount > 0:
+            request.user.wallet_balance += amount
+            request.user.save(update_fields=['wallet_balance'])
+            messages.success(request, f'Na účet bolo pripísaných {amount} €.')
+        else:
+            messages.error(request, 'Zadaj platnú sumu na vklad.')
+    return redirect('auctions:investor_dashboard')
+
+
+@login_required
+def wallet_withdraw(request):
+    """Simulovaná výplata peňazí z investorskej peňaženky na bankový účet."""
+    if request.method == 'POST':
+        try:
+            amount = Decimal(request.POST.get('amount', '0'))
+        except Exception:
+            amount = Decimal('0')
+        if amount <= 0:
+            messages.error(request, 'Zadaj platnú sumu na výplatu.')
+        elif amount > request.user.wallet_balance:
+            messages.error(request, 'Na účte nemáš dostatok voľných prostriedkov.')
+        else:
+            request.user.wallet_balance -= amount
+            request.user.save(update_fields=['wallet_balance'])
+            messages.success(request, f'Žiadosť o výplatu {amount} € bola odoslaná na tvoj bankový účet.')
+    return redirect('auctions:investor_dashboard')
+
+
+@login_required
+def bid_toggle_sale(request, bid_id):
+    """Investor ponúkne (alebo stiahne z ponuky) svoj podiel na aktívnej pôžičke
+    na sekundárnom trhu, aby ho mohol odkúpiť iný investor."""
+    bid = get_object_or_404(Bid, pk=bid_id, lender=request.user)
+    if bid.auction.status != Auction.Status.FUNDED:
+        messages.error(request, 'Na predaj je možné ponúknuť len aktívnu (vyfinancovanú) pôžičku.')
+    else:
+        bid.for_sale = not bid.for_sale
+        bid.save(update_fields=['for_sale'])
+        if bid.for_sale:
+            messages.success(request, 'Tvoja investícia bola ponúknutá na sekundárnom trhu.')
+        else:
+            messages.info(request, 'Investícia bola stiahnutá z predaja.')
+    return redirect('auctions:investor_dashboard')
+
+
+@login_required
+def marketplace(request):
+    """Sekundárny trh - investor môže odkúpiť podiely na pôžičkách od iných investorov."""
+    listings = Bid.objects.filter(for_sale=True).exclude(lender=request.user).select_related('auction', 'lender')
+    return render(request, 'auctions/marketplace.html', {'listings': listings})
+
+
+@login_required
+def marketplace_buy(request, bid_id):
+    """Kúpa podielu na pôžičke od iného investora - jednoduchý prevod vlastníctva
+    danej investície (Bid) za jej nominálnu hodnotu, hradené z peňaženky kupujúceho."""
+    listing = get_object_or_404(Bid, pk=bid_id, for_sale=True)
+    if listing.lender_id == request.user.pk:
+        messages.error(request, 'Nemôžeš odkúpiť vlastnú investíciu.')
+        return redirect('auctions:marketplace')
+    if request.user.wallet_balance < listing.amount:
+        messages.error(request, 'Na účte nemáš dostatok voľných prostriedkov na odkúpenie tejto investície.')
+        return redirect('auctions:marketplace')
+
+    seller = listing.lender
+    request.user.wallet_balance -= listing.amount
+    request.user.save(update_fields=['wallet_balance'])
+    seller.wallet_balance += listing.amount
+    seller.save(update_fields=['wallet_balance'])
+
+    listing.lender = request.user
+    listing.for_sale = False
+    listing.save(update_fields=['lender', 'for_sale'])
+
+    messages.success(request, f'Investícia {listing.amount} € bola prevedená na tvoj účet.')
+    return redirect('auctions:investor_dashboard')
 

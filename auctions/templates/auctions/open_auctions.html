@@ -1,0 +1,40 @@
+{% extends "investor_base.html" %}
+{% block nav_rooms %}active{% endblock %}
+{% block title %}Získať nové pôžičky{% endblock %}
+{% block content %}
+<div class="toprow">
+  <h1 style="margin:0;">Získať nové pôžičky</h1>
+  <a class="btn btn-outline" style="margin:0;" href="{% url 'auctions:investor_dashboard' %}">← Dashboard</a>
+</div>
+
+{% if open_auctions %}
+<div class="card">
+  <h2>Otvorené žiadosti o pôžičku</h2>
+  <table>
+    <tr><th>Žiadateľ</th><th>Suma</th><th>Max. úrok</th><th>Splatnosť</th><th>Vyfinancované</th><th></th></tr>
+    {% for auction in open_auctions %}
+    <tr>
+      <td>{{ auction.borrower.username }}</td>
+      <td>{{ auction.amount_requested }} €</td>
+      <td>{{ auction.max_interest_rate }} %</td>
+      <td>{{ auction.duration_days }} dní</td>
+      <td>{{ auction.funding_progress|floatformat:0 }} %</td>
+      <td><a class="btn btn-outline" href="{% url 'auctions:detail' auction.pk %}">Financovať</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% else %}
+<div class="card" style="text-align:center;padding:60px 24px;">
+  <div class="stat-icon" style="margin:0 auto 18px;width:56px;height:56px;">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+  </div>
+  <h2 style="margin-bottom:8px;">Čakáme na novú žiadosť</h2>
+  <p style="color:#55607a;max-width:420px;margin:0 auto 4px;">
+    Momentálne nie sú k dispozícii žiadne nové žiadosti o pôžičku, do ktorých by si mohol investovať.
+    Hneď ako niekto podá žiadosť, zobrazí sa tu a budeš ju môcť financovať.
+  </p>
+  <p style="color:#8a93a8;font-size:13px;margin-top:14px;">Stránka sa automaticky neobnovuje - skús to znova o chvíľu.</p>
+</div>
+{% endif %}
+{% endblock %}

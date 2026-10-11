@@ -20,7 +20,7 @@ class SignUpView(CreateView):
 
     form_class = SignUpForm
     template_name = 'users/signup.html'
-    success_url = reverse_lazy('auctions:list')
+    success_url = reverse_lazy('auctions:investor_dashboard')
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -30,6 +30,12 @@ class SignUpView(CreateView):
 
 class CustomLoginView(LoginView):
     template_name = 'users/login.html'
+
+    def get_success_url(self):
+        user = self.request.user
+        if user.role == User.Role.BORROWER:
+            return reverse_lazy('users:my_applications')
+        return reverse_lazy('auctions:investor_dashboard')
 
 
 class CustomLogoutView(LogoutView):
@@ -179,7 +185,7 @@ def impersonate_start(request, user_id):
     messages.info(request, f'Zobrazuješ prostredie používateľa „{target.username}“.')
     if target.role == User.Role.BORROWER:
         return redirect('users:my_applications')
-    return redirect('auctions:list')
+    return redirect('auctions:investor_dashboard')
 
 
 def impersonate_stop(request):

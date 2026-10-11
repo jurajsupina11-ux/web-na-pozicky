@@ -31,6 +31,13 @@ class Bid(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # Sekundárny trh - investor môže svoju aktívnu investíciu (podiel na pôžičke)
+    # ponúknuť na predaj inému investorovi, napr. ak potrebuje peniaze skôr.
+    for_sale = models.BooleanField(
+        default=False,
+        help_text='Investor ponúka svoj podiel na tejto pôžičke na predaj inému investorovi.',
+    )
+
     class Meta:
         ordering = ['interest_rate', '-amount']
         constraints = [
