@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Aktívne aukcie{% endblock %}
+{% block content %}
+<h1 class="mb-4">Aktívne aukcie pôžičiek</h1>
+<div class="row">
+    {% for auction in auctions %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ auction.title }}</h5>
+                <p class="card-text">{{ auction.amount_requested }} € • max {{ auction.max_interest_rate }}% • {{ auction.duration_days }} dní</p>
+                <a href="{% url 'auctions:detail' auction.pk %}" class="btn btn-primary btn-sm">Zobraziť</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>Momentálne nie sú žiadne aktívne aukcie.</p>
+    {% endfor %}
+</div>
+{% endblock %}

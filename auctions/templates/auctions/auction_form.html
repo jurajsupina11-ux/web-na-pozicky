@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Nová aukcia{% endblock %}
+{% block content %}
+<h1>Vytvoriť novú aukciu</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Vytvoriť aukciu</button>
+</form>
+{% endblock %}
