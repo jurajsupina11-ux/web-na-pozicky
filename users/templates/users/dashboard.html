@@ -1,0 +1,53 @@
+{% extends "borrower_base.html" %}
+{% block nav_dashboard %}active{% endblock %}
+{% block title %}Dashboard{% endblock %}
+{% block extra_style %}
+<style>
+  .debt-card{background:linear-gradient(135deg,#d84a16,#f05a22);color:#fff;border-radius:20px;padding:28px 30px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
+  .debt-card .label{font-size:13px;color:#ffe2d2;margin-bottom:6px;}
+  .debt-card .amount{font-size:34px;font-weight:800;letter-spacing:-0.02em;}
+  .debt-card .due{font-size:13px;color:#ffe2d2;margin-top:6px;}
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px;}
+  @media(max-width:700px){.stats-grid{grid-template-columns:1fr;}}
+  .stat-box{background:#fff;border:1px solid #f1e6db;border-radius:16px;padding:20px;}
+  .stat-box b{font-size:24px;display:block;margin-bottom:4px;}
+  .stat-box span{font-size:13px;color:#8a7363;}
+  .quick-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+  .quick-actions a{flex:1;min-width:200px;}
+</style>
+{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+
+{% if active_loans %}
+<div class="debt-card">
+  <div>
+    <div class="label">Celkový aktuálny dlh</div>
+    <div class="amount">{{ total_debt }} €</div>
+    {% if next_due_loan %}<div class="due">Najbližšia splatnosť: {{ next_due_loan.due_date|date:"d.m.Y" }} (pôžička #{{ next_due_loan.pk }})</div>{% endif %}
+  </div>
+  <a class="btn" style="background:#fff;color:#d84a16;" href="{% url 'users:my_loans' %}">Zobraziť detail a zaplatiť</a>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-box"><b>{{ active_loans|length }}</b><span>Aktívne pôžičky</span></div>
+  <div class="stat-box"><b>{{ closed_loans_count }}</b><span>Splatené pôžičky</span></div>
+  <div class="stat-box"><b>{{ pending_applications|length }}</b><span>Žiadosti čakajúce na investora</span></div>
+</div>
+{% elif has_any_application %}
+<div class="alert alert-warning">
+  Zatiaľ nemáš žiadnu schválenú pôžičku. Hneď ako investor tvoju žiadosť financuje, zobrazí sa tu.
+</div>
+<div class="stats-grid">
+  <div class="stat-box"><b>{{ pending_applications|length }}</b><span>Žiadosti čakajúce na investora</span></div>
+</div>
+{% else %}
+<div class="alert alert-info">Zatiaľ nemáš žiadnu žiadosť o pôžičku.</div>
+{% endif %}
+
+<div class="quick-actions">
+  <a class="btn btn-primary" href="{% url 'users:my_applications' %}">Moje žiadosti</a>
+  <a class="btn btn-outline" href="{% url 'users:my_contracts' %}">Moje zmluvy</a>
+  <a class="btn btn-outline" href="{% url 'users:my_profile' %}">Moje údaje</a>
+</div>
+{% endblock %}

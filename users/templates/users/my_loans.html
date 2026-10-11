@@ -9,20 +9,35 @@
   <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
     <div>
       <div style="font-size:22px;font-weight:800;">{{ loan.amount_requested }} €</div>
-      <div style="color:#6b5a4d;font-size:13.5px;margin-top:3px;">Pôžička #{{ loan.pk }} · splatnosť {{ loan.due_date|date:"d.m.Y" }}</div>
+      <div style="color:#6b5a4d;font-size:13.5px;margin-top:3px;">Pôžička #{{ loan.pk }} · splatnosť {{ loan.due_date|date:"d.m.Y" }}{% if loan.postponed_days %} (odložené o {{ loan.postponed_days }} dní){% endif %}</div>
     </div>
-    {% if loan.status == 'funded' %}<span class="status-pill s-active">Aktívna</span>
-    {% elif loan.status == 'closed' %}<span class="status-pill s-paid">Splatená</span>
+    {% if loan.status == 'closed' %}<span class="status-pill s-paid">Splatená</span>
+    {% elif loan.payment_reported %}<span class="status-pill s-active">Čaká na overenie úhrady</span>
+    {% elif loan.status == 'funded' %}<span class="status-pill s-active">Aktívna</span>
     {% else %}<span class="status-pill s-late">{{ loan.get_status_display }}</span>{% endif %}
   </div>
   <table style="margin-top:18px;">
-    <tr><th>Istina</th><th>Úrok (24 % p.a.)</th><th>Spolu na úhradu</th></tr>
+    <tr><th>Istina</th><th>Úrok + poplatky</th><th>Spolu na úhradu</th></tr>
     <tr>
       <td>{{ loan.amount_requested }} €</td>
       <td>{{ loan.interest_amount }} €</td>
       <td><strong>{{ loan.repay_amount }} €</strong></td>
     </tr>
   </table>
+  {% if loan.status == 'funded' %}
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;">
+    <form method="post" action="{% url 'users:report_payment' loan.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary" {% if loan.payment_reported %}disabled{% endif %}>
+        {% if loan.payment_reported %}Úhrada nahlásená{% else %}Nahlásiť úhradu{% endif %}
+      </button>
+    </form>
+    <form method="post" action="{% url 'users:request_postponement' loan.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline">Požiadať o odklad (+7 dní, {{ postpone_fee }} €)</button>
+    </form>
+  </div>
+  {% endif %}
 </div>
 {% endfor %}
 
@@ -35,11 +50,5 @@
     <tr><th>SWIFT/BIC</th><td>{{ bank_details.swift }}</td></tr>
     <tr><th>Variabilný symbol</th><td>{{ bank_details.variable_symbol_hint }}</td></tr>
   </table>
-</div>
-
-<div class="card">
-  <h2>Potrebuješ viac času?</h2>
-  <p style="color:#6b5a4d;">Odklad splátky o 7 dní je možný za jednorazový poplatok 15 €.</p>
-  <a class="btn btn-outline" href="#">Požiadať o odklad</a>
 </div>
 {% endblock %}

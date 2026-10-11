@@ -26,6 +26,7 @@
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:14px;text-decoration:none;font-weight:700;font-size:15px;border:2px solid transparent;cursor:pointer;}
   .btn-primary{background:#f05a22;color:#fff;}
   .btn-primary:hover{background:#d84a16;}
+  .btn-primary:disabled{background:#f1c3ac;cursor:not-allowed;}
   .btn-outline{background:transparent;color:#6b5a4d;border-color:#f1e6db;}
   .alert{padding:12px 16px;border-radius:12px;font-size:14px;margin-bottom:16px;}
   .alert-info{background:#fff1ea;color:#b1480f;}
@@ -50,11 +51,12 @@
 </div>
 {% endif %}
 <header>
-  <a class="logo" href="{% url 'users:my_applications' %}">
+  <a class="logo" href="{% url 'users:dashboard' %}">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>
     Pôžičky Predlžníkov
   </a>
   <div class="mainnav">
+    <a href="{% url 'users:dashboard' %}" class="{% block nav_dashboard %}{% endblock %}">Dashboard</a>
     <a href="{% url 'users:my_applications' %}" class="{% block nav_applications %}{% endblock %}">Moje žiadosti</a>
     <a href="{% url 'users:my_loans' %}" class="{% block nav_loans %}{% endblock %}">Moje pôžičky</a>
     <a href="{% url 'users:my_contracts' %}" class="{% block nav_contracts %}{% endblock %}">Moje zmluvy</a>

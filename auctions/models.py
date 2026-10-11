@@ -36,6 +36,16 @@ class Auction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # Správa splácania dlžníkom - odklad splátky a nahlásenie úhrady.
+    postponed_days = models.PositiveIntegerField(
+        default=0,
+        help_text='Počet dní, o ktoré bola splatnosť predĺžená na žiadosť dlžníka.',
+    )
+    payment_reported = models.BooleanField(
+        default=False,
+        help_text='Dlžník nahlásil úhradu pôžičky - čaká na overenie platby.',
+    )
+
     class Meta:
         ordering = ['-created_at']
 

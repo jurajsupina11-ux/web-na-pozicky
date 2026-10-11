@@ -34,7 +34,7 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         user = self.request.user
         if user.role == User.Role.BORROWER:
-            return reverse_lazy('users:my_applications')
+            return reverse_lazy('users:dashboard')
         return reverse_lazy('auctions:investor_dashboard')
 
 
@@ -64,7 +64,7 @@ def loan_application(request):
     a požiada o pôžičku (osobné/KYC údaje + parametre úveru)."""
     if request.user.is_authenticated:
         if request.user.role == User.Role.BORROWER:
-            return redirect('users:my_applications')
+            return redirect('users:dashboard')
         messages.info(request, 'Si prihlásený ako investor. Odhlás sa, ak chceš žiadať o pôžičku.')
         return redirect('auctions:list')
 
@@ -78,7 +78,7 @@ def loan_application(request):
                 request,
                 'Žiadosť o pôžičku bola odoslaná. Hneď ako ju investor financuje, dostaneš sa do prostredia pre dlžníkov.',
             )
-            return redirect('users:my_applications')
+            return redirect('users:dashboard')
     else:
         form = BorrowerApplicationForm()
     return render(request, 'users/loan_application.html', {'form': form})
@@ -105,11 +105,50 @@ REPAYMENT_BANK_DETAILS = {
     'variable_symbol_hint': 'VS = číslo pôžičky (napr. 101)',
 }
 
+#: Jednorazový poplatok za odklad splátky o 7 dní.
+POSTPONE_FEE = Decimal('15')
+POSTPONE_DAYS = 7
+
 
 def _loan_repayment_amount(loan):
-    """Celková suma na splatenie = istina + úrok (24 % p.a. prepočítaný na dni)."""
-    interest = loan.amount_requested * Decimal('0.24') * (Decimal(loan.duration_days) / Decimal('365'))
-    return round(loan.amount_requested + interest, 2)
+    """Celková suma na splatenie = istina + úrok (24 % p.a. prepočítaný na dni,
+    vrátane prípadného odkladu) + poplatky za odklady."""
+    total_days = loan.duration_days + loan.postponed_days
+    interest = loan.amount_requested * Decimal('0.24') * (Decimal(total_days) / Decimal('365'))
+    postpone_fees = Decimal(loan.postponed_days // POSTPONE_DAYS) * POSTPONE_FEE
+    return round(loan.amount_requested + interest + postpone_fees, 2)
+
+
+def _annotate_loan(loan):
+    loan.repay_amount = _loan_repayment_amount(loan)
+    loan.interest_amount = round(loan.repay_amount - loan.amount_requested, 2)
+    loan.due_date = loan.starts_at + timedelta(days=loan.duration_days + loan.postponed_days)
+    return loan
+
+
+@login_required
+def dashboard(request):
+    """Hlavná vstupná stránka prostredia pre dlžníkov - prehľad stavu účtu,
+    aktuálneho dlhu, najbližšej splatnosti a rýchlych akcií."""
+    applications = Auction.objects.filter(borrower=request.user)
+    active_loans = applications.filter(status=Auction.Status.FUNDED)
+    closed_loans = applications.filter(status=Auction.Status.CLOSED)
+    pending_applications = applications.filter(status=Auction.Status.ACTIVE)
+
+    for loan in active_loans:
+        _annotate_loan(loan)
+
+    total_debt = sum((loan.repay_amount for loan in active_loans), Decimal('0'))
+    next_due_loan = min(active_loans, key=lambda loan: loan.due_date, default=None)
+
+    return render(request, 'users/dashboard.html', {
+        'active_loans': active_loans,
+        'closed_loans_count': closed_loans.count(),
+        'pending_applications': pending_applications,
+        'total_debt': total_debt,
+        'next_due_loan': next_due_loan,
+        'has_any_application': applications.exists(),
+    })
 
 
 @login_required
@@ -128,14 +167,41 @@ def my_loans(request):
         return redirect('users:my_applications')
 
     for loan in loans:
-        loan.repay_amount = _loan_repayment_amount(loan)
-        loan.interest_amount = round(loan.repay_amount - loan.amount_requested, 2)
-        loan.due_date = loan.starts_at + timedelta(days=loan.duration_days)
+        _annotate_loan(loan)
 
     return render(request, 'users/my_loans.html', {
         'loans': loans,
         'bank_details': REPAYMENT_BANK_DETAILS,
+        'postpone_fee': POSTPONE_FEE,
     })
+
+
+@login_required
+def request_postponement(request, loan_id):
+    """Dlžník žiada o odklad splátky o 7 dní za jednorazový poplatok."""
+    loan = get_object_or_404(Auction, pk=loan_id, borrower=request.user, status=Auction.Status.FUNDED)
+    if request.method == 'POST':
+        loan.postponed_days += POSTPONE_DAYS
+        loan.save(update_fields=['postponed_days'])
+        messages.success(
+            request,
+            f'Splatnosť bola odložená o {POSTPONE_DAYS} dní za poplatok {POSTPONE_FEE} €.',
+        )
+    return redirect('users:my_loans')
+
+
+@login_required
+def report_payment(request, loan_id):
+    """Dlžník nahlási, že splátku uhradil - pôžička prejde do stavu 'čaká na overenie'."""
+    loan = get_object_or_404(Auction, pk=loan_id, borrower=request.user, status=Auction.Status.FUNDED)
+    if request.method == 'POST':
+        loan.payment_reported = True
+        loan.save(update_fields=['payment_reported'])
+        messages.success(
+            request,
+            'Ďakujeme, nahlásenie úhrady sme zaznamenali. Platbu overíme do 1 pracovného dňa.',
+        )
+    return redirect('users:my_loans')
 
 
 @login_required
@@ -184,7 +250,7 @@ def impersonate_start(request, user_id):
     request.session['impersonate_user_id'] = target.pk
     messages.info(request, f'Zobrazuješ prostredie používateľa „{target.username}“.')
     if target.role == User.Role.BORROWER:
-        return redirect('users:my_applications')
+        return redirect('users:dashboard')
     return redirect('auctions:investor_dashboard')
 
 
