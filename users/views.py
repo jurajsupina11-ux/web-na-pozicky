@@ -11,7 +11,7 @@ from django.views.generic import CreateView
 
 from auctions.models import Auction
 
-from .forms import BorrowerApplicationForm, KYCForm, SignUpForm
+from .forms import BankAccountForm, BorrowerApplicationForm, KYCForm, SignUpForm
 from .models import User
 
 
@@ -222,8 +222,22 @@ def my_contracts(request):
 
 @login_required
 def account_settings(request):
-    """Nastavenia účtu (zobrazenie, do budúcna napr. zmena hesla/notifikácie)."""
-    return render(request, 'users/account_settings.html')
+    """Nastavenia účtu - vrátane zmeny bankového účtu (IBAN), na ktorý sa
+    vyplácajú peniaze (dostupné pre investora aj dlžníka)."""
+    if request.method == 'POST':
+        form = BankAccountForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Bankový účet pre výplatu peňazí bol aktualizovaný.')
+            return redirect('users:account_settings')
+    else:
+        form = BankAccountForm(instance=request.user)
+    template = (
+        'users/account_settings_borrower.html'
+        if request.user.role == User.Role.BORROWER
+        else 'users/account_settings_investor.html'
+    )
+    return render(request, template, {'bank_form': form})
 
 
 def _is_admin_request(request):

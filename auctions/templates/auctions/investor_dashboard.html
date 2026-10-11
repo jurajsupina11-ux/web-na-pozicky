@@ -13,6 +13,25 @@
   .wallet-actions button.outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5);}
   .sell-btn{background:none;border:1px solid #dbe4f5;color:#2554ea;border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer;font-weight:600;font-family:inherit;}
   .sell-btn.active{background:#fff4e5;color:#8a5a00;border-color:#ffdca0;}
+  .sell-btn.expired{background:#eef1f6;color:#8a93a8;border-color:#e8ecf3;cursor:not-allowed;}
+  .countdown{font-size:11px;color:#8a5a00;margin-top:3px;}
+  .empty-state{display:flex;align-items:center;gap:22px;padding:28px;}
+  .empty-state svg{flex-shrink:0;}
+  .empty-state h2{margin:0 0 6px;}
+  .empty-state p{color:#55607a;font-size:14px;margin:0;max-width:380px;}
+  .wallet-illustration{opacity:.9;flex-shrink:0;}
+  .welcome-row{display:flex;align-items:center;gap:22px;margin-bottom:16px;}
+  .welcome-row .badge-icon{width:52px;height:52px;border-radius:14px;background:#eaf0ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  @media(max-width:600px){
+    .toprow .btn{width:100%;justify-content:center;}
+    .wallet-card{padding:20px;}
+    .wallet-card .balance{font-size:26px;}
+    .wallet-actions{width:100%;}
+    .wallet-actions form{flex:1;min-width:140px;}
+    .wallet-actions input{width:100%;}
+    .wallet-illustration{display:none;}
+    .empty-state{flex-direction:column;text-align:center;padding:24px 18px;}
+  }
 </style>
 {% endblock %}
 {% block content %}
@@ -41,6 +60,9 @@
       <button type="submit" class="outline">Vyplatiť</button>
     </form>
   </div>
+  <svg class="wallet-illustration" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.35">
+    <rect x="2" y="6" width="20" height="14" rx="3"/><path d="M16 6V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2"/><circle cx="17" cy="13" r="2"/>
+  </svg>
 </div>
 
 <div class="bento">
@@ -80,6 +102,8 @@
 
 <div class="card" style="margin-bottom:16px;">
   <h2>Moje investície</h2>
+  {% if my_bids %}
+  <div class="table-scroll">
   <table>
     <tr><th>Žiadateľ</th><th>Suma</th><th>Úrok</th><th>Splatnosť</th><th>Stav</th><th>Predaj</th></tr>
     {% for bid in my_bids %}
@@ -96,19 +120,55 @@
       </td>
       <td>
         {% if bid.auction.status == 'funded' %}
-        <form method="post" action="{% url 'auctions:bid_toggle_sale' bid.pk %}">
-          {% csrf_token %}
-          <button type="submit" class="sell-btn {% if bid.for_sale %}active{% endif %}">
-            {% if bid.for_sale %}Stiahnuť z predaja{% else %}Predať investorovi{% endif %}
-          </button>
-        </form>
+          {% if bid.for_sale %}
+            {% if bid.can_cancel_sale %}
+            <form method="post" action="{% url 'auctions:bid_toggle_sale' bid.pk %}">
+              {% csrf_token %}
+              <button type="submit" class="sell-btn active">Stiahnuť z predaja</button>
+              <div class="countdown" data-deadline="{{ bid.sale_cancel_deadline|date:'c' }}">zostáva --:--</div>
+            </form>
+            {% else %}
+            <span class="sell-btn expired">V ponuke (nezrušiteľné)</span>
+            {% endif %}
+          {% else %}
+          <form method="post" action="{% url 'auctions:bid_toggle_sale' bid.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="sell-btn">Predať investorovi</button>
+          </form>
+          {% endif %}
         {% else %}—{% endif %}
       </td>
     </tr>
-    {% empty %}
-    <tr><td colspan="6">Zatiaľ si nič nefinancoval. <a href="{% url 'auctions:open_auctions' %}">Prezri si dostupné žiadosti</a>.</td></tr>
     {% endfor %}
   </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#2554ea" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6">
+      <rect x="2" y="7" width="20" height="13" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2"/><circle cx="12" cy="13.5" r="2.5"/>
+    </svg>
+    <div>
+      <h2>Zatiaľ si nič nefinancoval</h2>
+      <p>Hneď ako vložíš peniaze na peňaženku a financuješ prvú žiadosť, zobrazí sa tu prehľad tvojich investícií.</p>
+      <a class="btn btn-primary" style="margin-top:14px;" href="{% url 'auctions:open_auctions' %}">Prezri si dostupné žiadosti</a>
+    </div>
+  </div>
+  {% endif %}
 </div>
+{% endblock %}
+{% block extra_script %}
+<script>
+document.querySelectorAll('.countdown').forEach(function(el) {
+  var deadline = new Date(el.dataset.deadline).getTime();
+  function tick() {
+    var diff = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
+    var m = Math.floor(diff / 60), s = diff % 60;
+    el.textContent = 'zostáva ' + m + ':' + (s < 10 ? '0' : '') + s;
+    if (diff <= 0) { clearInterval(timer); location.reload(); }
+  }
+  tick();
+  var timer = setInterval(tick, 1000);
+});
+</script>
 {% endblock %}
 

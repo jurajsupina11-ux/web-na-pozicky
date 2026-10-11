@@ -1,0 +1,34 @@
+{% extends "investor_base.html" %}
+{% block nav_settings %}active{% endblock %}
+{% block title %}Nastavenia účtu{% endblock %}
+{% block content %}
+<h1>Nastavenia účtu</h1>
+
+<div class="card" style="margin-bottom:16px;">
+  <h2>Bankový účet pre výplatu peňazí</h2>
+  <p style="color:#55607a;">Zmena IBAN účtu, na ktorý sa vypláca zostatok z peňaženky.</p>
+  <form method="post" style="max-width:420px;">
+    {% csrf_token %}
+    <div style="margin-bottom:14px;">
+      {{ bank_form.bank_account_iban.label_tag }}
+      {{ bank_form.bank_account_iban }}
+      {% if bank_form.bank_account_iban.errors %}<div style="color:#c4342b;font-size:13px;margin-top:4px;">{{ bank_form.bank_account_iban.errors }}</div>{% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">Uložiť IBAN</button>
+  </form>
+</div>
+
+<div class="card" style="margin-bottom:16px;">
+  <h2>Notifikácie</h2>
+  <p style="color:#55607a;">E-mailové upozornenia na nové žiadosti a splatenie pôžičiek.</p>
+  <label style="display:flex;align-items:center;gap:10px;font-size:14px;">
+    <input type="checkbox" checked disabled> Zasielať e-mailové upozornenia
+  </label>
+</div>
+
+<div class="card">
+  <h2>Zmena hesla</h2>
+  <p style="color:#55607a;">Funkcia zmeny hesla bude dostupná v ďalšej verzii.</p>
+  <a class="btn btn-outline" href="#">Zmeniť heslo</a>
+</div>
+{% endblock %}

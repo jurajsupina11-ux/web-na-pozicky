@@ -37,6 +37,10 @@ class Bid(models.Model):
         default=False,
         help_text='Investor ponúka svoj podiel na tejto pôžičke na predaj inému investorovi.',
     )
+    for_sale_since = models.DateTimeField(
+        null=True, blank=True,
+        help_text='Kedy bola investícia ponúknutá na predaj - 5 minút od tohto času je možné predaj ešte zastaviť.',
+    )
 
     class Meta:
         ordering = ['interest_rate', '-amount']
@@ -49,4 +53,21 @@ class Bid(models.Model):
 
     def __str__(self):
         return f'{self.lender} -> {self.auction} ({self.amount} € @ {self.interest_rate}%)'
+
+    #: Počet sekúnd, počas ktorých je možné zastaviť predaj investície po jej
+    #: ponúknutí na sekundárnom trhu.
+    SALE_CANCEL_WINDOW_SECONDS = 5 * 60
+
+    @property
+    def sale_cancel_deadline(self):
+        if not self.for_sale or not self.for_sale_since:
+            return None
+        from datetime import timedelta
+        return self.for_sale_since + timedelta(seconds=self.SALE_CANCEL_WINDOW_SECONDS)
+
+    @property
+    def can_cancel_sale(self):
+        from django.utils import timezone
+        deadline = self.sale_cancel_deadline
+        return bool(deadline and timezone.now() < deadline)
 

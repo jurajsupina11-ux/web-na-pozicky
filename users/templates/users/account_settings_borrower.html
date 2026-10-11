@@ -5,6 +5,20 @@
 <h1>Nastavenia účtu</h1>
 
 <div class="card">
+  <h2>Bankový účet pre výplatu peňazí</h2>
+  <p style="color:#6b5a4d;">Zmena IBAN účtu, na ktorý sa vyplácajú schválené pôžičky.</p>
+  <form method="post" style="max-width:420px;">
+    {% csrf_token %}
+    <div style="margin-bottom:14px;">
+      {{ bank_form.bank_account_iban.label_tag }}
+      {{ bank_form.bank_account_iban }}
+      {% if bank_form.bank_account_iban.errors %}<div style="color:#c4342b;font-size:13px;margin-top:4px;">{{ bank_form.bank_account_iban.errors }}</div>{% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">Uložiť IBAN</button>
+  </form>
+</div>
+
+<div class="card">
   <h2>Notifikácie</h2>
   <p style="color:#6b5a4d;">E-mailové upozornenia na blížiacu sa splatnosť a schválenie pôžičky.</p>
   <label style="display:flex;align-items:center;gap:10px;font-size:14px;">

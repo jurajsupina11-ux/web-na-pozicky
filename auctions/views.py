@@ -171,17 +171,32 @@ def wallet_withdraw(request):
 @login_required
 def bid_toggle_sale(request, bid_id):
     """Investor ponúkne (alebo stiahne z ponuky) svoj podiel na aktívnej pôžičke
-    na sekundárnom trhu, aby ho mohol odkúpiť iný investor."""
+    na sekundárnom trhu, aby ho mohol odkúpiť iný investor. Zrušiť ponuku na
+    predaj je možné len do 5 minút od jej vytvorenia."""
+    from django.utils import timezone
+
     bid = get_object_or_404(Bid, pk=bid_id, lender=request.user)
     if bid.auction.status != Auction.Status.FUNDED:
         messages.error(request, 'Na predaj je možné ponúknuť len aktívnu (vyfinancovanú) pôžičku.')
-    else:
-        bid.for_sale = not bid.for_sale
-        bid.save(update_fields=['for_sale'])
-        if bid.for_sale:
-            messages.success(request, 'Tvoja investícia bola ponúknutá na sekundárnom trhu.')
+    elif bid.for_sale:
+        if not bid.can_cancel_sale:
+            messages.error(
+                request,
+                'Čas na zastavenie predaja (5 minút) už uplynul, investícia zostáva v ponuke.',
+            )
         else:
+            bid.for_sale = False
+            bid.for_sale_since = None
+            bid.save(update_fields=['for_sale', 'for_sale_since'])
             messages.info(request, 'Investícia bola stiahnutá z predaja.')
+    else:
+        bid.for_sale = True
+        bid.for_sale_since = timezone.now()
+        bid.save(update_fields=['for_sale', 'for_sale_since'])
+        messages.success(
+            request,
+            'Tvoja investícia bola ponúknutá na sekundárnom trhu. Na zastavenie predaja máš 5 minút.',
+        )
     return redirect('auctions:investor_dashboard')
 
 

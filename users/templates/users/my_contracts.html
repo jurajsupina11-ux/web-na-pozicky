@@ -4,6 +4,7 @@
 {% block content %}
 <h1>Moje zmluvy</h1>
 <div class="card">
+  <div class="table-scroll">
   <table>
     <thead><tr><th>Zmluva</th><th>Suma</th><th>Vznik</th><th>Stav</th><th></th></tr></thead>
     <tbody>
@@ -20,5 +21,6 @@
       {% endfor %}
     </tbody>
   </table>
+  </div>
 </div>
 {% endblock %}

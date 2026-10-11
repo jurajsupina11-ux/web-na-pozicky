@@ -97,6 +97,20 @@ class KYCForm(forms.ModelForm):
         return user
 
 
+class BankAccountForm(forms.ModelForm):
+    """Zmena bankového účtu (IBAN), na ktorý sa vyplácajú peniaze - pre
+    investora aj dlžníka, dostupné v Nastaveniach účtu."""
+
+    class Meta:
+        model = User
+        fields = ('bank_account_iban',)
+        labels = {'bank_account_iban': 'IBAN pre výplatu peňazí'}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        _apply_autocomplete_and_classes(self)
+
+
 class BorrowerApplicationForm(forms.Form):
     """Jediný formulár pre dlžníka: vytvorenie účtu + KYC údaje + parametre žiadosti
     o pôžičku. Dlžník sa takto nikdy neregistruje klasicky - rovno žiada o úver."""

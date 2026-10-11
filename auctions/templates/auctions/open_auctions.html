@@ -10,6 +10,7 @@
 {% if open_auctions %}
 <div class="card">
   <h2>Otvorené žiadosti o pôžičku</h2>
+  <div class="table-scroll">
   <table>
     <tr><th>Žiadateľ</th><th>Suma</th><th>Max. úrok</th><th>Splatnosť</th><th>Vyfinancované</th><th></th></tr>
     {% for auction in open_auctions %}
@@ -23,6 +24,7 @@
     </tr>
     {% endfor %}
   </table>
+  </div>
 </div>
 {% else %}
 <div class="card" style="text-align:center;padding:60px 24px;">

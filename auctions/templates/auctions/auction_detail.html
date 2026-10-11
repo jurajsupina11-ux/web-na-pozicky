@@ -12,6 +12,7 @@
 </ul>
 
 <h3>Ponuky veriteľov</h3>
+<div class="table-responsive">
 <table class="table">
     <thead><tr><th>Veriteľ</th><th>Suma</th><th>Úrok</th><th>Stav</th></tr></thead>
     <tbody>
@@ -22,6 +23,7 @@
     {% endfor %}
     </tbody>
 </table>
+</div>
 
 {% if user.is_authenticated and auction.is_open %}
 <h3>Pridať ponuku</h3>

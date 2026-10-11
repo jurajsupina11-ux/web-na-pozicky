@@ -9,6 +9,7 @@
 <p style="color:#55607a;margin-top:-10px;">Odkúp podiely na pôžičkách od iných investorov, ktorí potrebujú peniaze skôr.</p>
 
 <div class="card">
+  <div class="table-scroll">
   <table>
     <tr><th>Predávajúci</th><th>Žiadateľ</th><th>Suma</th><th>Úrok</th><th>Splatnosť</th><th></th></tr>
     {% for listing in listings %}
@@ -29,5 +30,6 @@
     <tr><td colspan="6">Momentálne nie je na sekundárnom trhu v ponuke žiadna investícia.</td></tr>
     {% endfor %}
   </table>
+  </div>
 </div>
 {% endblock %}

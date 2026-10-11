@@ -16,6 +16,7 @@
     {% elif loan.status == 'funded' %}<span class="status-pill s-active">Aktívna</span>
     {% else %}<span class="status-pill s-late">{{ loan.get_status_display }}</span>{% endif %}
   </div>
+  <div class="table-scroll">
   <table style="margin-top:18px;">
     <tr><th>Istina</th><th>Úrok + poplatky</th><th>Spolu na úhradu</th></tr>
     <tr>
@@ -24,6 +25,7 @@
       <td><strong>{{ loan.repay_amount }} €</strong></td>
     </tr>
   </table>
+  </div>
   {% if loan.status == 'funded' %}
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;">
     <form method="post" action="{% url 'users:report_payment' loan.pk %}">
@@ -44,11 +46,13 @@
 <div class="card">
   <h2>Ako a kam zaplatiť</h2>
   <p style="color:#6b5a4d;">Splátku pošli bankovým prevodom na nasledujúci účet. Do variabilného symbolu uveď číslo svojej pôžičky.</p>
+  <div class="table-scroll">
   <table>
     <tr><th>Banka</th><td>{{ bank_details.bank_name }}</td></tr>
     <tr><th>IBAN</th><td><strong>{{ bank_details.iban }}</strong></td></tr>
     <tr><th>SWIFT/BIC</th><td>{{ bank_details.swift }}</td></tr>
     <tr><th>Variabilný symbol</th><td>{{ bank_details.variable_symbol_hint }}</td></tr>
   </table>
+  </div>
 </div>
 {% endblock %}
