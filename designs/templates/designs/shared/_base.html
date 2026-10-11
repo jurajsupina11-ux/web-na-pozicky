@@ -1,0 +1,52 @@
+{% load static %}<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Pôžičky Predlžníkov{% endblock %} – {{ design.name }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Archivo+Black&family=Nunito:wght@400;700;800&family=Space+Grotesk:wght@400;600;700&family=Rubik:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:{{ design.bg }}; --surface:{{ design.surface }}; --text:{{ design.text }};
+    --primary:{{ design.primary }}; --primary-text:{{ design.primary_text }};
+    --muted:{{ design.muted }}; --border:{{ design.border }}; --accent:{{ design.accent }};
+    --radius:{{ design.radius }};
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:{{ design.font|default:"Arial, sans-serif" }};background:var(--bg);color:var(--text);min-height:100vh;}
+  a{color:inherit;}
+  .switchbar{background:rgba(0,0,0,0.18);padding:8px 20px;font-size:12px;color:var(--muted);display:flex;gap:4px;flex-wrap:wrap;align-items:center;}
+  .switchbar a{text-decoration:none;margin-right:8px;color:var(--text);opacity:.85;}
+  .switchbar a:hover{opacity:1;text-decoration:underline;}
+  .switchbar .tag{background:var(--primary);color:var(--primary-text);padding:2px 10px;border-radius:12px;font-weight:700;margin-right:10px;}
+  nav.top{padding:16px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+  nav.top .logo{font-weight:700;font-size:19px;letter-spacing:.3px;}
+  nav.top .links a{text-decoration:none;margin-left:16px;font-size:14px;color:var(--text);opacity:.9;}
+  .btn{display:inline-block;padding:12px 26px;border-radius:999px;text-decoration:none;font-weight:700;font-size:14px;border:2px solid transparent;cursor:pointer;}
+  .btn-primary{background:var(--primary);color:var(--primary-text);{% if design.glow %}box-shadow:0 0 24px var(--primary);{% endif %}}
+  .btn-outline{background:transparent;color:var(--text);border-color:var(--border);margin-left:10px;}
+  .wrap{max-width:900px;margin:0 auto;padding:30px 20px 70px;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;margin-bottom:16px;backdrop-filter:blur(6px);}
+  footer{text-align:center;padding:30px;color:var(--muted);font-size:12px;}
+  h1{margin:0 0 10px;}
+  .pill{display:inline-block;background:var(--primary);color:var(--primary-text);font-size:12px;font-weight:700;padding:4px 12px;border-radius:12px;}
+</style>
+{% block extra_style %}{% endblock %}
+</head>
+<body>
+<nav class="top">
+  <div class="logo">🔥 Pôžičky Predlžníkov</div>
+  <div class="links"><a href="#">Prihlásiť sa</a><a href="#">Registrácia</a></div>
+</nav>
+<div class="switchbar">
+  <span class="tag">{{ design.name }}</span>
+  <a href="{% url 'designs:home' design.slug %}">Úvod</a>
+  <a href="{% url 'designs:rooms' design.slug %}">Aukčná miestnosť</a>
+  <a href="{% url 'designs:dashboard' design.slug %}">Dashboard</a>
+  <a href="{% url 'designs:how_it_works' design.slug %}">Ako to funguje</a>
+  <a href="{% url 'designs:index' %}" style="margin-left:auto;">← všetky mockupy</a>
+</div>
+{% block content %}{% endblock %}
+<footer>Mockup – demo stránka, bez reálnej funkčnosti. &copy; Pôžičky Predlžníkov</footer>
+</body>
+</html>

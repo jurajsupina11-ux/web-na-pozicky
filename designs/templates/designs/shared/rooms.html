@@ -1,0 +1,34 @@
+{% extends "designs/shared/_base.html" %}
+{% block title %}Aukčná miestnosť{% endblock %}
+{% block extra_style %}
+<style>
+  .loan{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+  .loan .info b{font-size:17px;}
+  .loan .info span{display:block;color:var(--muted);font-size:13px;margin-top:4px;}
+  .bar{width:130px;height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-top:8px;}
+  .bar div{height:100%;background:var(--primary);}
+  .timer{font-weight:bold;color:var(--accent);font-size:15px;margin-bottom:8px;}
+  a.rowlink{text-decoration:none;color:inherit;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="wrap">
+  <h1>🔥 Aukčná miestnosť</h1>
+  <p style="color:var(--muted);font-size:14px;">Žiadosti o pôžičku – kto klikne prvý, financuje. Žiadne navyšovanie ceny.</p>
+  {% for loan in loans %}
+  <a class="rowlink" href="{% url 'designs:loan_detail' design.slug loan.id %}">
+  <div class="card loan">
+    <div class="info">
+      <b>{{ loan.amount }} € – {{ loan.borrower }}</b>
+      <span>{{ loan.purpose }} · splatnosť {{ loan.days }} dní · obsadené {{ loan.claimed_pct }} %</span>
+      <div class="bar"><div style="width:{{ loan.claimed_pct }}%;"></div></div>
+    </div>
+    <div style="text-align:right;">
+      <div class="timer">⏱ {{ loan.remaining }}</div>
+      <span class="btn btn-primary">Chytiť pôžičku</span>
+    </div>
+  </div>
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}

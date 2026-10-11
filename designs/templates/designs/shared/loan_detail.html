@@ -1,0 +1,37 @@
+{% extends "designs/shared/_base.html" %}
+{% block title %}{{ loan.borrower }} – detail pôžičky{% endblock %}
+{% block extra_style %}
+<style>
+  .big-timer{font-size:48px;font-weight:800;color:var(--accent);text-align:center;margin:10px 0;{% if design.glow %}text-shadow:0 0 30px var(--primary);{% endif %}}
+  .timer-label{text-align:center;color:var(--muted);font-size:13px;margin-bottom:20px;}
+  .meta{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;}
+  .meta:last-child{border-bottom:none;}
+  .meta strong{color:var(--primary);}
+  .claim-bar{width:100%;height:14px;background:var(--border);border-radius:7px;overflow:hidden;margin:16px 0;}
+  .claim-bar div{height:100%;background:var(--primary);}
+  .cta{text-align:center;margin-top:20px;}
+  .cta .btn{font-size:16px;padding:16px 40px;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="wrap" style="max-width:520px;">
+  <div class="card">
+    <h1 style="text-align:center;font-size:22px;">{{ loan.amount }} € – {{ loan.purpose }}</h1>
+    <div class="timer-label">Žiadateľ: {{ loan.borrower }} · zostáva čas na chytenie</div>
+    <div class="big-timer">⏱ {{ loan.remaining }}</div>
+    <div class="claim-bar"><div style="width:{{ loan.claimed_pct }}%;"></div></div>
+    <div class="timer-label">{{ loan.claimed_pct }} % už obsadené inými investormi</div>
+    <div class="meta"><span>Suma pôžičky</span><strong>{{ loan.amount }} €</strong></div>
+    <div class="meta"><span>Splatnosť</span><strong>{{ loan.days }} dní</strong></div>
+    <div class="meta"><span>Úrok pre teba (24 % p.a.)</span><strong>{{ interest }} €</strong></div>
+    <div class="meta"><span>Poplatok platforme (20 % z istiny)</span><strong>{{ fee }} €</strong></div>
+    <div class="meta"><span>Žiadateľ spolu splatí</span><strong>{{ total_to_repay }} €</strong></div>
+    <div class="cta">
+      <a class="btn btn-primary" href="#">⚡ Chytiť túto pôžičku</a>
+    </div>
+  </div>
+  <div class="card" style="text-align:center;">
+    <a href="{% url 'designs:rooms' design.slug %}" style="text-decoration:none;color:var(--muted);">← Späť do aukčnej miestnosti</a>
+  </div>
+</div>
+{% endblock %}

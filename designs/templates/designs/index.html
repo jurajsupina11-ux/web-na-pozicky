@@ -32,7 +32,9 @@
     <div class="btns">
       <a class="b1" href="{% url 'designs:home' d.slug %}">Úvodná stránka</a>
       <a class="b2" href="{% url 'designs:rooms' d.slug %}">Aukčná miestnosť</a>
+      <a class="b2" href="{% url 'designs:loan_detail' d.slug 1 %}">Detail pôžičky</a>
       <a class="b2" href="{% url 'designs:dashboard' d.slug %}">Dashboard investora</a>
+      <a class="b2" href="{% url 'designs:how_it_works' d.slug %}">Ako to funguje</a>
     </div>
   </div>
   {% endfor %}
