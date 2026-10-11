@@ -1,10 +1,52 @@
-{% extends "base.html" %}
-{% block title %}Prihlásenie{% endblock %}
-{% block content %}
-<h1>Prihlásenie</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Prihlásiť sa</button>
-</form>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prihlásenie – Pôžičky Predlžníkov</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#0f1115;color:#fff;min-height:100vh;display:flex;flex-direction:column;}
+  a{color:inherit;}
+  header{text-align:center;padding:30px 20px 0;}
+  header a.logo{font-weight:800;font-size:20px;text-decoration:none;color:#fff;}
+  .wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+  .card{background:#1a1b22;border:1px solid #2a2b35;border-radius:18px;padding:40px;width:100%;max-width:400px;}
+  .card h2{margin:0 0 6px;font-size:24px;}
+  .card .sub{color:#9099ab;font-size:14px;margin:0 0 26px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:13px;font-weight:600;color:#c7cbe0;margin-bottom:6px;}
+  .field input{width:100%;padding:12px 14px;border:1px solid #33343f;border-radius:10px;font-size:14px;font-family:inherit;background:#0f1115;color:#fff;}
+  .field input:focus{outline:none;border-color:#5b8dff;}
+  .errorlist{color:#ff8080;font-size:13px;margin:4px 0 0;padding:0;list-style:none;}
+  .btn-submit{width:100%;background:#5b8dff;color:#0f1115;border:none;padding:14px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;margin-top:8px;}
+  .btn-submit:hover{background:#7aa3ff;}
+  .alt-links{text-align:center;margin-top:20px;font-size:13px;color:#9099ab;display:flex;justify-content:space-between;}
+  .alt-links a{color:#5b8dff;font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+<header><a class="logo" href="{% url 'core:landing' %}">🔥 Pôžičky Predlžníkov</a></header>
+<div class="wrap">
+  <div class="card">
+    <h2>Prihlásenie</h2>
+    <p class="sub">Prihlás sa do svojho investorského alebo dlžníckeho účtu.</p>
+    <form method="post" autocomplete="on">
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="field">
+          {{ field.label_tag }}
+          {{ field }}
+          {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn-submit">Prihlásiť sa</button>
+    </form>
+    <div class="alt-links">
+      <a href="{% url 'users:signup' %}">Registrácia investora</a>
+      <a href="{% url 'users:loan_application' %}">Žiadosť o pôžičku</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,58 +1,111 @@
-{% extends "base.html" %}
-{% block title %}Žiadosť o pôžičku{% endblock %}
-{% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-8">
-    <h1>Žiadosť o pôžičku</h1>
-    <p class="text-muted">
-      Nemusíš sa osobitne registrovať - vyplň tento jeden formulár a zároveň sa ti vytvorí účet
-      a odošle sa žiadosť investorom. Do prostredia pre dlžníkov (Moje pôžičky) sa dostaneš,
-      až keď niektorý investor tvoju žiadosť financuje.
-    </p>
-    <form method="post">
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Žiadosť o pôžičku – Pôžičky Predlžníkov</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#fffaf5;color:#2a1b10;}
+  a{color:inherit;}
+  header{background:#fff;border-bottom:1px solid #ffd9bf;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+  header .logo{font-weight:800;font-size:19px;color:#ff6a2b;text-decoration:none;}
+  header nav a{text-decoration:none;color:#8a6a56;font-size:14px;}
+  .switchbar{background:#fff3ea;color:#8a6a56;text-align:center;font-size:12px;padding:5px;}
+  .switchbar a{color:#ff6a2b;text-decoration:none;}
+  .wrap{max-width:1100px;margin:0 auto;padding:48px 24px 70px;display:grid;grid-template-columns:.85fr 1.15fr;gap:40px;align-items:start;}
+  @media(max-width:860px){.wrap{grid-template-columns:1fr;}}
+  .intro h1{font-size:32px;line-height:1.2;margin:0 0 14px;}
+  .intro p{color:#8a6a56;font-size:15px;max-width:380px;margin:0 0 24px;}
+  .steps-mini{display:flex;flex-direction:column;gap:16px;}
+  .steps-mini .step{display:flex;gap:12px;align-items:flex-start;}
+  .steps-mini .num{width:32px;height:32px;flex-shrink:0;border-radius:50%;background:#ff6a2b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;}
+  .steps-mini h3{margin:0 0 2px;font-size:14px;}
+  .steps-mini p{margin:0;color:#8a6a56;font-size:13px;max-width:280px;}
+  .card{background:#fff;border:1px solid #ffd9bf;border-radius:20px;padding:36px;}
+  .card h2{margin:0 0 4px;font-size:22px;}
+  .card .sub{color:#8a6a56;font-size:14px;margin:0 0 26px;}
+  .section-label{font-size:13px;font-weight:700;color:#ff6a2b;text-transform:uppercase;letter-spacing:.04em;margin:26px 0 14px;}
+  .section-label:first-of-type{margin-top:0;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media(max-width:520px){.grid2{grid-template-columns:1fr;}}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:13px;font-weight:600;color:#5c3a24;margin-bottom:6px;}
+  .field input, .field textarea{width:100%;padding:12px 14px;border:1px solid #ffd9bf;border-radius:10px;font-size:14px;font-family:inherit;background:#fffaf5;}
+  .field input:focus, .field textarea:focus{outline:none;border-color:#ff6a2b;box-shadow:0 0 0 3px rgba(255,106,43,.15);}
+  .errorlist{color:#c23b3b;font-size:13px;margin:4px 0 0;padding:0;list-style:none;}
+  .alert-danger{background:#ffe3e3;color:#9b2c2c;padding:12px 16px;border-radius:10px;font-size:14px;margin-bottom:16px;}
+  .btn-submit{width:100%;background:#ff6a2b;color:#fff;border:none;padding:15px;border-radius:30px;font-weight:700;font-size:15px;cursor:pointer;margin-top:10px;}
+  .btn-submit:hover{background:#e55a1f;}
+  .note{font-size:12px;color:#b08a73;margin-top:14px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="switchbar">Žiadosť o pôžičku · <a href="{% url 'users:login' %}">Už máš účet? Prihlás sa</a> · <a href="{% url 'users:signup' %}">Som investor</a></div>
+<header>
+  <a class="logo" href="{% url 'core:landing' %}">🔥 Pôžičky Predlžníkov</a>
+  <nav><a href="{% url 'users:login' %}">Prihlásiť sa</a></nav>
+</header>
+
+<div class="wrap">
+  <div class="intro">
+    <h1>Peniaze do 5 minút, bez čakania na banku</h1>
+    <p>Jedným formulárom vytvoríš účet aj odošleš žiadosť o pôžičku 50 – 500 € so splatnosťou do 30 dní.</p>
+    <div class="steps-mini">
+      <div class="step"><div class="num">1</div><div><h3>Vyplníš žiadosť</h3><p>Prístupové, osobné a úverové údaje naraz.</p></div></div>
+      <div class="step"><div class="num">2</div><div><h3>Čakáš na investora</h3><p>Žiadosť sa zobrazí v aukčnej miestnosti.</p></div></div>
+      <div class="step"><div class="num">3</div><div><h3>Peniaze na účte</h3><p>Hneď po financovaní dostaneš prístup k pôžičke.</p></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Žiadosť o pôžičku</h2>
+    <p class="sub">Nemusíš sa osobitne registrovať - formulár môžeš vyplniť aj automaticky z uloženého Google/Chrome profilu.</p>
+
+    {% if form.non_field_errors %}
+      <div class="alert-danger">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <form method="post" autocomplete="on">
       {% csrf_token %}
-
-      <h5 class="mt-4">Prístupové údaje</h5>
-      <div class="row">
-        <div class="col-md-6 mb-3">{{ form.username.label_tag }}{{ form.username }}</div>
-        <div class="col-md-6 mb-3">{{ form.email.label_tag }}{{ form.email }}</div>
+      <div class="section-label">Prístupové údaje</div>
+      <div class="grid2">
+        <div class="field">{{ form.username.label_tag }}{{ form.username }}{% if form.username.errors %}<ul class="errorlist">{% for e in form.username.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
+        <div class="field">{{ form.email.label_tag }}{{ form.email }}{% if form.email.errors %}<ul class="errorlist">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
       </div>
-      <div class="row">
-        <div class="col-md-6 mb-3">{{ form.password1.label_tag }}{{ form.password1 }}</div>
-        <div class="col-md-6 mb-3">{{ form.password2.label_tag }}{{ form.password2 }}</div>
+      <div class="grid2">
+        <div class="field">{{ form.password1.label_tag }}{{ form.password1 }}{% if form.password1.errors %}<ul class="errorlist">{% for e in form.password1.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
+        <div class="field">{{ form.password2.label_tag }}{{ form.password2 }}{% if form.password2.errors %}<ul class="errorlist">{% for e in form.password2.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
       </div>
-      <div class="mb-3">{{ form.phone_number.label_tag }}{{ form.phone_number }}</div>
-
-      <h5 class="mt-4">Osobné údaje (overenie identity)</h5>
-      <div class="row">
-        <div class="col-md-6 mb-3">{{ form.first_name.label_tag }}{{ form.first_name }}</div>
-        <div class="col-md-6 mb-3">{{ form.last_name.label_tag }}{{ form.last_name }}</div>
+      <div class="field">{{ form.phone_number.label_tag }}{{ form.phone_number }}{% if form.phone_number.errors %}<ul class="errorlist">{% for e in form.phone_number.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
+      <div class="section-label">Osobné údaje (overenie identity)</div>
+      <div class="grid2">
+        <div class="field">{{ form.first_name.label_tag }}{{ form.first_name }}{% if form.first_name.errors %}<ul class="errorlist">{% for e in form.first_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
+        <div class="field">{{ form.last_name.label_tag }}{{ form.last_name }}{% if form.last_name.errors %}<ul class="errorlist">{% for e in form.last_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
       </div>
-      <div class="mb-3">{{ form.date_of_birth.label_tag }}{{ form.date_of_birth }}</div>
-      <div class="row">
-        <div class="col-md-6 mb-3">{{ form.id_card_number.label_tag }}{{ form.id_card_number }}</div>
-        <div class="col-md-6 mb-3">{{ form.birth_number.label_tag }}{{ form.birth_number }}</div>
+      <div class="field">{{ form.date_of_birth.label_tag }}{{ form.date_of_birth }}{% if form.date_of_birth.errors %}<ul class="errorlist">{% for e in form.date_of_birth.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
+      <div class="grid2">
+        <div class="field">{{ form.id_card_number.label_tag }}{{ form.id_card_number }}{% if form.id_card_number.errors %}<ul class="errorlist">{% for e in form.id_card_number.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
+        <div class="field">{{ form.birth_number.label_tag }}{{ form.birth_number }}{% if form.birth_number.errors %}<ul class="errorlist">{% for e in form.birth_number.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
       </div>
-      <div class="mb-3">{{ form.street_address.label_tag }}{{ form.street_address }}</div>
-      <div class="row">
-        <div class="col-md-8 mb-3">{{ form.city.label_tag }}{{ form.city }}</div>
-        <div class="col-md-4 mb-3">{{ form.postal_code.label_tag }}{{ form.postal_code }}</div>
+      <div class="field">{{ form.street_address.label_tag }}{{ form.street_address }}{% if form.street_address.errors %}<ul class="errorlist">{% for e in form.street_address.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
+      <div class="grid2">
+        <div class="field">{{ form.city.label_tag }}{{ form.city }}{% if form.city.errors %}<ul class="errorlist">{% for e in form.city.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
+        <div class="field">{{ form.postal_code.label_tag }}{{ form.postal_code }}{% if form.postal_code.errors %}<ul class="errorlist">{% for e in form.postal_code.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
       </div>
-      <div class="mb-3">{{ form.bank_account_iban.label_tag }}{{ form.bank_account_iban }}</div>
-
-      <h5 class="mt-4">Parametre pôžičky</h5>
-      <div class="row">
-        <div class="col-md-6 mb-3">{{ form.amount_requested.label_tag }}{{ form.amount_requested }}</div>
-        <div class="col-md-6 mb-3">{{ form.duration_days.label_tag }}{{ form.duration_days }}</div>
+      <div class="field">{{ form.bank_account_iban.label_tag }}{{ form.bank_account_iban }}{% if form.bank_account_iban.errors %}<ul class="errorlist">{% for e in form.bank_account_iban.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
+      <div class="section-label">Parametre pôžičky</div>
+      <div class="grid2">
+        <div class="field">{{ form.amount_requested.label_tag }}{{ form.amount_requested }}{% if form.amount_requested.errors %}<ul class="errorlist">{% for e in form.amount_requested.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
+        <div class="field">{{ form.duration_days.label_tag }}{{ form.duration_days }}{% if form.duration_days.errors %}<ul class="errorlist">{% for e in form.duration_days.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
       </div>
-      <div class="mb-3">{{ form.purpose.label_tag }}{{ form.purpose }}</div>
-
-      {% if form.non_field_errors %}
-        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
-      {% endif %}
-
-      <button type="submit" class="btn btn-primary">Odoslať žiadosť o pôžičku</button>
+      <div class="field">{{ form.purpose.label_tag }}{{ form.purpose }}{% if form.purpose.errors %}<ul class="errorlist">{% for e in form.purpose.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</div>
+      <button type="submit" class="btn-submit">Odoslať žiadosť o pôžičku</button>
+      <p class="note">Odoslaním žiadosti súhlasíš s podmienkami 24 % p.a. úroku a jednorazového poplatku platforme 20 % z istiny.</p>
     </form>
   </div>
 </div>
-{% endblock %}
+
+</body>
+</html>
+

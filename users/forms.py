@@ -8,6 +8,44 @@ from auctions.models import Auction
 from .models import User
 
 
+#: mapovanie meno poľa -> HTML autocomplete hodnota, aby prehliadač (vrátane
+#: automatického doplnenia údajov z prihláseného Google účtu v Chrome) mohol
+#: formuláre vyplniť automaticky.
+AUTOCOMPLETE_MAP = {
+    'username': 'username',
+    'email': 'email',
+    'phone_number': 'tel',
+    'password1': 'new-password',
+    'password2': 'new-password',
+    'first_name': 'given-name',
+    'last_name': 'family-name',
+    'date_of_birth': 'bday',
+    'id_card_number': 'off',
+    'birth_number': 'off',
+    'street_address': 'street-address',
+    'city': 'address-level2',
+    'postal_code': 'postal-code',
+    'bank_account_iban': 'off',
+    'amount_requested': 'off',
+    'duration_days': 'off',
+    'purpose': 'off',
+}
+
+
+def _apply_autocomplete_and_classes(form):
+    """Pridá Bootstrap triedy a autocomplete atribúty na všetky polia formulára,
+    aby sa dali pekne naštýlovať a aby prehliadač (Google účet v Chrome) mohol
+    údaje doplniť automaticky."""
+    for name, field in form.fields.items():
+        css_class = 'form-check-input' if isinstance(field.widget, forms.CheckboxInput) else 'form-control'
+        existing = field.widget.attrs.get('class', '')
+        field.widget.attrs['class'] = f'{existing} {css_class}'.strip()
+        autocomplete = AUTOCOMPLETE_MAP.get(name)
+        if autocomplete:
+            field.widget.attrs['autocomplete'] = autocomplete
+        field.widget.attrs.setdefault('placeholder', field.label)
+
+
 class SignUpForm(UserCreationForm):
     """Registrácia investora (veriteľa). Dlžníci tento formulár nepoužívajú -
     žiadajú rovno o úver cez BorrowerApplicationForm."""
@@ -15,6 +53,10 @@ class SignUpForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ('username', 'email', 'phone_number')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        _apply_autocomplete_and_classes(self)
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -42,6 +84,10 @@ class KYCForm(forms.ModelForm):
             'first_name': 'Meno',
             'last_name': 'Priezvisko',
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        _apply_autocomplete_and_classes(self)
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -86,6 +132,16 @@ class BorrowerApplicationForm(forms.Form):
     purpose = forms.CharField(
         label='Účel pôžičky', widget=forms.Textarea(attrs={'rows': 3}),
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        _apply_autocomplete_and_classes(self)
+        self.fields['amount_requested'].widget.attrs.update({
+            'placeholder': 'napr. 200', 'min': 50, 'max': 500, 'step': 10,
+        })
+        self.fields['duration_days'].widget.attrs.update({
+            'placeholder': 'napr. 14', 'min': 1, 'max': 30,
+        })
 
     def clean_username(self):
         username = self.cleaned_data['username']

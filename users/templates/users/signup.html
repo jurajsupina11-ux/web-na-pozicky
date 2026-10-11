@@ -1,10 +1,74 @@
-{% extends "base.html" %}
-{% block title %}Registrácia{% endblock %}
-{% block content %}
-<h1>Registrácia</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Vytvoriť účet</button>
-</form>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registrácia investora – Pôžičky Predlžníkov</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#f4f7fc;color:#0f1a33;}
+  a{color:inherit;}
+  header{background:#0d1b4c;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+  header .logo{font-weight:800;font-size:19px;color:#fff;text-decoration:none;}
+  header .logo span{color:#5b8dff;}
+  header nav a{color:#c7d2f5;text-decoration:none;margin-left:18px;font-size:14px;}
+  .wrap{min-height:calc(100vh - 68px);display:grid;grid-template-columns:1fr 1fr;}
+  @media(max-width:860px){.wrap{grid-template-columns:1fr;}}
+  .side{background:linear-gradient(160deg,#0d1b4c,#1b4fd1);color:#fff;padding:60px 48px;display:flex;flex-direction:column;justify-content:center;}
+  .side h1{font-size:32px;line-height:1.25;margin:0 0 18px;}
+  .side p{color:#c7d2f5;font-size:15px;max-width:420px;margin:0 0 28px;}
+  .side .stat{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.15);font-size:14px;max-width:360px;}
+  .side .stat b{font-size:20px;color:#9fc0ff;}
+  .form-side{display:flex;align-items:center;justify-content:center;padding:48px 24px;}
+  .form-card{width:100%;max-width:420px;}
+  .form-card h2{font-size:24px;margin:0 0 6px;}
+  .form-card .sub{color:#5c6a8f;font-size:14px;margin:0 0 28px;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:13px;font-weight:600;color:#33406b;margin-bottom:6px;}
+  .field input{width:100%;padding:12px 14px;border:1px solid #d6ddee;border-radius:10px;font-size:14px;font-family:inherit;background:#fff;}
+  .field input:focus{outline:none;border-color:#5b8dff;box-shadow:0 0 0 3px rgba(91,141,255,.18);}
+  .errorlist{color:#c23b3b;font-size:13px;margin:4px 0 0;padding:0;list-style:none;}
+  .btn-submit{width:100%;background:#1b4fd1;color:#fff;border:none;padding:14px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;margin-top:8px;}
+  .btn-submit:hover{background:#163fa8;}
+  .alt-link{text-align:center;margin-top:18px;font-size:13px;color:#5c6a8f;}
+  .alt-link a{color:#1b4fd1;font-weight:600;text-decoration:none;}
+  .switchbar{background:#0a1538;color:#8fa3e8;text-align:center;font-size:12px;padding:5px;}
+  .switchbar a{color:#5b8dff;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="switchbar">Registrácia pre investorov · <a href="{% url 'users:loan_application' %}">Hľadáš pôžičku? Požiadaj o úver</a></div>
+<header>
+  <a class="logo" href="{% url 'core:landing' %}">🔥 Pôžičky <span>Predlžníkov</span></a>
+  <nav><a href="{% url 'users:login' %}">Prihlásiť sa</a></nav>
+</header>
+<div class="wrap">
+  <div class="side">
+    <h1>Zarábaj 24 % p.a. na krátkodobých pôžičkách</h1>
+    <p>Vytvor si investorský účet a začni financovať overené žiadosti o pôžičku už dnes. Registrácia trvá 2 minúty.</p>
+    <div class="stat"><span>Priemerný úrok p.a.</span><b>24 %</b></div>
+    <div class="stat"><span>Priemerná splatnosť</span><b>18 dní</b></div>
+    <div class="stat" style="border-bottom:none;"><span>Minimálna investícia</span><b>10 €</b></div>
+  </div>
+  <div class="form-side">
+    <div class="form-card">
+      <h2>Vytvoriť investorský účet</h2>
+      <p class="sub">Vyplň údaje nižšie, alebo ich nechaj doplniť prehliadačom automaticky.</p>
+      <form method="post" autocomplete="on">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="field">
+            {{ field.label_tag }}
+            {{ field }}
+            {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+          </div>
+        {% endfor %}
+        <button type="submit" class="btn-submit">Vytvoriť účet</button>
+      </form>
+      <div class="alt-link">Už máš účet? <a href="{% url 'users:login' %}">Prihlás sa</a></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+
