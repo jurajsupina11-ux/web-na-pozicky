@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Moje pôžičky{% endblock %}
+{% block content %}
+<h1>Moje pôžičky</h1>
+<p class="text-muted">Prostredie pre dlžníkov - prístupné, pretože máš aspoň jednu schválenú pôžičku.</p>
+
+<table class="table">
+  <thead>
+    <tr><th>ID</th><th>Suma</th><th>Úrok</th><th>Splatnosť</th><th>Koniec</th><th>Stav</th></tr>
+  </thead>
+  <tbody>
+    {% for loan in loans %}
+    <tr>
+      <td>#{{ loan.pk }}</td>
+      <td>{{ loan.amount_requested }} €</td>
+      <td>{{ loan.max_interest_rate }} %</td>
+      <td>{{ loan.duration_days }} dní</td>
+      <td>{{ loan.ends_at }}</td>
+      <td>{{ loan.get_status_display }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

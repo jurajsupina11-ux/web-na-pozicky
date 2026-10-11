@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Moje žiadosti{% endblock %}
+{% block content %}
+<h1>Moje žiadosti o pôžičku</h1>
+
+{% if has_approved %}
+  <div class="alert alert-success">
+    Máš schválenú (vyfinancovanú) pôžičku -
+    <a href="{% url 'users:my_loans' %}">vstúpiť do prostredia pre dlžníkov</a>.
+  </div>
+{% else %}
+  <div class="alert alert-warning">
+    Zatiaľ nemáš žiadnu schválenú pôžičku. Hneď ako investor tvoju žiadosť financuje,
+    odomkne sa ti prístup do prostredia pre dlžníkov (Moje pôžičky).
+  </div>
+{% endif %}
+
+<table class="table">
+  <thead>
+    <tr><th>ID</th><th>Suma</th><th>Splatnosť</th><th>Stav</th><th>Vyfinancované</th></tr>
+  </thead>
+  <tbody>
+    {% for a in applications %}
+    <tr>
+      <td>#{{ a.pk }}</td>
+      <td>{{ a.amount_requested }} €</td>
+      <td>{{ a.duration_days }} dní</td>
+      <td>{{ a.get_status_display }}</td>
+      <td>{{ a.funding_progress|floatformat:0 }} %</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">Zatiaľ nemáš žiadnu žiadosť.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

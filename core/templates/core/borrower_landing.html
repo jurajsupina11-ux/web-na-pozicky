@@ -59,7 +59,7 @@
   <div class="logo">🔥 Pôžičky Predlžníkov</div>
   <nav>
     <a href="{% url 'users:login' %}" class="btn-ghost">Prihlásiť sa</a>
-    <a href="{% url 'users:signup' %}" class="btn-fill">Registrovať sa</a>
+    <a href="{% url 'users:loan_application' %}" class="btn-fill">Požiadať o pôžičku</a>
   </nav>
 </header>
 
@@ -67,8 +67,8 @@
   <div class="hero-inner">
     <div>
       <h1>Peniaze do 5 minút, bez čakania na banku</h1>
-      <p>Požičiaš si 50 € – 500 € na max. 30 dní. Zadáš žiadosť, investor ju financuje a peniaze sú na tvojom účte do pár minút.</p>
-      <a class="btn btn-primary" href="{% url 'users:signup' %}">Požiadať o pôžičku</a>
+      <p>Požičiaš si 50 € – 500 € na max. 30 dní. Jedným formulárom zadáš žiadosť aj vytvoríš účet, investor ju financuje a peniaze sú na tvojom účte do pár minút.</p>
+      <a class="btn btn-primary" href="{% url 'users:loan_application' %}">Požiadať o pôžičku</a>
       <a class="btn btn-outline" href="#ako-funguje">Ako to funguje</a>
     </div>
     <div class="calc-card">
@@ -114,8 +114,8 @@ amount.addEventListener('input',recalc);days.addEventListener('input',recalc);
     <p>Od žiadosti po peniaze na účte v troch krokoch.</p>
   </div>
   <div class="steps">
-    <div class="step"><div class="num">1</div><div><h3>Zaregistruj sa a over identitu</h3><p>Pri prvej žiadosti vyplníš základné údaje (OP, adresa) – jednorazovo.</p></div></div>
-    <div class="step"><div class="num">2</div><div><h3>Zadaj žiadosť o pôžičku</h3><p>Suma 50-500 €, splatnosť do 30 dní. Zobrazí sa v aukčnej miestnosti.</p></div></div>
+    <div class="step"><div class="num">1</div><div><h3>Vyplň jednu žiadosť</h3><p>Bez samostatnej registrácie - v jednom formulári zadáš osobné údaje (OP, adresa) aj parametre pôžičky (suma 50-500 €, splatnosť do 30 dní).</p></div></div>
+    <div class="step"><div class="num">2</div><div><h3>Žiadosť sa zobrazí investorom</h3><p>Zobrazí sa v aukčnej miestnosti, kde si ju môžu investori financovať.</p></div></div>
     <div class="step"><div class="num">3</div><div><h3>Investor financuje, máš peniaze</h3><p>Kto prvý klikne na "Chytiť pôžičku", financuje – zvyčajne do pár minút.</p></div></div>
   </div>
 </div>
@@ -130,8 +130,8 @@ amount.addEventListener('input',recalc);days.addEventListener('input',recalc);
 <div class="wrap" style="padding-top:0;">
   <div class="cta">
     <h2>Potrebuješ peniaze ešte dnes?</h2>
-    <p>Registrácia trvá pár minút, žiadosť môžeš zadať hneď potom.</p>
-    <a class="btn btn-primary" href="{% url 'users:signup' %}">Požiadať o pôžičku</a>
+    <p>Vyplnenie žiadosti trvá pár minút, účet sa ti vytvorí automaticky.</p>
+    <a class="btn btn-primary" href="{% url 'users:loan_application' %}">Požiadať o pôžičku</a>
   </div>
 </div>
 

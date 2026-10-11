@@ -12,14 +12,20 @@
             <a class="navbar-brand" href="{% url 'auctions:list' %}">Pôžičky Predlžníkov</a>
             <div class="d-flex gap-2">
                 {% if user.is_authenticated %}
-                    <a class="btn btn-outline-light btn-sm" href="{% url 'auctions:create' %}">+ Nová aukcia</a>
+                    {% if user.role == 'borrower' %}
+                        <a class="btn btn-outline-light btn-sm" href="{% url 'users:my_applications' %}">Moje žiadosti</a>
+                        <a class="btn btn-outline-light btn-sm" href="{% url 'users:my_loans' %}">Moje pôžičky</a>
+                    {% else %}
+                        <a class="btn btn-outline-light btn-sm" href="{% url 'auctions:create' %}">+ Nová aukcia</a>
+                    {% endif %}
                     <form method="post" action="{% url 'users:logout' %}" class="d-inline">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-light btn-sm">Odhlásiť sa ({{ user.username }})</button>
                     </form>
                 {% else %}
                     <a class="btn btn-outline-light btn-sm" href="{% url 'users:login' %}">Prihlásiť sa</a>
-                    <a class="btn btn-light btn-sm" href="{% url 'users:signup' %}">Registrovať sa</a>
+                    <a class="btn btn-outline-light btn-sm" href="{% url 'users:loan_application' %}">Žiadosť o pôžičku</a>
+                    <a class="btn btn-light btn-sm" href="{% url 'users:signup' %}">Registrovať sa (investor)</a>
                 {% endif %}
             </div>
         </div>

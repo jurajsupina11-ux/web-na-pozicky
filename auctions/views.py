@@ -61,6 +61,12 @@ def place_bid(request, pk):
             bid.lender = request.user
             bid.save()
             messages.success(request, 'Vaša ponuka bola odoslaná.')
+            # Keď je žiadosť plne vyfinancovaná, pôžička sa automaticky schváli -
+            # dlžník sa odblokuje do prostredia pre dlžníkov (Moje pôžičky).
+            if auction.funding_progress >= 100:
+                auction.status = Auction.Status.FUNDED
+                auction.save(update_fields=['status'])
+                messages.success(request, 'Žiadosť bola plne vyfinancovaná a pôžička bola schválená.')
         else:
             messages.error(request, 'Ponuku sa nepodarilo odoslať, skontrolujte údaje.')
     return redirect(auction.get_absolute_url())

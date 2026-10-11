@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Žiadosť o pôžičku{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <h1>Žiadosť o pôžičku</h1>
+    <p class="text-muted">
+      Nemusíš sa osobitne registrovať - vyplň tento jeden formulár a zároveň sa ti vytvorí účet
+      a odošle sa žiadosť investorom. Do prostredia pre dlžníkov (Moje pôžičky) sa dostaneš,
+      až keď niektorý investor tvoju žiadosť financuje.
+    </p>
+    <form method="post">
+      {% csrf_token %}
+
+      <h5 class="mt-4">Prístupové údaje</h5>
+      <div class="row">
+        <div class="col-md-6 mb-3">{{ form.username.label_tag }}{{ form.username }}</div>
+        <div class="col-md-6 mb-3">{{ form.email.label_tag }}{{ form.email }}</div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 mb-3">{{ form.password1.label_tag }}{{ form.password1 }}</div>
+        <div class="col-md-6 mb-3">{{ form.password2.label_tag }}{{ form.password2 }}</div>
+      </div>
+      <div class="mb-3">{{ form.phone_number.label_tag }}{{ form.phone_number }}</div>
+
+      <h5 class="mt-4">Osobné údaje (overenie identity)</h5>
+      <div class="row">
+        <div class="col-md-6 mb-3">{{ form.first_name.label_tag }}{{ form.first_name }}</div>
+        <div class="col-md-6 mb-3">{{ form.last_name.label_tag }}{{ form.last_name }}</div>
+      </div>
+      <div class="mb-3">{{ form.date_of_birth.label_tag }}{{ form.date_of_birth }}</div>
+      <div class="row">
+        <div class="col-md-6 mb-3">{{ form.id_card_number.label_tag }}{{ form.id_card_number }}</div>
+        <div class="col-md-6 mb-3">{{ form.birth_number.label_tag }}{{ form.birth_number }}</div>
+      </div>
+      <div class="mb-3">{{ form.street_address.label_tag }}{{ form.street_address }}</div>
+      <div class="row">
+        <div class="col-md-8 mb-3">{{ form.city.label_tag }}{{ form.city }}</div>
+        <div class="col-md-4 mb-3">{{ form.postal_code.label_tag }}{{ form.postal_code }}</div>
+      </div>
+      <div class="mb-3">{{ form.bank_account_iban.label_tag }}{{ form.bank_account_iban }}</div>
+
+      <h5 class="mt-4">Parametre pôžičky</h5>
+      <div class="row">
+        <div class="col-md-6 mb-3">{{ form.amount_requested.label_tag }}{{ form.amount_requested }}</div>
+        <div class="col-md-6 mb-3">{{ form.duration_days.label_tag }}{{ form.duration_days }}</div>
+      </div>
+      <div class="mb-3">{{ form.purpose.label_tag }}{{ form.purpose }}</div>
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary">Odoslať žiadosť o pôžičku</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
