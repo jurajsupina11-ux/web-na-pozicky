@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard – Design B</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#0f1f14;color:#eafff0;}
+  nav{background:#0b150f;padding:14px 20px;font-weight:bold;color:#19c37d;border-bottom:2px solid #19c37d;}
+  .switch{background:#05120a;padding:8px 20px;font-size:12px;color:#8fd9b3;}
+  .switch a{color:#19c37d;margin-right:10px;}
+  .wrap{max-width:860px;margin:30px auto;padding:0 16px;}
+  .stats{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:24px;}
+  .stat{flex:1;min-width:150px;background:#132a1c;border-radius:12px;padding:18px;border:1px solid #1f4a30;}
+  .stat b{font-size:22px;display:block;color:#19c37d;}
+  .stat span{font-size:13px;color:#9fd9ba;}
+  table{width:100%;border-collapse:collapse;background:#132a1c;border-radius:12px;overflow:hidden;}
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid #1f4a30;font-size:14px;}
+  th{background:#0b1f14;color:#19c37d;}
+  td{color:#eafff0;}
+</style>
+</head>
+<body>
+<nav>⚡ Pôžičky Predlžníkov</nav>
+<div class="switch">
+  Design B &nbsp;|&nbsp;
+  <a href="{% url 'designs:home' design.slug %}">Úvod</a>
+  <a href="{% url 'designs:rooms' design.slug %}">Aukčná miestnosť</a>
+  <a href="{% url 'designs:dashboard' design.slug %}">Dashboard</a>
+  <a href="{% url 'designs:index' %}">← všetky mockupy</a>
+</div>
+<div class="wrap">
+  <h1 style="font-size:22px;">Môj investorský dashboard</h1>
+  <div class="stats">
+    <div class="stat"><b>1 240 €</b><span>Celkovo investované</span></div>
+    <div class="stat"><b>3</b><span>Aktívne pôžičky</span></div>
+    <div class="stat"><b>+86,40 €</b><span>Očakávaný výnos</span></div>
+  </div>
+  <table>
+    <tr><th>Žiadateľ</th><th>Suma</th><th>Splatnosť</th><th>Stav</th></tr>
+    {% for loan in loans %}
+    <tr><td>{{ loan.borrower }}</td><td>{{ loan.amount }} €</td><td>{{ loan.days }} dní</td><td>Aktívna</td></tr>
+    {% endfor %}
+  </table>
+</div>
+</body>
+</html>

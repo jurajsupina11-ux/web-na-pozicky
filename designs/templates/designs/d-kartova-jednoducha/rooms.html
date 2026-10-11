@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aukčná miestnosť – Design D</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#fff;color:#222;}
+  nav{padding:16px 20px;font-weight:bold;border-bottom:1px solid #eee;}
+  .switch{background:#fafafa;padding:8px 20px;font-size:12px;color:#777;border-bottom:1px solid #eee;}
+  .switch a{color:#222;margin-right:10px;}
+  .wrap{max-width:720px;margin:30px auto;padding:0 16px;}
+  .loan{border:1px solid #eee;border-radius:4px;padding:16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+  .loan .info span{display:block;color:#777;font-size:13px;margin-top:4px;}
+  .bar{width:120px;height:6px;background:#eee;border-radius:3px;overflow:hidden;margin-top:6px;}
+  .bar div{height:100%;background:#222;}
+  .timer{font-weight:bold;font-size:14px;color:#c0392b;}
+  .btn{background:#222;color:#fff;border:none;padding:9px 16px;border-radius:4px;font-weight:600;cursor:pointer;}
+</style>
+</head>
+<body>
+<nav>Pôžičky Predlžníkov</nav>
+<div class="switch">
+  Design D &nbsp;|&nbsp;
+  <a href="{% url 'designs:home' design.slug %}">Úvod</a>
+  <a href="{% url 'designs:rooms' design.slug %}">Aukčná miestnosť</a>
+  <a href="{% url 'designs:dashboard' design.slug %}">Dashboard</a>
+  <a href="{% url 'designs:index' %}">← všetky mockupy</a>
+</div>
+<div class="wrap">
+  <h1 style="font-size:20px;font-weight:600;">Aukčná miestnosť</h1>
+  <p style="color:#777;font-size:14px;">Kto klikne prvý, financuje žiadosť.</p>
+  {% for loan in loans %}
+  <div class="loan">
+    <div class="info">
+      <b>{{ loan.amount }} € – {{ loan.borrower }}</b>
+      <span>Splatnosť {{ loan.days }} dní · Obsadené {{ loan.claimed_pct }} %</span>
+      <div class="bar"><div style="width:{{ loan.claimed_pct }}%;"></div></div>
+    </div>
+    <div style="text-align:right;">
+      <div class="timer">⏱ {{ loan.remaining }}</div>
+      <button class="btn">Chytiť pôžičku</button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+</body>
+</html>

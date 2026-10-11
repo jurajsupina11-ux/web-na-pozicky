@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pôžičky Predlžníkov – Design D</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#fff;color:#222;}
+  nav{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;flex-wrap:wrap;}
+  nav .logo{font-weight:bold;font-size:17px;}
+  nav a{color:#222;text-decoration:none;margin-left:16px;font-size:14px;}
+  .switch{background:#fafafa;padding:8px 20px;font-size:12px;color:#777;border-bottom:1px solid #eee;}
+  .switch a{color:#222;margin-right:10px;}
+  .hero{text-align:center;padding:60px 20px 40px;}
+  .hero h1{font-size:28px;margin:0 0 12px;font-weight:600;}
+  .hero p{color:#666;max-width:520px;margin:0 auto 24px;font-size:15px;}
+  .btn{display:inline-block;padding:11px 24px;text-decoration:none;font-weight:600;font-size:14px;border-radius:4px;}
+  .btn-primary{background:#222;color:#fff;}
+  .btn-outline{background:#fff;color:#222;border:1px solid #ccc;margin-left:10px;}
+  .calc{max-width:560px;margin:10px auto 60px;border:1px solid #eee;border-radius:4px;padding:26px;}
+  .calc h2{margin:0 0 18px;font-size:16px;font-weight:600;}
+  .row{margin-bottom:16px;}
+  .row label{display:block;font-size:13px;color:#666;margin-bottom:6px;}
+  .row input[type=range]{width:100%;}
+  .val{font-weight:bold;}
+  .result{border-top:1px solid #eee;padding-top:14px;margin-top:6px;font-size:14px;}
+  .result div{display:flex;justify-content:space-between;padding:5px 0;}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">Pôžičky Predlžníkov</div>
+  <div><a href="#">Prihlásiť sa</a><a href="#">Registrácia</a></div>
+</nav>
+<div class="switch">
+  Design D &nbsp;|&nbsp;
+  <a href="{% url 'designs:home' design.slug %}">Úvod</a>
+  <a href="{% url 'designs:rooms' design.slug %}">Aukčná miestnosť</a>
+  <a href="{% url 'designs:dashboard' design.slug %}">Dashboard</a>
+  <a href="{% url 'designs:index' %}">← všetky mockupy</a>
+</div>
+
+<div class="hero">
+  <h1>Jednoduché krátkodobé pôžičky</h1>
+  <p>50 € – 500 € na max. 30 dní. Jasné podmienky, žiadne komplikácie.</p>
+  <a class="btn btn-primary" href="#">Požičať si</a>
+  <a class="btn btn-outline" href="#">Chcem investovať</a>
+</div>
+
+<div class="calc">
+  <h2>Kalkulačka pôžičky</h2>
+  <div class="row">
+    <label>Suma: <span class="val" id="amountVal">{{ amount }}</span> €</label>
+    <input type="range" id="amount" min="50" max="500" step="10" value="{{ amount }}">
+  </div>
+  <div class="row">
+    <label>Splatnosť: <span class="val" id="daysVal">{{ days }}</span> dní</label>
+    <input type="range" id="days" min="1" max="30" step="1" value="{{ days }}">
+  </div>
+  <div class="result">
+    <div><span>Úrok (24 % p.a.)</span><strong id="interestVal">{{ interest }} €</strong></div>
+    <div><span>Poplatok platforme (20 % z istiny)</span><strong id="feeVal">{{ fee }} €</strong></div>
+    <div><span>Spolu splatíš</span><strong id="totalVal">{{ total_to_repay }} €</strong></div>
+    <div><span>Na účet ti prijde</span><strong id="netVal">{{ net_to_borrower }} €</strong></div>
+  </div>
+</div>
+
+<script>
+const amount = document.getElementById('amount');
+const days = document.getElementById('days');
+function recalc(){
+  const a = parseFloat(amount.value);
+  const d = parseFloat(days.value);
+  const interest = Math.round(a * 0.24 * (d/365) * 100)/100;
+  const fee = Math.round(a * 0.20 * 100)/100;
+  const total = Math.round((a+interest)*100)/100;
+  const net = Math.round((a-fee)*100)/100;
+  document.getElementById('amountVal').textContent = a.toFixed(0);
+  document.getElementById('daysVal').textContent = d.toFixed(0);
+  document.getElementById('interestVal').textContent = interest.toFixed(2)+' €';
+  document.getElementById('feeVal').textContent = fee.toFixed(2)+' €';
+  document.getElementById('totalVal').textContent = total.toFixed(2)+' €';
+  document.getElementById('netVal').textContent = net.toFixed(2)+' €';
+}
+amount.addEventListener('input', recalc);
+days.addEventListener('input', recalc);
+</script>
+</body>
+</html>

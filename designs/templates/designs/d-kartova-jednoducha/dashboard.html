@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard – Design D</title>
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#fff;color:#222;}
+  nav{padding:16px 20px;font-weight:bold;border-bottom:1px solid #eee;}
+  .switch{background:#fafafa;padding:8px 20px;font-size:12px;color:#777;border-bottom:1px solid #eee;}
+  .switch a{color:#222;margin-right:10px;}
+  .wrap{max-width:820px;margin:30px auto;padding:0 16px;}
+  .stats{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:24px;}
+  .stat{flex:1;min-width:150px;border:1px solid #eee;border-radius:4px;padding:16px;}
+  .stat b{font-size:20px;display:block;}
+  .stat span{font-size:13px;color:#777;}
+  table{width:100%;border-collapse:collapse;}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid #eee;font-size:14px;}
+  th{color:#777;font-weight:600;}
+</style>
+</head>
+<body>
+<nav>Pôžičky Predlžníkov</nav>
+<div class="switch">
+  Design D &nbsp;|&nbsp;
+  <a href="{% url 'designs:home' design.slug %}">Úvod</a>
+  <a href="{% url 'designs:rooms' design.slug %}">Aukčná miestnosť</a>
+  <a href="{% url 'designs:dashboard' design.slug %}">Dashboard</a>
+  <a href="{% url 'designs:index' %}">← všetky mockupy</a>
+</div>
+<div class="wrap">
+  <h1 style="font-size:20px;font-weight:600;">Môj investorský dashboard</h1>
+  <div class="stats">
+    <div class="stat"><b>1 240 €</b><span>Celkovo investované</span></div>
+    <div class="stat"><b>3</b><span>Aktívne pôžičky</span></div>
+    <div class="stat"><b>+86,40 €</b><span>Očakávaný výnos</span></div>
+  </div>
+  <table>
+    <tr><th>Žiadateľ</th><th>Suma</th><th>Splatnosť</th><th>Stav</th></tr>
+    {% for loan in loans %}
+    <tr><td>{{ loan.borrower }}</td><td>{{ loan.amount }} €</td><td>{{ loan.days }} dní</td><td>Aktívna</td></tr>
+    {% endfor %}
+  </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aukčná miestnosť – Design C</title>
+<style>
+  body{font-family:'Segoe UI',Arial,sans-serif;margin:0;background:#0d0e14;color:#e8e9f0;}
+  nav{background:#14151f;padding:14px 20px;font-weight:bold;color:#8b5cf6;}
+  .switch{background:#090a10;padding:8px 20px;font-size:12px;color:#8b89a3;}
+  .switch a{color:#8b5cf6;margin-right:10px;}
+  .wrap{max-width:760px;margin:30px auto;padding:0 16px;}
+  .loan{background:#14151f;border:1px solid #23243a;border-radius:14px;padding:18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+  .loan .info b{font-size:16px;}
+  .loan .info span{display:block;color:#9b9bb3;font-size:13px;margin-top:4px;}
+  .bar{width:120px;height:8px;background:#0d0e14;border-radius:4px;overflow:hidden;margin-top:6px;}
+  .bar div{height:100%;background:linear-gradient(90deg,#8b5cf6,#38bdf8);}
+  .timer{font-weight:bold;color:#38bdf8;font-size:15px;}
+  .btn{background:#8b5cf6;color:#fff;border:none;padding:10px 18px;border-radius:8px;font-weight:bold;cursor:pointer;}
+</style>
+</head>
+<body>
+<nav>◆ Pôžičky Predlžníkov</nav>
+<div class="switch">
+  Design C &nbsp;|&nbsp;
+  <a href="{% url 'designs:home' design.slug %}">Úvod</a>
+  <a href="{% url 'designs:rooms' design.slug %}">Aukčná miestnosť</a>
+  <a href="{% url 'designs:dashboard' design.slug %}">Dashboard</a>
+  <a href="{% url 'designs:index' %}">← všetky mockupy</a>
+</div>
+<div class="wrap">
+  <h1 style="font-size:22px;">Aukčná miestnosť</h1>
+  <p style="color:#9b9bb3;font-size:14px;">Live žiadosti o pôžičku – kto klikne prvý, financuje.</p>
+  {% for loan in loans %}
+  <div class="loan">
+    <div class="info">
+      <b>{{ loan.amount }} € – {{ loan.borrower }}</b>
+      <span>Splatnosť {{ loan.days }} dní · Obsadené {{ loan.claimed_pct }} %</span>
+      <div class="bar"><div style="width:{{ loan.claimed_pct }}%;"></div></div>
+    </div>
+    <div style="text-align:right;">
+      <div class="timer">⏱ {{ loan.remaining }}</div>
+      <button class="btn">Chytiť pôžičku</button>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+</body>
+</html>

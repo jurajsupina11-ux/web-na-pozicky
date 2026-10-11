@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard – Design C</title>
+<style>
+  body{font-family:'Segoe UI',Arial,sans-serif;margin:0;background:#0d0e14;color:#e8e9f0;}
+  nav{background:#14151f;padding:14px 20px;font-weight:bold;color:#8b5cf6;}
+  .switch{background:#090a10;padding:8px 20px;font-size:12px;color:#8b89a3;}
+  .switch a{color:#8b5cf6;margin-right:10px;}
+  .wrap{max-width:860px;margin:30px auto;padding:0 16px;}
+  .stats{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:24px;}
+  .stat{flex:1;min-width:150px;background:#14151f;border-radius:14px;padding:18px;border:1px solid #23243a;}
+  .stat b{font-size:22px;display:block;color:#38bdf8;}
+  .stat span{font-size:13px;color:#9b9bb3;}
+  table{width:100%;border-collapse:collapse;background:#14151f;border-radius:14px;overflow:hidden;}
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid #23243a;font-size:14px;}
+  th{background:#0d0e14;color:#8b5cf6;}
+</style>
+</head>
+<body>
+<nav>◆ Pôžičky Predlžníkov</nav>
+<div class="switch">
+  Design C &nbsp;|&nbsp;
+  <a href="{% url 'designs:home' design.slug %}">Úvod</a>
+  <a href="{% url 'designs:rooms' design.slug %}">Aukčná miestnosť</a>
+  <a href="{% url 'designs:dashboard' design.slug %}">Dashboard</a>
+  <a href="{% url 'designs:index' %}">← všetky mockupy</a>
+</div>
+<div class="wrap">
+  <h1 style="font-size:22px;">Môj investorský dashboard</h1>
+  <div class="stats">
+    <div class="stat"><b>1 240 €</b><span>Celkovo investované</span></div>
+    <div class="stat"><b>3</b><span>Aktívne pôžičky</span></div>
+    <div class="stat"><b>+86,40 €</b><span>Očakávaný výnos</span></div>
+  </div>
+  <table>
+    <tr><th>Žiadateľ</th><th>Suma</th><th>Splatnosť</th><th>Stav</th></tr>
+    {% for loan in loans %}
+    <tr><td>{{ loan.borrower }}</td><td>{{ loan.amount }} €</td><td>{{ loan.days }} dní</td><td>Aktívna</td></tr>
+    {% endfor %}
+  </table>
+</div>
+</body>
+</html>
