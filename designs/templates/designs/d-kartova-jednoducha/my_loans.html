@@ -1,0 +1,43 @@
+{% extends "designs/d-kartova-jednoducha/_base.html" %}
+{% block nav_myloans %}active{% endblock %}
+{% block extra_style %}
+<style>
+  table{width:100%;border-collapse:collapse;}
+  th,td{text-align:left;padding:9px;border-bottom:1px solid #22242e;font-size:13px;}
+  th{color:#8a8d9c;}
+  .status-pill{font-size:11px;font-weight:700;padding:3px 10px;border-radius:5px;}
+  .s-active{background:#2a1a10;color:#ff8c42;}
+  .s-paid{background:#102a16;color:#5ad67d;}
+  .s-late{background:#2a1010;color:#ff6b6b;}
+  .docrow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #22242e;font-size:13px;}
+</style>
+{% endblock %}
+{% block content %}
+<h1>Moje pôžičky</h1>
+<div class="card">
+  <h2 style="margin-top:0;">História</h2>
+  <table>
+    <tr><th>ID</th><th>Suma</th><th>Termín</th><th>Stav</th><th>Splatiť</th></tr>
+    {% for l in my_loans %}
+    <tr><td>#{{ l.id }}</td><td>{{ l.amount }} €</td><td>{{ l.due }}</td>
+    <td>{% if l.status == 'Aktívna' %}<span class="status-pill s-active">Aktívna</span>
+    {% elif l.status == 'Splatená' %}<span class="status-pill s-paid">Splatená</span>
+    {% else %}<span class="status-pill s-late">Po splatnosti</span>{% endif %}</td>
+    <td>{{ l.repay }} €</td></tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="card">
+  <h2 style="margin-top:0;">Žiadosť o odklad</h2>
+  <p style="color:#8a8d9c;">Poplatok: <strong style="color:#ff5c1a;">{{ postpone_fee }} €</strong></p>
+  <a class="btn btn-outline" href="#">Požiadať o odklad #101</a>
+</div>
+<div class="card">
+  <h2 style="margin-top:0;">Dokumenty</h2>
+  {% for doc in documents %}<div class="docrow"><span>{{ doc.name }}</span><span><a href="#" style="color:#ff5c1a;text-decoration:none;">Stiahnuť</a></span></div>{% endfor %}
+</div>
+<div class="card">
+  <h2 style="margin-top:0;">Nastavenia účtu</h2>
+  <a class="btn btn-outline" href="#">Upraviť údaje</a>
+</div>
+{% endblock %}

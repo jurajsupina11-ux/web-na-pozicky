@@ -1,0 +1,45 @@
+{% load static %}<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Pôžičky Predlžníkov{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Poppins',Arial,sans-serif;background:#fff4ec;color:#3a1f0f;display:flex;min-height:100vh;}
+  .sidebar{width:230px;background:linear-gradient(160deg,#ff7a3d,#ffb37a);color:#fff;padding:24px 18px;display:flex;flex-direction:column;flex-shrink:0;}
+  .sidebar .logo{font-weight:700;font-size:19px;margin-bottom:30px;}
+  .sidebar a{color:#fff;text-decoration:none;display:block;padding:10px 12px;border-radius:10px;margin-bottom:4px;font-size:14px;opacity:.88;}
+  .sidebar a.active{background:rgba(255,255,255,0.25);opacity:1;font-weight:600;}
+  .sidebar .bottom{margin-top:auto;font-size:11px;opacity:.75;}
+  .switchbar{background:#ffe3cf;padding:6px 18px;font-size:11px;color:#9a5a2f;}
+  .switchbar a{color:#c2410c;text-decoration:none;margin-right:8px;font-weight:600;}
+  .main{flex:1;min-width:0;}
+  .content{padding:30px;}
+  .btn{display:inline-block;padding:11px 24px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px;border:2px solid transparent;cursor:pointer;}
+  .btn-primary{background:#ff6a2b;color:#fff;}
+  .btn-outline{background:transparent;color:#ff6a2b;border-color:#ff6a2b;margin-left:8px;}
+  .card{background:#fff;border:1px solid #ffd9bf;border-radius:16px;padding:20px;margin-bottom:14px;}
+</style>
+{% block extra_style %}{% endblock %}
+</head>
+<body>
+<div class="switchbar" style="position:fixed;top:0;left:230px;right:0;z-index:5;">
+  <a href="{% url 'designs:index' %}">← všetky mockupy</a> | Dizajn A – Sidebar app štýl
+</div>
+<div class="sidebar">
+  <div class="logo">🔥 Pôžičky<br>Predlžníkov</div>
+  <a href="{% url 'designs:home' design.slug %}" class="{% block nav_home %}{% endblock %}">🏠 Úvod</a>
+  <a href="{% url 'designs:rooms' design.slug %}" class="{% block nav_rooms %}{% endblock %}">⚡ Aukčná miestnosť</a>
+  <a href="{% url 'designs:my_loans' design.slug %}" class="{% block nav_myloans %}{% endblock %}">📄 Moje pôžičky</a>
+  <a href="{% url 'designs:dashboard' design.slug %}" class="{% block nav_dash %}{% endblock %}">📊 Dashboard investora</a>
+  <a href="{% url 'designs:how_it_works' design.slug %}" class="{% block nav_how %}{% endblock %}">❓ Ako to funguje</a>
+  <div class="bottom">Prihlásený: demo@pozicky.sk</div>
+</div>
+<div class="main" style="margin-top:28px;">
+  <div class="content">
+  {% block content %}{% endblock %}
+  </div>
+</div>
+</body>
+</html>

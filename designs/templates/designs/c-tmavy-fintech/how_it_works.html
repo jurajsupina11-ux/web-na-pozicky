@@ -1,0 +1,21 @@
+{% extends "designs/c-tmavy-fintech/_base.html" %}
+{% block nav_how %}active{% endblock %}
+{% block extra_style %}
+<style>.num{width:32px;height:32px;border-radius:50%;background:#ff8a4c;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;}
+.step{display:flex;gap:12px;margin-bottom:12px;}</style>
+{% endblock %}
+{% block content %}
+<h1 style="text-align:center;">Ako to funguje 💡</h1>
+<div class="card">
+  <h2 style="margin-top:0;">🙋 Pre žiadateľa</h2>
+  <div class="step"><div class="num">1</div><div>Zadáš žiadosť 50-500 €.</div></div>
+  <div class="step"><div class="num">2</div><div>Zobrazí sa investorom.</div></div>
+  <div class="step"><div class="num">3</div><div>Prvý financuje, máš peniaze rýchlo.</div></div>
+</div>
+<div class="card">
+  <h2 style="margin-top:0;">💰 Pre investora</h2>
+  <div class="step"><div class="num">1</div><div>Prehliadaš žiadosti.</div></div>
+  <div class="step"><div class="num">2</div><div>Klikneš "Chytiť pôžičku" prvý.</div></div>
+  <div class="step"><div class="num">3</div><div>Získaš úrok 24 % p.a.</div></div>
+</div>
+{% endblock %}

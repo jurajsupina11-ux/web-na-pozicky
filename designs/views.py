@@ -118,18 +118,22 @@ def design_home(request, slug):
         'interest': interest, 'fee': fee, 'total_to_repay': total_to_repay,
         'net_to_borrower': round(amount - fee, 2),
     }
-    return render(request, 'designs/shared/home.html', context)
+    return render(request, f'designs/{slug}/home.html', context)
 
 
 def design_rooms(request, slug):
     design = _get_design(slug)
-    return render(request, 'designs/shared/rooms.html', {'design': design, 'designs': DESIGNS, 'loans': LOANS_DEMO})
+    return render(request, f'designs/{slug}/rooms.html', {'design': design, 'designs': DESIGNS, 'loans': LOANS_DEMO})
 
 
 def design_dashboard(request, slug):
     design = _get_design(slug)
-    context = {'design': design, 'designs': DESIGNS, 'loans': LOANS_DEMO[:3]}
-    return render(request, 'designs/shared/dashboard.html', context)
+    context = {
+        'design': design, 'designs': DESIGNS, 'loans': LOANS_DEMO[:3],
+        'total_invested': 1240, 'active_count': 3, 'expected_yield': 86.40,
+        'avg_interest': 24, 'total_lifetime_yield': 312.50,
+    }
+    return render(request, f'designs/{slug}/dashboard.html', context)
 
 
 def design_loan_detail(request, slug, loan_id):
@@ -140,9 +144,33 @@ def design_loan_detail(request, slug, loan_id):
         'design': design, 'designs': DESIGNS, 'loan': loan,
         'interest': interest, 'fee': fee, 'total_to_repay': total_to_repay,
     }
-    return render(request, 'designs/shared/loan_detail.html', context)
+    return render(request, f'designs/{slug}/loan_detail.html', context)
 
 
 def design_how_it_works(request, slug):
     design = _get_design(slug)
-    return render(request, 'designs/shared/how_it_works.html', {'design': design, 'designs': DESIGNS})
+    return render(request, f'designs/{slug}/how_it_works.html', {'design': design, 'designs': DESIGNS})
+
+
+MY_LOANS_DEMO = [
+    {'id': 101, 'amount': 200, 'days': 14, 'status': 'Aktívna', 'due': '24.10.2026', 'paid_pct': 0, 'repay': 203.84},
+    {'id': 102, 'amount': 100, 'days': 7, 'status': 'Splatená', 'due': '02.09.2026', 'paid_pct': 100, 'repay': 100.46},
+    {'id': 103, 'amount': 350, 'days': 30, 'status': 'Po splatnosti', 'due': '28.09.2026', 'paid_pct': 0, 'repay': 356.90},
+]
+
+DOCUMENTS_DEMO = [
+    {'name': 'Zmluva o pôžičke #101', 'date': '10.10.2026', 'type': 'PDF'},
+    {'name': 'Zmluva o pôžičke #102', 'date': '26.08.2026', 'type': 'PDF'},
+    {'name': 'Potvrdenie o úhrade #102', 'date': '02.09.2026', 'type': 'PDF'},
+    {'name': 'Všeobecné obchodné podmienky', 'date': '01.01.2026', 'type': 'PDF'},
+]
+
+
+def design_my_loans(request, slug):
+    design = _get_design(slug)
+    context = {
+        'design': design, 'designs': DESIGNS,
+        'my_loans': MY_LOANS_DEMO, 'documents': DOCUMENTS_DEMO,
+        'postpone_fee': 15,
+    }
+    return render(request, f'designs/{slug}/my_loans.html', context)

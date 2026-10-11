@@ -1,0 +1,21 @@
+{% extends "designs/b-urgentna-zelena/_base.html" %}
+{% block nav_how %}active{% endblock %}
+{% block extra_style %}
+<style>.num{width:34px;height:34px;border-radius:50%;background:#ff6a2b;color:#0e0b09;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;}
+.step{display:flex;gap:14px;margin-bottom:14px;}</style>
+{% endblock %}
+{% block content %}
+<h1 style="font-family:'Archivo Black',Arial;color:#ff6a2b;font-size:22px;">AKO TO FUNGUJE</h1>
+<div class="card">
+  <h2 style="margin-top:0;font-size:16px;">🙋 PRE ŽIADATEĽA</h2>
+  <div class="step"><div class="num">1</div><div>Zadáš žiadosť 50-500 €.</div></div>
+  <div class="step"><div class="num">2</div><div>Zobrazí sa v aukčnej miestnosti.</div></div>
+  <div class="step"><div class="num">3</div><div>Prvý investor financuje.</div></div>
+</div>
+<div class="card">
+  <h2 style="margin-top:0;font-size:16px;">💰 PRE INVESTORA</h2>
+  <div class="step"><div class="num">1</div><div>Prehliadaš žiadosti.</div></div>
+  <div class="step"><div class="num">2</div><div>Klikneš "Chytiť pôžičku" prvý.</div></div>
+  <div class="step"><div class="num">3</div><div>Získaš úrok 24 % p.a.</div></div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "designs/b-urgentna-zelena/_base.html" %}
+{% block nav_myloans %}active{% endblock %}
+{% block extra_style %}
+<style>
+  table{width:100%;border-collapse:collapse;}
+  th,td{text-align:left;padding:10px;border-bottom:1px solid #352720;font-size:13px;}
+  th{color:#b89a86;}
+  .status-pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:4px;}
+  .s-active{background:#3a2a1c;color:#ffb037;}
+  .s-paid{background:#1c3a26;color:#5ad67d;}
+  .s-late{background:#3a1c1c;color:#ff6b6b;}
+  .docrow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #352720;font-size:13px;}
+</style>
+{% endblock %}
+{% block content %}
+<h1 style="font-family:'Archivo Black',Arial;color:#ff6a2b;font-size:22px;">MOJE PÔŽIČKY</h1>
+<div class="card">
+  <h2 style="margin-top:0;font-size:16px;">História a aktuálne pôžičky</h2>
+  <table>
+    <tr><th>ID</th><th>Suma</th><th>Termín</th><th>Stav</th><th>Na splatenie</th></tr>
+    {% for l in my_loans %}
+    <tr><td>#{{ l.id }}</td><td>{{ l.amount }} €</td><td>{{ l.due }}</td>
+    <td>{% if l.status == 'Aktívna' %}<span class="status-pill s-active">AKTÍVNA</span>
+    {% elif l.status == 'Splatená' %}<span class="status-pill s-paid">SPLATENÁ</span>
+    {% else %}<span class="status-pill s-late">PO SPLATNOSTI</span>{% endif %}</td>
+    <td>{{ l.repay }} €</td></tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="card">
+  <h2 style="margin-top:0;font-size:16px;">Žiadosť o odklad splátky</h2>
+  <p style="color:#b89a86;font-size:13px;">Poplatok za odklad o 7 dní: <strong style="color:#ff6a2b;">{{ postpone_fee }} €</strong></p>
+  <a class="btn btn-outline" href="#">POŽIADAŤ O ODKLAD #101</a>
+</div>
+<div class="card">
+  <h2 style="margin-top:0;font-size:16px;">Dokumenty a zmluvy</h2>
+  {% for doc in documents %}<div class="docrow"><span>{{ doc.name }}</span><span>{{ doc.date }} · <a href="#" style="color:#ff6a2b;">Stiahnuť</a></span></div>{% endfor %}
+</div>
+<div class="card">
+  <h2 style="margin-top:0;font-size:16px;">Nastavenia účtu</h2>
+  <a class="btn btn-outline" href="#">UPRAVIŤ ÚDAJE</a>
+</div>
+{% endblock %}

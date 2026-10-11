@@ -1,0 +1,43 @@
+{% extends "designs/c-tmavy-fintech/_base.html" %}
+{% block nav_myloans %}active{% endblock %}
+{% block extra_style %}
+<style>
+  table{width:100%;border-collapse:collapse;}
+  th,td{text-align:left;padding:9px;border-bottom:1px solid #ffd9b8;font-size:13px;}
+  th{color:#a87d63;}
+  .status-pill{font-size:11px;font-weight:800;padding:3px 10px;border-radius:10px;}
+  .s-active{background:#ffe3cf;color:#c2410c;}
+  .s-paid{background:#dcf5e3;color:#1a7a3a;}
+  .s-late{background:#fde0e0;color:#b3261e;}
+  .docrow{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #ffd9b8;font-size:13px;}
+</style>
+{% endblock %}
+{% block content %}
+<h1 style="text-align:center;">Moje pôžičky 📄</h1>
+<div class="card">
+  <h2 style="margin-top:0;">História</h2>
+  <table>
+    <tr><th>ID</th><th>Suma</th><th>Termín</th><th>Stav</th><th>Splatiť</th></tr>
+    {% for l in my_loans %}
+    <tr><td>#{{ l.id }}</td><td>{{ l.amount }} €</td><td>{{ l.due }}</td>
+    <td>{% if l.status == 'Aktívna' %}<span class="status-pill s-active">Aktívna</span>
+    {% elif l.status == 'Splatená' %}<span class="status-pill s-paid">Splatená</span>
+    {% else %}<span class="status-pill s-late">Po splatnosti</span>{% endif %}</td>
+    <td>{{ l.repay }} €</td></tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="card">
+  <h2 style="margin-top:0;">Žiadosť o odklad</h2>
+  <p style="color:#a87d63;">Poplatok za odklad o 7 dní: <strong style="color:#ff8a4c;">{{ postpone_fee }} €</strong></p>
+  <a class="btn btn-outline" href="#">Požiadať o odklad #101</a>
+</div>
+<div class="card">
+  <h2 style="margin-top:0;">Dokumenty</h2>
+  {% for doc in documents %}<div class="docrow"><span>{{ doc.name }}</span><span><a href="#" style="color:#ff8a4c;text-decoration:none;">Stiahnuť</a></span></div>{% endfor %}
+</div>
+<div class="card">
+  <h2 style="margin-top:0;">Nastavenia účtu</h2>
+  <a class="btn btn-outline" href="#">Upraviť údaje</a>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% load static %}<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Pôžičky Predlžníkov{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Space Grotesk',Arial,sans-serif;background:#08090c;color:#f5f6fa;}
+  .split{display:grid;grid-template-columns:260px 1fr;min-height:100vh;}
+  @media(max-width:700px){.split{grid-template-columns:1fr;}}
+  .left{background:#0c0d12;border-right:1px solid #22242e;padding:26px 20px;}
+  .left .logo{font-weight:700;font-size:18px;color:#ff5c1a;margin-bottom:24px;text-shadow:0 0 18px #ff5c1a;}
+  .left a{display:block;color:#8a8d9c;text-decoration:none;padding:10px 0;font-size:14px;border-bottom:1px solid #16171e;}
+  .left a.active{color:#ff5c1a;font-weight:700;}
+  .switchbar{font-size:11px;color:#8a8d9c;margin-top:20px;}
+  .switchbar a{color:#ff8c42;text-decoration:none;}
+  .right{padding:30px;}
+  .card{background:#121318;border:1px solid #22242e;border-radius:14px;padding:22px;margin-bottom:14px;}
+  .btn{display:inline-block;padding:12px 26px;border-radius:14px;text-decoration:none;font-weight:700;font-size:14px;border:2px solid transparent;cursor:pointer;}
+  .btn-primary{background:#ff5c1a;color:#08090c;box-shadow:0 0 24px rgba(255,92,26,.5);}
+  .btn-outline{background:transparent;color:#f5f6fa;border-color:#22242e;margin-left:8px;}
+</style>
+{% block extra_style %}{% endblock %}
+</head>
+<body>
+<div class="split">
+  <div class="left">
+    <div class="logo">⚡ PÔŽIČKY</div>
+    <a href="{% url 'designs:home' design.slug %}" class="{% block nav_home %}{% endblock %}">Úvod</a>
+    <a href="{% url 'designs:rooms' design.slug %}" class="{% block nav_rooms %}{% endblock %}">Aukčná miestnosť</a>
+    <a href="{% url 'designs:my_loans' design.slug %}" class="{% block nav_myloans %}{% endblock %}">Moje pôžičky</a>
+    <a href="{% url 'designs:dashboard' design.slug %}" class="{% block nav_dash %}{% endblock %}">Dashboard</a>
+    <a href="{% url 'designs:how_it_works' design.slug %}" class="{% block nav_how %}{% endblock %}">Ako to funguje</a>
+    <div class="switchbar"><a href="{% url 'designs:index' %}">← všetky mockupy</a><br>Dizajn D – Split-screen neon</div>
+  </div>
+  <div class="right">
+  {% block content %}{% endblock %}
+  </div>
+</div>
+</body>
+</html>

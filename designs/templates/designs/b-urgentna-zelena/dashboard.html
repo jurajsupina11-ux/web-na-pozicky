@@ -1,0 +1,27 @@
+{% extends "designs/b-urgentna-zelena/_base.html" %}
+{% block nav_dash %}active{% endblock %}
+{% block extra_style %}
+<style>
+  .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;}
+  .stat b{font-size:26px;display:block;color:#ff6a2b;font-family:'Archivo Black',Arial;}
+  .stat span{font-size:12px;color:#b89a86;}
+  table{width:100%;border-collapse:collapse;}
+  th,td{text-align:left;padding:10px;border-bottom:1px solid #352720;font-size:13px;}
+  th{color:#b89a86;}
+</style>
+{% endblock %}
+{% block content %}
+<h1 style="font-family:'Archivo Black',Arial;color:#ff6a2b;font-size:22px;">DASHBOARD</h1>
+<div class="stats">
+  <div class="card stat"><b>{{ total_invested }} €</b><span>INVESTOVANÉ</span></div>
+  <div class="card stat"><b>{{ active_count }}</b><span>AKTÍVNE PÔŽIČKY</span></div>
+  <div class="card stat"><b>+{{ expected_yield }} €</b><span>OČAKÁVANÝ VÝNOS</span></div>
+  <div class="card stat"><b>{{ avg_interest }} %</b><span>PRIEMERNÝ ÚROK</span></div>
+</div>
+<div class="card">
+  <table>
+    <tr><th>Žiadateľ</th><th>Suma</th><th>Splatnosť</th></tr>
+    {% for loan in loans %}<tr><td>{{ loan.borrower }}</td><td>{{ loan.amount }} €</td><td>{{ loan.days }} dní</td></tr>{% endfor %}
+  </table>
+</div>
+{% endblock %}

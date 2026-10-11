@@ -1,0 +1,41 @@
+{% load static %}<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Pôžičky Predlžníkov{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Nunito',Arial,sans-serif;background:#fff1e6;color:#5c3a24;text-align:center;}
+  .hero-top{padding:40px 20px 10px;}
+  .hero-top .logo{font-weight:800;font-size:22px;color:#ff8a4c;margin-bottom:6px;}
+  .pillnav{display:inline-flex;gap:6px;background:#fff;border-radius:999px;padding:6px;margin:14px 0;flex-wrap:wrap;}
+  .pillnav a{text-decoration:none;color:#a87d63;font-size:13px;font-weight:700;padding:9px 16px;border-radius:999px;}
+  .pillnav a.active{background:#ff8a4c;color:#fff;}
+  .switchbar{font-size:11px;color:#a87d63;margin-bottom:10px;}
+  .switchbar a{color:#ff8a4c;text-decoration:none;}
+  .wrap{max-width:640px;margin:0 auto;padding:0 20px 70px;text-align:left;}
+  .card{background:#fff;border-radius:28px;padding:26px;margin-bottom:18px;box-shadow:0 4px 20px rgba(255,138,76,0.12);}
+  .btn{display:inline-block;padding:13px 28px;border-radius:999px;text-decoration:none;font-weight:800;font-size:14px;border:2px solid transparent;cursor:pointer;}
+  .btn-primary{background:#ff8a4c;color:#fff;}
+  .btn-outline{background:transparent;color:#ff8a4c;border-color:#ffd9b8;margin-left:8px;}
+</style>
+{% block extra_style %}{% endblock %}
+</head>
+<body>
+<div class="hero-top">
+  <div class="logo">🔥 Pôžičky Predlžníkov</div>
+  <div class="switchbar"><a href="{% url 'designs:index' %}">← všetky mockupy</a> | Dizajn C – Magazínový pastelový štýl</div>
+  <div class="pillnav">
+    <a href="{% url 'designs:home' design.slug %}" class="{% block nav_home %}{% endblock %}">Úvod</a>
+    <a href="{% url 'designs:rooms' design.slug %}" class="{% block nav_rooms %}{% endblock %}">Miestnosť</a>
+    <a href="{% url 'designs:my_loans' design.slug %}" class="{% block nav_myloans %}{% endblock %}">Moje pôžičky</a>
+    <a href="{% url 'designs:dashboard' design.slug %}" class="{% block nav_dash %}{% endblock %}">Dashboard</a>
+    <a href="{% url 'designs:how_it_works' design.slug %}" class="{% block nav_how %}{% endblock %}">Ako to funguje</a>
+  </div>
+</div>
+<div class="wrap">
+{% block content %}{% endblock %}
+</div>
+</body>
+</html>

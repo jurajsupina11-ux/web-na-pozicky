@@ -1,0 +1,32 @@
+{% extends "designs/a-cista-modra/_base.html" %}
+{% block nav_how %}active{% endblock %}
+{% block extra_style %}
+<style>
+  .step{display:flex;gap:14px;margin-bottom:14px;}
+  .num{width:36px;height:36px;border-radius:50%;background:#ff6a2b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;}
+  .two-col{display:flex;gap:14px;flex-wrap:wrap;}
+  .two-col .card{flex:1;min-width:260px;}
+</style>
+{% endblock %}
+{% block content %}
+<h1>Ako to funguje</h1>
+<div class="two-col">
+  <div class="card">
+    <h2 style="margin-top:0;">🙋 Pre žiadateľa</h2>
+    <div class="step"><div class="num">1</div><div>Zadáš žiadosť 50-500 €, splatnosť do 30 dní.</div></div>
+    <div class="step"><div class="num">2</div><div>Žiadosť sa zobrazí v aukčnej miestnosti.</div></div>
+    <div class="step"><div class="num">3</div><div>Prvý investor financuje, peniaze máš do pár minút.</div></div>
+  </div>
+  <div class="card">
+    <h2 style="margin-top:0;">💰 Pre investora</h2>
+    <div class="step"><div class="num">1</div><div>Prehliadaš živé žiadosti v aukčnej miestnosti.</div></div>
+    <div class="step"><div class="num">2</div><div>Klikneš "Chytiť pôžičku" – kto prv, ten financuje.</div></div>
+    <div class="step"><div class="num">3</div><div>Získaš úrok 24 % p.a. po splatnosti.</div></div>
+  </div>
+</div>
+<div class="card">
+  <h2 style="margin-top:0;">💡 Príklad</h2>
+  <p style="color:#8a6a56;">Pôžička 150 € na 14 dní: úrok ~1,38 €, poplatok platforme 30 € (20 % z istiny).
+  Na účet prijde 120 €, späť sa splatí 151,38 €.</p>
+</div>
+{% endblock %}

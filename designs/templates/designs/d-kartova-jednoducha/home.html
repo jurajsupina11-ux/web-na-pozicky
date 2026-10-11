@@ -1,0 +1,42 @@
+{% extends "designs/d-kartova-jednoducha/_base.html" %}
+{% block nav_home %}active{% endblock %}
+{% block extra_style %}
+<style>
+  .row{margin-bottom:16px;}
+  .row label{display:block;font-size:13px;color:#8a8d9c;margin-bottom:6px;}
+  .row input[type=range]{width:100%;accent-color:#ff5c1a;}
+  .val{font-weight:700;color:#ff5c1a;}
+  .result div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #22242e;}
+  .result div:last-child{border-bottom:none;font-size:16px;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="card" style="text-align:center;background:radial-gradient(circle at top,#1a1210,#08090c);">
+  <h1 style="margin:0 0 10px;color:#ff5c1a;text-shadow:0 0 20px #ff5c1a;">Peniaze do 5 minút</h1>
+  <p style="color:#8a8d9c;">50 € – 500 € na max. 30 dní.</p>
+  <a class="btn btn-primary" href="{% url 'designs:rooms' design.slug %}">Požičať si</a>
+</div>
+<div class="card" style="max-width:480px;">
+  <h2 style="margin-top:0;">Kalkulačka</h2>
+  <div class="row"><label>Suma: <span class="val" id="amountVal">{{ amount }}</span> €</label>
+  <input type="range" id="amount" min="50" max="500" step="10" value="{{ amount }}"></div>
+  <div class="row"><label>Splatnosť: <span class="val" id="daysVal">{{ days }}</span> dní</label>
+  <input type="range" id="days" min="1" max="30" step="1" value="{{ days }}"></div>
+  <div class="result">
+    <div><span>Úrok (24 % p.a.)</span><strong id="interestVal">{{ interest }} €</strong></div>
+    <div><span>Poplatok (20 %)</span><strong id="feeVal">{{ fee }} €</strong></div>
+    <div><span>Spolu splatíš</span><strong id="totalVal">{{ total_to_repay }} €</strong></div>
+    <div><span>Na účet prijde</span><strong id="netVal">{{ net_to_borrower }} €</strong></div>
+  </div>
+</div>
+<script>
+const amount=document.getElementById('amount'),days=document.getElementById('days');
+function recalc(){const a=parseFloat(amount.value),d=parseFloat(days.value);
+const interest=Math.round(a*0.24*(d/365)*100)/100,fee=Math.round(a*0.20*100)/100;
+const total=Math.round((a+interest)*100)/100,net=Math.round((a-fee)*100)/100;
+amountVal.textContent=a.toFixed(0);daysVal.textContent=d.toFixed(0);
+interestVal.textContent=interest.toFixed(2)+' €';feeVal.textContent=fee.toFixed(2)+' €';
+totalVal.textContent=total.toFixed(2)+' €';netVal.textContent=net.toFixed(2)+' €';}
+amount.addEventListener('input',recalc);days.addEventListener('input',recalc);
+</script>
+{% endblock %}

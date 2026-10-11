@@ -1,0 +1,30 @@
+{% extends "designs/a-cista-modra/_base.html" %}
+{% block nav_rooms %}active{% endblock %}
+{% block extra_style %}
+<style>
+  .loan{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .bar{width:120px;height:8px;background:#ffe3cf;border-radius:4px;overflow:hidden;margin-top:6px;}
+  .bar div{height:100%;background:#ff6a2b;}
+  .timer{font-weight:bold;color:#d9361c;margin-bottom:6px;}
+  a.rowlink{text-decoration:none;color:inherit;}
+</style>
+{% endblock %}
+{% block content %}
+<h1>⚡ Aukčná miestnosť</h1>
+<p style="color:#8a6a56;">Kto klikne prvý na "Chytiť pôžičku", ten financuje.</p>
+{% for loan in loans %}
+<a class="rowlink" href="{% url 'designs:loan_detail' design.slug loan.id %}">
+<div class="card loan">
+  <div>
+    <b>{{ loan.amount }} € – {{ loan.borrower }}</b>
+    <div style="color:#8a6a56;font-size:13px;margin-top:4px;">{{ loan.purpose }} · {{ loan.days }} dní · {{ loan.claimed_pct }} % obsadené</div>
+    <div class="bar"><div style="width:{{ loan.claimed_pct }}%;"></div></div>
+  </div>
+  <div style="text-align:right;">
+    <div class="timer">⏱ {{ loan.remaining }}</div>
+    <span class="btn btn-primary">Chytiť pôžičku</span>
+  </div>
+</div>
+</a>
+{% endfor %}
+{% endblock %}

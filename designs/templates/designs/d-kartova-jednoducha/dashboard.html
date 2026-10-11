@@ -1,0 +1,26 @@
+{% extends "designs/d-kartova-jednoducha/_base.html" %}
+{% block nav_dash %}active{% endblock %}
+{% block extra_style %}
+<style>
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:16px;}
+  .stat b{font-size:26px;display:block;color:#ff5c1a;}
+  .stat span{font-size:12px;color:#8a8d9c;}
+  table{width:100%;border-collapse:collapse;}
+  th,td{text-align:left;padding:9px;border-bottom:1px solid #22242e;font-size:13px;}
+  th{color:#8a8d9c;}
+</style>
+{% endblock %}
+{% block content %}
+<h1>Dashboard investora</h1>
+<div class="grid">
+  <div class="card stat"><b>{{ total_invested }} €</b><span>Investované</span></div>
+  <div class="card stat"><b>{{ active_count }}</b><span>Aktívne pôžičky</span></div>
+  <div class="card stat"><b>+{{ expected_yield }} €</b><span>Očakávaný výnos</span></div>
+</div>
+<div class="card">
+  <table>
+    <tr><th>Žiadateľ</th><th>Suma</th><th>Splatnosť</th></tr>
+    {% for loan in loans %}<tr><td>{{ loan.borrower }}</td><td>{{ loan.amount }} €</td><td>{{ loan.days }} dní</td></tr>{% endfor %}
+  </table>
+</div>
+{% endblock %}

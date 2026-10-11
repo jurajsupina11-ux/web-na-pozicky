@@ -1,0 +1,34 @@
+{% extends "designs/b-urgentna-zelena/_base.html" %}
+{% block nav_rooms %}active{% endblock %}
+{% block extra_style %}
+<style>
+  .timeline{border-left:3px solid #352720;padding-left:20px;margin-left:10px;}
+  .loan{position:relative;margin-bottom:20px;}
+  .loan::before{content:'';position:absolute;left:-29px;top:6px;width:14px;height:14px;border-radius:50%;background:#ff6a2b;}
+  .bar{width:100%;height:6px;background:#352720;border-radius:3px;overflow:hidden;margin-top:8px;}
+  .bar div{height:100%;background:#ff6a2b;}
+  .timer{font-weight:bold;color:#ffb037;}
+  a.rowlink{text-decoration:none;color:inherit;}
+</style>
+{% endblock %}
+{% block content %}
+<h1 style="font-family:'Archivo Black',Arial;color:#ff6a2b;font-size:22px;">AUKČNÁ MIESTNOSŤ</h1>
+<p style="color:#b89a86;">Kto klikne prvý, financuje žiadosť.</p>
+<div class="timeline">
+{% for loan in loans %}
+<a class="rowlink" href="{% url 'designs:loan_detail' design.slug loan.id %}">
+<div class="card loan">
+  <div style="display:flex;justify-content:space-between;flex-wrap:wrap;">
+    <div>
+      <b>{{ loan.amount }} € – {{ loan.borrower }}</b>
+      <div style="color:#b89a86;font-size:13px;margin-top:4px;">{{ loan.purpose }} · {{ loan.days }} dní</div>
+    </div>
+    <div class="timer">⏱ {{ loan.remaining }}</div>
+  </div>
+  <div class="bar"><div style="width:{{ loan.claimed_pct }}%;"></div></div>
+  <span class="btn btn-primary" style="margin-top:10px;display:inline-block;">CHYTIŤ PÔŽIČKU</span>
+</div>
+</a>
+{% endfor %}
+</div>
+{% endblock %}

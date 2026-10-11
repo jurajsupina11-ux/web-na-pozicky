@@ -1,0 +1,23 @@
+{% extends "designs/c-tmavy-fintech/_base.html" %}
+{% block nav_dash %}active{% endblock %}
+{% block extra_style %}
+<style>
+  .stat b{font-size:28px;display:block;color:#ff8a4c;}
+  .stat span{font-size:13px;color:#a87d63;}
+  table{width:100%;border-collapse:collapse;}
+  th,td{text-align:left;padding:9px;border-bottom:1px solid #ffd9b8;font-size:14px;}
+  th{color:#a87d63;}
+</style>
+{% endblock %}
+{% block content %}
+<h1 style="text-align:center;">Dashboard investora 📊</h1>
+<div class="card stat" style="text-align:center;"><b>{{ total_invested }} €</b><span>Celkovo investované</span></div>
+<div class="card stat" style="text-align:center;"><b>{{ active_count }}</b><span>Aktívne pôžičky</span></div>
+<div class="card stat" style="text-align:center;"><b>+{{ expected_yield }} €</b><span>Očakávaný výnos</span></div>
+<div class="card">
+  <table>
+    <tr><th>Žiadateľ</th><th>Suma</th><th>Splatnosť</th></tr>
+    {% for loan in loans %}<tr><td>{{ loan.borrower }}</td><td>{{ loan.amount }} €</td><td>{{ loan.days }} dní</td></tr>{% endfor %}
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "designs/a-cista-modra/_base.html" %}
+{% block nav_rooms %}active{% endblock %}
+{% block extra_style %}
+<style>
+  .big-timer{font-size:44px;font-weight:800;color:#d9361c;text-align:center;margin:10px 0;}
+  .meta{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #ffd9bf;font-size:14px;}
+  .meta strong{color:#ff6a2b;}
+  .claim-bar{width:100%;height:14px;background:#ffe3cf;border-radius:7px;overflow:hidden;margin:14px 0;}
+  .claim-bar div{height:100%;background:#ff6a2b;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="card" style="max-width:480px;">
+  <h1 style="text-align:center;font-size:21px;">{{ loan.amount }} € – {{ loan.purpose }}</h1>
+  <p style="text-align:center;color:#8a6a56;font-size:13px;">Žiadateľ: {{ loan.borrower }}</p>
+  <div class="big-timer">⏱ {{ loan.remaining }}</div>
+  <div class="claim-bar"><div style="width:{{ loan.claimed_pct }}%;"></div></div>
+  <p style="text-align:center;color:#8a6a56;font-size:13px;">{{ loan.claimed_pct }} % obsadené inými investormi</p>
+  <div class="meta"><span>Suma pôžičky</span><strong>{{ loan.amount }} €</strong></div>
+  <div class="meta"><span>Splatnosť</span><strong>{{ loan.days }} dní</strong></div>
+  <div class="meta"><span>Úrok pre teba (24 % p.a.)</span><strong>{{ interest }} €</strong></div>
+  <div class="meta"><span>Žiadateľ spolu splatí</span><strong>{{ total_to_repay }} €</strong></div>
+  <div style="text-align:center;margin-top:18px;">
+    <a class="btn btn-primary" href="#">⚡ Chytiť túto pôžičku</a>
+  </div>
+</div>
+<a href="{% url 'designs:rooms' design.slug %}" style="color:#8a6a56;text-decoration:none;">← Späť do miestnosti</a>
+{% endblock %}
