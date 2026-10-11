@@ -18,5 +18,17 @@ class User(AbstractUser):
     )
     date_of_birth = models.DateField(null=True, blank=True)
 
+    # KYC / citlivé údaje - vyžadované pri žiadosti o prvú pôžičku
+    id_card_number = models.CharField('Číslo občianskeho preukazu', max_length=20, blank=True)
+    birth_number = models.CharField('Rodné číslo', max_length=15, blank=True)
+    street_address = models.CharField('Ulica a číslo', max_length=120, blank=True)
+    city = models.CharField('Mesto', max_length=80, blank=True)
+    postal_code = models.CharField('PSČ', max_length=10, blank=True)
+    bank_account_iban = models.CharField('IBAN pre výplatu pôžičky', max_length=34, blank=True)
+    kyc_completed = models.BooleanField(
+        default=False,
+        help_text='Žiadateľ vyplnil citlivé údaje (OP, rodné číslo, adresa) pri prvej žiadosti.',
+    )
+
     def __str__(self):
         return self.username

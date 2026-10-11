@@ -23,7 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('users.urls')),
     path('mockupy/', include('designs.urls')),
-    path('', include('auctions.urls')),
+    path('aukcie/', include('auctions.urls')),
+    path('', include('core.urls')),
 ]
 
 if settings.DEBUG:

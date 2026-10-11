@@ -38,6 +38,11 @@ class AuctionCreateView(LoginRequiredMixin, CreateView):
     form_class = AuctionForm
     template_name = 'auctions/auction_form.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated and not request.user.kyc_completed:
+            return redirect(f"{reverse_lazy('users:kyc')}?next={request.path}")
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
         form.instance.borrower = self.request.user
         form.instance.status = Auction.Status.ACTIVE
