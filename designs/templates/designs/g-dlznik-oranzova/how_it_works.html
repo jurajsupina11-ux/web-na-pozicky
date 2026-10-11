@@ -1,0 +1,22 @@
+{% extends "designs/g-dlznik-oranzova/_base.html" %}
+{% block nav_how %}active{% endblock %}
+{% block extra_style %}
+<style>
+.num{width:40px;height:40px;border-radius:12px;background:#fff1ea;color:#f05a22;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;font-size:16px;}
+.step{display:flex;gap:16px;margin-bottom:22px;align-items:flex-start;}
+.step h3{margin:0 0 4px;font-size:16px;font-weight:700;}
+.step p{margin:0;color:#6b5a4d;font-size:14.5px;}
+</style>
+{% endblock %}
+{% block content %}
+<h1 style="text-align:center;">Ako to funguje</h1>
+<div class="card">
+  <div class="step"><div class="num">1</div><div><h3>Zadáš žiadosť</h3><p>Vyber si sumu 50 – 500 € a splatnosť do 30 dní.</p></div></div>
+  <div class="step"><div class="num">2</div><div><h3>Čakáš na investora</h3><p>Žiadosť sa zobrazí investorom, financovanie trvá pár minút.</p></div></div>
+  <div class="step"><div class="num">3</div><div><h3>Peniaze na účte</h3><p>Hneď po schválení prídu peniaze na tvoj účet.</p></div></div>
+</div>
+<div class="card" style="margin-top:16px;">
+  <h2>Príklad pôžičky</h2>
+  <p style="color:#6b5a4d;margin:0;">Pôžička 150 € na 14 dní: úrok ~1,38 €, poplatok 30 €. Na účet prijde 120 €, splatíš 151,38 €.</p>
+</div>
+{% endblock %}

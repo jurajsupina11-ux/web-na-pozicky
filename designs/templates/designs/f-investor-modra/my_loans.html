@@ -1,0 +1,32 @@
+{% extends "designs/f-investor-modra/_base.html" %}
+{% block nav_myloans %}active{% endblock %}
+{% block extra_style %}
+<style>
+  table{width:100%;border-collapse:collapse;}
+  th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #eef1f6;font-size:13.5px;}
+  th{color:#8a93a8;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
+  tr:last-child td{border-bottom:none;}
+  .docrow{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eef1f6;font-size:14px;}
+  .docrow:last-child{border-bottom:none;}
+</style>
+{% endblock %}
+{% block content %}
+<h1>Moje pôžičky (prehľad transakcií)</h1>
+<div class="card" style="margin-bottom:16px;">
+  <h2>História investícií</h2>
+  <table>
+    <tr><th>ID</th><th>Suma</th><th>Termín</th><th>Stav</th><th>Na splatenie</th></tr>
+    {% for l in my_loans %}
+    <tr><td>#{{ l.id }}</td><td>{{ l.amount }} €</td><td>{{ l.due }}</td>
+    <td>{% if l.status == 'Aktívna' %}<span class="pill pill-up">Aktívna</span>
+    {% elif l.status == 'Splatená' %}<span class="pill pill-neutral">Splatená</span>
+    {% else %}<span class="pill pill-down">Po splatnosti</span>{% endif %}</td>
+    <td>{{ l.repay }} €</td></tr>
+    {% endfor %}
+  </table>
+</div>
+<div class="card">
+  <h2>Dokumenty a zmluvy</h2>
+  {% for doc in documents %}<div class="docrow"><span>{{ doc.name }}</span><span>{{ doc.date }} · <a href="#" style="color:#2554ea;text-decoration:none;font-weight:600;">Stiahnuť</a></span></div>{% endfor %}
+</div>
+{% endblock %}

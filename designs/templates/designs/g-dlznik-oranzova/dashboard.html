@@ -1,0 +1,25 @@
+{% extends "designs/g-dlznik-oranzova/_base.html" %}
+{% block nav_myloans %}active{% endblock %}
+{% block extra_style %}
+<style>
+  .stat{text-align:center;padding:28px 0;}
+  .stat b{font-size:40px;font-weight:800;display:block;letter-spacing:-0.02em;color:#f05a22;}
+  .stat span{color:#6b5a4d;font-size:14px;}
+</style>
+{% endblock %}
+{% block content %}
+<h1 style="text-align:center;">Moje financie</h1>
+<p style="text-align:center;color:#6b5a4d;margin-top:-6px;">Tento dizajn je pre dlžníka – jednoduchý prehľad bez dátovej záplavy.</p>
+<div class="card stat">
+  <b>{{ active_count }}</b><span>Aktívne pôžičky</span>
+</div>
+<div class="card" style="margin-top:16px;">
+  <h2>Moje aktuálne pôžičky</h2>
+  {% for loan in loans %}
+  <div style="display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f1e6db;">
+    <span>{{ loan.borrower }}</span><strong>{{ loan.amount }} €</strong>
+  </div>
+  {% endfor %}
+</div>
+<a class="btn btn-primary" href="{% url 'designs:rooms' design.slug %}" style="margin-top:20px;">Požičať si znova</a>
+{% endblock %}

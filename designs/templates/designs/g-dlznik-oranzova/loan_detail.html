@@ -1,0 +1,24 @@
+{% extends "designs/g-dlznik-oranzova/_base.html" %}
+{% block nav_rooms %}active{% endblock %}
+{% block extra_style %}
+<style>
+  .icon-check{width:64px;height:64px;border-radius:50%;background:#fff1ea;color:#f05a22;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+  .meta{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f1e6db;font-size:15px;}
+  .meta strong{color:#20150d;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="card" style="text-align:center;">
+  <div class="icon-check">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <h1>Žiadosť bola odoslaná</h1>
+  <p style="color:#6b5a4d;margin-bottom:24px;">Hľadáme pre teba investora. Zvyčajne to trvá pár minút.</p>
+  <div style="text-align:left;">
+    <div class="meta"><span>Suma</span><strong>{{ loan.amount }} €</strong></div>
+    <div class="meta"><span>Splatnosť</span><strong>{{ loan.days }} dní</strong></div>
+    <div class="meta"><span>Spolu splatíš</span><strong>{{ total_to_repay }} €</strong></div>
+  </div>
+  <a class="btn btn-primary" href="{% url 'designs:my_loans' design.slug %}" style="margin-top:22px;">Sledovať stav žiadosti</a>
+</div>
+{% endblock %}

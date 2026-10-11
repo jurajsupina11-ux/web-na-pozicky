@@ -1,0 +1,45 @@
+{% extends "designs/f-investor-modra/_base.html" %}
+{% block nav_home %}active{% endblock %}
+{% block extra_style %}
+<style>
+  .hero{padding:10px 0 8px;}
+  .hero h1{font-size:34px;margin:0 0 10px;letter-spacing:-0.02em;}
+  .hero p{color:#55607a;max-width:480px;margin:0 0 22px;font-size:15px;line-height:1.5;}
+  .row{margin-bottom:16px;}
+  .row label{display:block;font-size:13px;color:#55607a;margin-bottom:6px;}
+  .row input[type=range]{width:100%;accent-color:#2554ea;}
+  .val{font-weight:700;color:#2554ea;}
+  .result div{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eef1f6;font-size:14px;}
+  .result div:last-child{border-bottom:none;font-size:16px;font-weight:700;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="bento" style="grid-template-columns:1.1fr 1fr;align-items:start;">
+<div class="hero">
+  <h1>Investuj do krátkodobých pôžičiek a získaj úrok 24 % p.a.</h1>
+  <p>Pridaj sa k investorom, ktorí financujú overené žiadosti o pôžičku a sledujú výnos v reálnom čase.</p>
+  <a class="btn btn-primary" href="{% url 'designs:rooms' design.slug %}">Zobraziť aukčnú miestnosť</a>
+  <a class="btn btn-outline" href="{% url 'designs:how_it_works' design.slug %}">Ako to funguje</a>
+</div>
+<div class="card">
+  <h2>Kalkulačka výnosu</h2>
+  <div class="row"><label>Suma: <span class="val" id="amountVal">{{ amount }}</span> €</label>
+  <input type="range" id="amount" min="50" max="500" step="10" value="{{ amount }}"></div>
+  <div class="row"><label>Splatnosť: <span class="val" id="daysVal">{{ days }}</span> dní</label>
+  <input type="range" id="days" min="1" max="30" step="1" value="{{ days }}"></div>
+  <div class="result">
+    <div><span>Úrok (24 % p.a.)</span><strong id="interestVal">{{ interest }} €</strong></div>
+    <div><span>Spolu dostaneš</span><strong id="totalVal">{{ total_to_repay }} €</strong></div>
+  </div>
+</div>
+</div>
+<script>
+const amount=document.getElementById('amount'),days=document.getElementById('days');
+function recalc(){const a=parseFloat(amount.value),d=parseFloat(days.value);
+const interest=Math.round(a*0.24*(d/365)*100)/100;
+const total=Math.round((a+interest)*100)/100;
+amountVal.textContent=a.toFixed(0);daysVal.textContent=d.toFixed(0);
+interestVal.textContent=interest.toFixed(2)+' €';totalVal.textContent=total.toFixed(2)+' €';}
+amount.addEventListener('input',recalc);days.addEventListener('input',recalc);
+</script>
+{% endblock %}

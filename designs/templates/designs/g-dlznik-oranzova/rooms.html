@@ -1,0 +1,32 @@
+{% extends "designs/g-dlznik-oranzova/_base.html" %}
+{% block nav_rooms %}active{% endblock %}
+{% block extra_style %}
+<style>
+  .steps{display:flex;gap:10px;margin:20px 0 28px;}
+  .steps div{flex:1;height:4px;border-radius:4px;background:#f1e6db;}
+  .steps div.done{background:#f05a22;}
+  .amount-display{text-align:center;font-size:48px;font-weight:800;letter-spacing:-0.02em;margin:18px 0;}
+  .row{margin-bottom:20px;}
+  .row label{display:block;font-size:14px;color:#6b5a4d;margin-bottom:8px;font-weight:600;}
+  .row input[type=range]{width:100%;accent-color:#f05a22;height:4px;}
+</style>
+{% endblock %}
+{% block content %}
+<h1 style="text-align:center;">Požiadaj o pôžičku</h1>
+<p style="text-align:center;color:#6b5a4d;margin-top:-6px;">Vyplň sumu a splatnosť, žiadosť pošleme investorom.</p>
+<div class="steps"><div class="done"></div><div></div><div></div></div>
+<div class="card">
+  <div class="row"><label>Koľko potrebuješ?</label>
+  <input type="range" id="amount" min="50" max="500" step="10" value="150">
+  <div class="amount-display"><span id="amountVal">150</span> €</div></div>
+  <div class="row"><label>Na koľko dní?</label>
+  <input type="range" id="days" min="1" max="30" step="1" value="14">
+  <div style="text-align:center;font-weight:700;font-size:18px;"><span id="daysVal">14</span> dní</div></div>
+  <a class="btn btn-primary" href="{% url 'designs:loan_detail' design.slug 1 %}">Odoslať žiadosť</a>
+</div>
+<script>
+const amount=document.getElementById('amount'),days=document.getElementById('days');
+function recalc(){amountVal.textContent=amount.value;daysVal.textContent=days.value;}
+amount.addEventListener('input',recalc);days.addEventListener('input',recalc);
+</script>
+{% endblock %}

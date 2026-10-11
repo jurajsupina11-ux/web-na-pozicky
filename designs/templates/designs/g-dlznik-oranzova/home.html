@@ -1,0 +1,41 @@
+{% extends "designs/g-dlznik-oranzova/_base.html" %}
+{% block nav_home %}active{% endblock %}
+{% block extra_style %}
+<style>
+  .hero{text-align:center;padding:10px 0 34px;}
+  .hero p{color:#6b5a4d;max-width:460px;margin:14px auto 28px;font-size:16px;}
+  .row{margin-bottom:20px;}
+  .row label{display:block;font-size:14px;color:#6b5a4d;margin-bottom:8px;font-weight:600;}
+  .row input[type=range]{width:100%;accent-color:#f05a22;height:4px;}
+  .val{font-weight:800;color:#f05a22;font-size:18px;}
+  .result div{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f1e6db;font-size:15px;}
+  .result div:last-child{border-bottom:none;font-size:19px;font-weight:800;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="hero">
+  <h1>Peniaze na účet do 5 minút</h1>
+  <p>Požičaj si 50 € – 500 € jednoducho a rýchlo, bez papierovania.</p>
+  <a class="btn btn-primary" href="{% url 'designs:rooms' design.slug %}" style="max-width:320px;margin:0 auto;display:flex;">Požičať si teraz</a>
+</div>
+<div class="card">
+  <h2>Kalkulačka pôžičky</h2>
+  <div class="row"><label>Suma: <span class="val" id="amountVal">{{ amount }}</span> €</label>
+  <input type="range" id="amount" min="50" max="500" step="10" value="{{ amount }}"></div>
+  <div class="row"><label>Splatnosť: <span class="val" id="daysVal">{{ days }}</span> dní</label>
+  <input type="range" id="days" min="1" max="30" step="1" value="{{ days }}"></div>
+  <div class="result">
+    <div><span>Na účet ti prijde</span><strong id="netVal">{{ net_to_borrower }} €</strong></div>
+    <div><span>Spolu splatíš</span><strong id="totalVal">{{ total_to_repay }} €</strong></div>
+  </div>
+</div>
+<script>
+const amount=document.getElementById('amount'),days=document.getElementById('days');
+function recalc(){const a=parseFloat(amount.value),d=parseFloat(days.value);
+const interest=Math.round(a*0.24*(d/365)*100)/100,fee=Math.round(a*0.20*100)/100;
+const total=Math.round((a+interest)*100)/100,net=Math.round((a-fee)*100)/100;
+amountVal.textContent=a.toFixed(0);daysVal.textContent=d.toFixed(0);
+totalVal.textContent=total.toFixed(2)+' €';netVal.textContent=net.toFixed(2)+' €';}
+amount.addEventListener('input',recalc);days.addEventListener('input',recalc);
+</script>
+{% endblock %}

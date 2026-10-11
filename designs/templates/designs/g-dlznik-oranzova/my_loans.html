@@ -1,0 +1,41 @@
+{% extends "designs/g-dlznik-oranzova/_base.html" %}
+{% block nav_myloans %}active{% endblock %}
+{% block extra_style %}
+<style>
+  .loan-card{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid #f1e6db;}
+  .loan-card:last-child{border-bottom:none;}
+  .loan-amount{font-size:20px;font-weight:800;letter-spacing:-0.01em;}
+  .loan-sub{color:#6b5a4d;font-size:13.5px;margin-top:3px;}
+  .status-pill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;}
+  .s-active{background:#fff1ea;color:#f05a22;}
+  .s-paid{background:#eaf7ee;color:#1a7a3a;}
+  .s-late{background:#fdeceb;color:#c4342b;}
+  .docrow{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #f1e6db;font-size:14.5px;}
+  .docrow:last-child{border-bottom:none;}
+</style>
+{% endblock %}
+{% block content %}
+<h1>Moje pôžičky</h1>
+<div class="card" style="margin-bottom:16px;">
+  {% for l in my_loans %}
+  <div class="loan-card">
+    <div>
+      <div class="loan-amount">{{ l.amount }} €</div>
+      <div class="loan-sub">Splatnosť {{ l.due }} · splatíš {{ l.repay }} €</div>
+    </div>
+    {% if l.status == 'Aktívna' %}<span class="status-pill s-active">Aktívna</span>
+    {% elif l.status == 'Splatená' %}<span class="status-pill s-paid">Splatená</span>
+    {% else %}<span class="status-pill s-late">Po splatnosti</span>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+<div class="card" style="margin-bottom:16px;">
+  <h2>Potrebuješ viac času?</h2>
+  <p style="color:#6b5a4d;">Odklad splátky o 7 dní za <strong style="color:#f05a22;">{{ postpone_fee }} €</strong>.</p>
+  <a class="btn btn-outline" href="#">Požiadať o odklad</a>
+</div>
+<div class="card">
+  <h2>Dokumenty a zmluvy</h2>
+  {% for doc in documents %}<div class="docrow"><span>{{ doc.name }}</span><span>{{ doc.date }} · <a href="#" style="color:#f05a22;text-decoration:none;font-weight:700;">Stiahnuť</a></span></div>{% endfor %}
+</div>
+{% endblock %}

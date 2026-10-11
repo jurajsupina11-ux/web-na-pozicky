@@ -1,0 +1,49 @@
+{% load static %}<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Pôžičky Predlžníkov{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Manrope',Arial,sans-serif;background:#fffdfb;color:#20150d;-webkit-font-smoothing:antialiased;}
+  header{background:#fff;border-bottom:1px solid #f1e6db;padding:18px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;position:sticky;top:30px;z-index:4;}
+  header .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px;color:#20150d;}
+  header .logo svg{color:#f05a22;}
+  .mainnav{display:flex;gap:4px;flex-wrap:wrap;align-items:center;}
+  .mainnav a{text-decoration:none;color:#6b5a4d;font-size:14.5px;font-weight:600;padding:10px 16px;border-radius:10px;}
+  .mainnav a.active{background:#fff1ea;color:#f05a22;}
+  .switchbar{background:#20150d;padding:7px 28px;font-size:11.5px;color:#cbb9ab;position:sticky;top:0;z-index:5;}
+  .switchbar a{color:#ffab84;text-decoration:none;font-weight:600;}
+  .wrap{max-width:680px;margin:0 auto;padding:36px 24px 80px;}
+  .wrap-wide{max-width:980px;}
+  .card{background:#fff;border:1px solid #f1e6db;border-radius:20px;padding:26px;}
+  h1{font-size:32px;font-weight:800;letter-spacing:-0.02em;line-height:1.15;margin:0 0 12px;}
+  h2{font-size:17px;font-weight:700;margin:0 0 14px;}
+  p{line-height:1.5;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:16px 28px;border-radius:14px;text-decoration:none;font-weight:700;font-size:16px;border:2px solid transparent;cursor:pointer;}
+  .btn-primary{background:#f05a22;color:#fff;width:100%;}
+  .btn-primary:hover{background:#d84a16;}
+  .btn-outline{background:transparent;color:#6b5a4d;border-color:#f1e6db;margin-top:10px;width:100%;}
+</style>
+{% block extra_style %}{% endblock %}
+</head>
+<body>
+<div class="switchbar"><a href="{% url 'designs:index' %}">← všetky mockupy</a> &nbsp;|&nbsp; Dizajn G – Dlžník (oranžová, jednoduchá)</div>
+<header>
+  <div class="logo">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>
+    Pôžičky Predlžníkov
+  </div>
+  <div class="mainnav">
+    <a href="{% url 'designs:home' design.slug %}" class="{% block nav_home %}{% endblock %}">Úvod</a>
+    <a href="{% url 'designs:rooms' design.slug %}" class="{% block nav_rooms %}{% endblock %}">Požičať si</a>
+    <a href="{% url 'designs:my_loans' design.slug %}" class="{% block nav_myloans %}{% endblock %}">Moje pôžičky</a>
+    <a href="{% url 'designs:how_it_works' design.slug %}" class="{% block nav_how %}{% endblock %}">Ako to funguje</a>
+  </div>
+</header>
+<div class="wrap {% block wrap_class %}{% endblock %}">
+{% block content %}{% endblock %}
+</div>
+</body>
+</html>
