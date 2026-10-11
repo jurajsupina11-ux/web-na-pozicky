@@ -32,6 +32,13 @@
     .wallet-illustration{display:none;}
     .empty-state{flex-direction:column;text-align:center;padding:24px 18px;}
   }
+  .wallet-illustration{animation:floatY 4s ease-in-out infinite;}
+  @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+  .wallet-actions button{transition:transform .2s ease,box-shadow .2s ease;}
+  .wallet-actions button:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(0,0,0,.18);}
+  .sell-btn:hover:not(.expired){transform:translateY(-2px);box-shadow:0 6px 12px rgba(37,84,234,.18);}
+  .countdown{animation:pulse 1.4s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.55;}}
 </style>
 {% endblock %}
 {% block content %}

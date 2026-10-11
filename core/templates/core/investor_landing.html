@@ -62,6 +62,27 @@
     .section-title h2{font-size:22px;}
     .cta{padding:40px 18px;}
   }
+
+  /* === Animácie === */
+  .btn, nav .btn-ghost, nav .btn-fill{transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;}
+  .btn:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(13,27,76,.18);}
+  nav .btn-ghost:hover{background:rgba(255,255,255,.08);}
+  nav .btn-fill:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(91,141,255,.4);}
+  .card{transition:transform .3s ease,box-shadow .3s ease;}
+  .card:hover{transform:translateY(-6px);box-shadow:0 16px 30px rgba(13,27,76,.1);}
+  .card .icon{display:inline-block;animation:floatY 3.2s ease-in-out infinite;}
+  .hero-illustration{animation:floatY 5s ease-in-out infinite;}
+  .stats-row div{transition:transform .25s ease;}
+  .stats-row div:hover{transform:translateY(-4px);}
+  @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  .hero h1,.hero p,.hero .btn,.hero-illustration{opacity:0;animation:fadeInUp .7s ease forwards;}
+  .hero h1{animation-delay:.05s;}
+  .hero p{animation-delay:.2s;}
+  .hero .btn{animation-delay:.35s;}
+  .hero-illustration{animation-delay:.3s;animation-name:fadeInUp,floatY;animation-duration:.7s,5s;animation-iteration-count:1,infinite;animation-fill-mode:forwards,none;animation-delay:.3s,1s;}
+  @keyframes fadeInUp{to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
@@ -97,17 +118,17 @@
     <p>Jednoduchý, transparentný spôsob zhodnotenia úspor s krátkym investičným horizontom.</p>
   </div>
   <div class="grid3">
-    <div class="card">
+    <div class="card reveal">
       <div class="icon">⚡</div>
       <h3>Rýchly obrat</h3>
       <p>Pôžičky sú splatné do 30 dní – tvoj kapitál sa nezamrzne na roky, ale pracuje v krátkych cykloch.</p>
     </div>
-    <div class="card">
+    <div class="card reveal">
       <div class="icon">🔍</div>
       <h3>Overení žiadatelia</h3>
       <p>Každý žiadateľ o pôžičku prechádza overením identity (KYC) ešte pred zverejnením žiadosti.</p>
     </div>
-    <div class="card">
+    <div class="card reveal">
       <div class="icon">📊</div>
       <h3>Diverzifikácia</h3>
       <p>Rozlož investíciu do viacerých menších pôžičiek a znižuj riziko jednotlivého zlyhania.</p>
@@ -116,7 +137,7 @@
 </div>
 
 <div class="wrap" style="padding-top:0;">
-  <div class="stats-row">
+  <div class="stats-row reveal">
     <div><b>1 240 €</b><span>Priemerná investícia</span></div>
     <div><b>312 €</b><span>Priemerný ročný výnos</span></div>
     <div><b>98,4 %</b><span>Úspešne splatené pôžičky</span></div>
@@ -130,14 +151,14 @@
     <p>Od registrácie po prvý výnos v troch krokoch.</p>
   </div>
   <div class="steps">
-    <div class="step"><div class="num">1</div><div><h3>Zaregistruj sa a dobi účet</h3><p>Registrácia trvá 2 minúty, bez poplatkov.</p></div></div>
-    <div class="step"><div class="num">2</div><div><h3>Vyber si žiadosť v aukčnej miestnosti</h3><p>Prehliadaš overené žiadosti o pôžičku a klikneš "Chytiť pôžičku" skôr ako ostatní.</p></div></div>
-    <div class="step"><div class="num">3</div><div><h3>Získaj úrok po splatnosti</h3><p>Po splatení pôžičky dostaneš istinu späť plus 24 % p.a. úrok.</p></div></div>
+    <div class="step reveal"><div class="num">1</div><div><h3>Zaregistruj sa a dobi účet</h3><p>Registrácia trvá 2 minúty, bez poplatkov.</p></div></div>
+    <div class="step reveal"><div class="num">2</div><div><h3>Vyber si žiadosť v aukčnej miestnosti</h3><p>Prehliadaš overené žiadosti o pôžičku a klikneš "Chytiť pôžičku" skôr ako ostatní.</p></div></div>
+    <div class="step reveal"><div class="num">3</div><div><h3>Získaj úrok po splatnosti</h3><p>Po splatení pôžičky dostaneš istinu späť plus 24 % p.a. úrok.</p></div></div>
   </div>
 </div>
 
 <div class="wrap" style="padding-top:0;">
-  <div class="cta">
+  <div class="cta reveal">
     <h2>Pripravený začať zarábať?</h2>
     <p>Registrácia je zadarmo, prvú investíciu môžeš urobiť už dnes.</p>
     <a class="btn btn-primary" href="{% url 'users:signup' %}">Vytvoriť investorský účet</a>
@@ -145,6 +166,13 @@
 </div>
 
 <footer>&copy; Pôžičky Predlžníkov · <a href="{% url 'core:landing' %}" style="color:#9fc0ff;">Späť na výber sekcie</a></footer>
+<script>
+  var revealEls = document.querySelectorAll('.reveal');
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); } });
+  }, {threshold: 0.15});
+  revealEls.forEach(function(el){ observer.observe(el); });
+</script>
 </body>
 </html>
 

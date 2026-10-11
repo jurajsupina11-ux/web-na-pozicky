@@ -39,7 +39,7 @@ class CustomLoginView(LoginView):
 
 
 class CustomLogoutView(LogoutView):
-    next_page = reverse_lazy('auctions:list')
+    next_page = reverse_lazy('core:landing')
 
 
 @login_required

@@ -63,6 +63,26 @@
     .cta{padding:40px 18px;}
     .calc-card{padding:18px;}
   }
+
+  /* === Animácie === */
+  .btn, nav .btn-ghost, nav .btn-fill{transition:transform .2s ease,box-shadow .2s ease;}
+  .btn:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(194,65,12,.2);}
+  nav .btn-ghost:hover{background:rgba(255,106,43,.08);}
+  nav .btn-fill:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(255,106,43,.4);}
+  .card{transition:transform .3s ease,box-shadow .3s ease;}
+  .card:hover{transform:translateY(-6px);box-shadow:0 16px 30px rgba(194,65,12,.1);}
+  .card .icon{display:inline-block;animation:floatY 3.2s ease-in-out infinite;}
+  .faq{transition:transform .25s ease,box-shadow .25s ease;}
+  .faq:hover{transform:translateX(4px);box-shadow:0 8px 18px rgba(194,65,12,.08);}
+  .calc-card{animation:floatY 5s ease-in-out infinite;}
+  @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  .hero h1,.hero p,.hero .btn{opacity:0;animation:fadeInUp .7s ease forwards;}
+  .hero h1{animation-delay:.05s;}
+  .hero p{animation-delay:.2s;}
+  .hero .btn{animation-delay:.35s;}
+  @keyframes fadeInUp{to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
@@ -111,36 +131,36 @@ amount.addEventListener('input',recalc);days.addEventListener('input',recalc);
 <div class="wrap">
   <div class="section-title">
     <h2>Prečo si požičať u nás</h2>
-    <p>Jednoduchší a rýchlejší proces ako v banke, bez skrytých poplatkov.</p>
+    <p>Transparentný proces bez skrytých poplatkov a bez čakania na vybavenie v banke.</p>
   </div>
   <div class="grid3">
-    <div class="card"><div class="icon">⚡</div><h3>Peniaze do 5 minút</h3><p>Hneď ako investor financuje žiadosť, peniaze idú na tvoj účet.</p></div>
-    <div class="card"><div class="icon">📄</div><h3>Jasné podmienky</h3><p>Vopred presne vieš, koľko zaplatíš na úroku aj poplatku.</p></div>
-    <div class="card"><div class="icon">🔒</div><h3>Bezpečné spracovanie</h3><p>Tvoje údaje sú chránené, slúžia len na účely zmluvy o pôžičke.</p></div>
+    <div class="card reveal"><div class="icon">⚡</div><h3>Peniaze do 5 minút</h3><p>Hneď ako investor žiadosť financuje, peniaze odchádzajú na tvoj bankový účet.</p></div>
+    <div class="card reveal"><div class="icon">📄</div><h3>Vopred jasné podmienky</h3><p>Pred odoslaním žiadosti presne vidíš úrok, poplatok aj celkovú sumu na splatenie - žiadne prekvapenia.</p></div>
+    <div class="card reveal"><div class="icon">🔒</div><h3>Bezpečné spracovanie údajov</h3><p>Osobné údaje slúžia výhradne na overenie identity a vystavenie zmluvy o pôžičke.</p></div>
   </div>
 </div>
 
 <div class="wrap" id="ako-funguje">
   <div class="section-title">
     <h2>Ako to funguje</h2>
-    <p>Od žiadosti po peniaze na účte v troch krokoch.</p>
+    <p>Od vyplnenia žiadosti po peniaze na účte v troch jednoduchých krokoch.</p>
   </div>
   <div class="steps">
-    <div class="step"><div class="num">1</div><div><h3>Vyplň jednu žiadosť</h3><p>Bez samostatnej registrácie - v jednom formulári zadáš osobné údaje (OP, adresa) aj parametre pôžičky (suma 50-500 €, splatnosť do 30 dní).</p></div></div>
-    <div class="step"><div class="num">2</div><div><h3>Žiadosť sa zobrazí investorom</h3><p>Zobrazí sa v aukčnej miestnosti, kde si ju môžu investori financovať.</p></div></div>
-    <div class="step"><div class="num">3</div><div><h3>Investor financuje, máš peniaze</h3><p>Kto prvý klikne na "Chytiť pôžičku", financuje – zvyčajne do pár minút.</p></div></div>
+    <div class="step reveal"><div class="num">1</div><div><h3>Vyplníš jednu žiadosť</h3><p>Bez samostatnej registrácie - v jednom formulári zadáš osobné údaje aj parametre pôžičky (50 – 500 €, splatnosť do 30 dní).</p></div></div>
+    <div class="step reveal"><div class="num">2</div><div><h3>Žiadosť sa zobrazí investorom</h3><p>Objaví sa v aukčnej miestnosti, kde si ju môžu overení investori financovať.</p></div></div>
+    <div class="step reveal"><div class="num">3</div><div><h3>Investor financuje, máš peniaze</h3><p>Hneď po financovaní dostaneš prístup do svojho účtu a peniaze idú na tvoj bankový účet.</p></div></div>
   </div>
 </div>
 
 <div class="wrap">
   <div class="section-title"><h2>Časté otázky</h2></div>
-  <div class="faq"><h3>Koľko to stojí?</h3><p>Úrok 24 % p.a. prepočítaný na dní splatnosti + jednorazový poplatok platforme 20 % z istiny.</p></div>
-  <div class="faq"><h3>Čo ak nestihnem splatiť včas?</h3><p>Môžeš požiadať o odklad splátky o 7 dní za jednorazový poplatok (v appke po prihlásení).</p></div>
-  <div class="faq"><h3>Aké údaje potrebujem?</h3><p>Pri prvej žiadosti: číslo OP, rodné číslo, adresu a bankový účet na výplatu pôžičky.</p></div>
+  <div class="faq reveal"><h3>Koľko ma pôžička bude stáť?</h3><p>Úrok 24 % p.a. prepočítaný podľa dní splatnosti a jednorazový poplatok platforme 20 % z istiny - obe sumy vidíš vopred v kalkulačke.</p></div>
+  <div class="faq reveal"><h3>Čo ak nestihnem splatiť včas?</h3><p>V svojom účte môžeš jedným kliknutím požiadať o odklad splátky o 7 dní za jednorazový poplatok.</p></div>
+  <div class="faq reveal"><h3>Aké údaje budem potrebovať?</h3><p>Pri žiadosti zadáš číslo občianskeho preukazu, rodné číslo, adresu a bankový účet, na ktorý sa pôžička vyplatí.</p></div>
 </div>
 
 <div class="wrap" style="padding-top:0;">
-  <div class="cta">
+  <div class="cta reveal">
     <h2>Potrebuješ peniaze ešte dnes?</h2>
     <p>Vyplnenie žiadosti trvá pár minút, účet sa ti vytvorí automaticky.</p>
     <a class="btn btn-primary" href="{% url 'users:loan_application' %}">Požiadať o pôžičku</a>
@@ -148,5 +168,12 @@ amount.addEventListener('input',recalc);days.addEventListener('input',recalc);
 </div>
 
 <footer>&copy; Pôžičky Predlžníkov · <a href="{% url 'core:landing' %}" style="color:#ff6a2b;">Späť na výber sekcie</a></footer>
+<script>
+  var revealEls2 = document.querySelectorAll('.reveal');
+  var observer2 = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); } });
+  }, {threshold: 0.15});
+  revealEls2.forEach(function(el){ observer2.observe(el); });
+</script>
 </body>
 </html>

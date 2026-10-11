@@ -13,31 +13,38 @@
   header p{color:#9099ab;margin-top:8px;}
   .choice{flex:1;display:grid;grid-template-columns:1fr 1fr;}
   @media(max-width:760px){.choice{grid-template-columns:1fr;}}
-  .panel{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 30px;text-decoration:none;position:relative;overflow:hidden;transition:.25s;}
-  .panel:hover{filter:brightness(1.08);}
+  .panel{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 30px;text-decoration:none;position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1),filter .3s;}
+  .panel:hover{filter:brightness(1.1);transform:scale(1.015);}
+  .panel::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.18),transparent 60%);opacity:0;transition:opacity .35s;}
+  .panel:hover::before{opacity:1;}
   .investor{background:linear-gradient(160deg,#1b4fd1,#0d2a80);}
   .borrower{background:linear-gradient(160deg,#ff7a3d,#c2410c);}
-  .panel .icon{font-size:52px;margin-bottom:14px;}
-  .panel h2{color:#fff;font-size:26px;margin:0 0 10px;}
-  .panel p{color:rgba(255,255,255,.85);max-width:360px;text-align:center;margin:0 0 20px;}
-  .panel .btn{background:#fff;color:#111;padding:12px 28px;border-radius:30px;font-weight:700;text-decoration:none;font-size:14px;}
+  .panel .icon{font-size:52px;margin-bottom:14px;position:relative;z-index:1;animation:floatY 3.5s ease-in-out infinite;}
+  .borrower .icon{animation-delay:.4s;}
+  .panel h2{color:#fff;font-size:26px;margin:0 0 10px;position:relative;z-index:1;}
+  .panel p{color:rgba(255,255,255,.85);max-width:360px;text-align:center;margin:0 0 20px;position:relative;z-index:1;}
+  .panel .btn{background:#fff;color:#111;padding:12px 28px;border-radius:30px;font-weight:700;text-decoration:none;font-size:14px;position:relative;z-index:1;display:inline-block;transition:transform .2s ease,box-shadow .2s ease;}
+  .panel:hover .btn{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.25);}
   footer{text-align:center;padding:18px;color:#5c6478;font-size:12px;}
+  @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+  .fade-in{opacity:0;transform:translateY(16px);animation:fadeInUp .7s ease forwards;}
+  @keyframes fadeInUp{to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
+  <header class="fade-in">
     <div class="logo">🔥 Pôžičky Predlžníkov</div>
     <p>Vyberte si, čo vás zaujíma</p>
   </header>
   <div class="choice">
-    <a class="panel investor" href="{% url 'core:investor' %}">
+    <a class="panel investor fade-in" style="animation-delay:.1s;" href="{% url 'core:investor' %}">
       <div class="icon">💰</div>
       <h2>Som investor</h2>
       <p>Chcem zarábať na krátkodobých pôžičkách s úrokom 24 % p.a.</p>
       <span class="btn">Vstúpiť ako investor</span>
     </a>
-    <a class="panel borrower" href="{% url 'core:borrower' %}">
+    <a class="panel borrower fade-in" style="animation-delay:.25s;" href="{% url 'core:borrower' %}">
       <div class="icon">🙋</div>
       <h2>Potrebujem pôžičku</h2>
       <p>Požičiam si 50 – 500 € na max. 30 dní, peniaze do 5 minút.</p>

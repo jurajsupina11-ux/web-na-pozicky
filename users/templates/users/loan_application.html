@@ -43,6 +43,13 @@
     .card{padding:22px 18px;}
     .intro h1{font-size:24px;}
   }
+  .btn-submit{transition:transform .2s ease,box-shadow .2s ease;}
+  .btn-submit:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(255,106,43,.4);}
+  .steps-mini .num{transition:transform .2s ease;}
+  .steps-mini .step:hover .num{transform:scale(1.15);}
+  .field input, .field textarea{transition:border-color .2s ease,box-shadow .2s ease;}
+  .card{animation:fadeInUp .5s ease;}
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>

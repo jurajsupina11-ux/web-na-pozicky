@@ -19,6 +19,11 @@
   .empty-state svg{flex-shrink:0;}
   .empty-state h2{margin:0 0 6px;}
   .empty-state p{color:#6b5a4d;font-size:14px;margin:0;max-width:380px;}
+  .debt-illustration{animation:floatY 4s ease-in-out infinite;}
+  @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+  .stat-box{transition:transform .25s ease,box-shadow .25s ease;}
+  .stat-box:hover{transform:translateY(-4px);box-shadow:0 12px 22px rgba(32,21,13,.06);}
+  .empty-state svg{animation:floatY 3.5s ease-in-out infinite;}
 </style>
 {% endblock %}
 {% block content %}

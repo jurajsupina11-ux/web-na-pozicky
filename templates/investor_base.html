@@ -48,6 +48,21 @@
   .alert-success{background:#e9f8ee;color:#19824a;}
   .alert-warning{background:#fff4e5;color:#8a5a00;}
   .toprow{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
+
+  /* === Animácie === */
+  .btn{transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(37,84,234,.35);}
+  .btn-outline:hover{transform:translateY(-2px);background:#f1f4fa;}
+  .card{transition:transform .25s ease,box-shadow .25s ease;}
+  .card.stat:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(15,23,41,.08);}
+  .sidebar a{transition:background .2s ease,padding-left .2s ease;}
+  .sidebar a:hover{padding-left:16px;}
+  .stat-icon{transition:transform .25s ease;}
+  .card.stat:hover .stat-icon{transform:scale(1.1) rotate(-4deg);}
+  tr{transition:background .15s ease;}
+  tbody tr:hover{background:#f8faff;}
+  .fade-in-up{opacity:0;transform:translateY(14px);animation:fadeInUp .5s ease forwards;}
+  @keyframes fadeInUp{to{opacity:1;transform:translateY(0);}}
   .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   .menu-toggle{display:none;background:none;border:1px solid #e8ecf3;border-radius:8px;padding:8px 10px;cursor:pointer;}
 
@@ -135,7 +150,7 @@
   </div>
 </div>
 <div class="main {% if is_impersonating %}with-banner{% endif %}">
-  <div class="content">
+  <div class="content fade-in-up">
     {% if messages %}
       {% for message in messages %}
         <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>

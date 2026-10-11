@@ -41,6 +41,16 @@
     .form-side{padding:32px 18px;}
     .form-card h2{font-size:20px;}
   }
+  .btn-submit{transition:transform .2s ease,box-shadow .2s ease;}
+  .btn-submit:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(27,79,209,.35);}
+  .side .stat{transition:transform .2s ease;}
+  .side .stat:hover{transform:translateX(4px);}
+  .field input{transition:border-color .2s ease,box-shadow .2s ease;}
+  .side{position:relative;overflow:hidden;}
+  .side::before{content:'';position:absolute;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.06);top:-80px;right:-80px;animation:floatY 6s ease-in-out infinite;}
+  @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+  .wrap{animation:fadeIn .5s ease;}
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
 </style>
 </head>
 <body>

@@ -40,6 +40,19 @@
   .s-active{background:#fff1ea;color:#f05a22;}
   .s-paid{background:#eaf7ee;color:#1a7a3a;}
   .s-late{background:#fdeceb;color:#c4342b;}
+
+  /* === Animácie === */
+  .btn{transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(240,90,34,.35);}
+  .btn-outline:hover{transform:translateY(-2px);background:#fff8f2;}
+  .card{transition:transform .25s ease,box-shadow .25s ease;}
+  .card:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(32,21,13,.06);}
+  .mainnav a{transition:background .2s ease;}
+  .status-pill{transition:transform .2s ease;}
+  tr{transition:background .15s ease;}
+  tbody tr:hover{background:#fffaf5;}
+  .fade-in-up{opacity:0;transform:translateY(14px);animation:fadeInUp .5s ease forwards;}
+  @keyframes fadeInUp{to{opacity:1;transform:translateY(0);}}
   .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   .menu-toggle{display:none;background:none;border:1px solid #f1e6db;border-radius:8px;padding:8px 10px;cursor:pointer;}
 
@@ -96,7 +109,7 @@
   </div>
 </header>
 <div class="nav-backdrop" id="nav-backdrop" onclick="document.getElementById('mainnav').classList.remove('open');this.classList.remove('open');"></div>
-<div class="wrap">
+<div class="wrap fade-in-up">
   {% if messages %}
     {% for message in messages %}
       <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>

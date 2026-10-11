@@ -150,8 +150,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'users:login'
-LOGIN_REDIRECT_URL = 'auctions:list'
-LOGOUT_REDIRECT_URL = 'auctions:list'
+LOGIN_REDIRECT_URL = 'core:landing'
+LOGOUT_REDIRECT_URL = 'core:landing'
 
 
 # Security (relevant behind Render's proxy / HTTPS)
