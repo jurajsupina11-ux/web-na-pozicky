@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Pôžičky Predlžníkov{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Manrope',Arial,sans-serif;background:#fffdfb;color:#20150d;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  .impersonate-banner{background:#fff4e5;color:#8a5a00;font-size:12.5px;padding:8px 24px;text-align:center;}
+  .impersonate-banner a{color:#8a5a00;font-weight:700;text-decoration:underline;}
+  header{background:#fff;border-bottom:1px solid #f1e6db;padding:18px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+  header .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px;color:#20150d;text-decoration:none;}
+  header .logo svg{color:#f05a22;}
+  .mainnav{display:flex;gap:4px;flex-wrap:wrap;align-items:center;}
+  .mainnav a{text-decoration:none;color:#6b5a4d;font-size:14.5px;font-weight:600;padding:10px 16px;border-radius:10px;}
+  .mainnav a.active{background:#fff1ea;color:#f05a22;}
+  .mainnav form{display:inline;}
+  .mainnav button{background:none;border:none;color:#6b5a4d;font-size:14.5px;font-weight:600;padding:10px 16px;border-radius:10px;cursor:pointer;font-family:inherit;}
+  .wrap{max-width:900px;margin:0 auto;padding:36px 24px 80px;}
+  .card{background:#fff;border:1px solid #f1e6db;border-radius:20px;padding:26px;margin-bottom:16px;}
+  h1{font-size:28px;font-weight:800;letter-spacing:-0.02em;line-height:1.15;margin:0 0 18px;}
+  h2{font-size:17px;font-weight:700;margin:0 0 14px;}
+  p{line-height:1.5;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:14px;text-decoration:none;font-weight:700;font-size:15px;border:2px solid transparent;cursor:pointer;}
+  .btn-primary{background:#f05a22;color:#fff;}
+  .btn-primary:hover{background:#d84a16;}
+  .btn-outline{background:transparent;color:#6b5a4d;border-color:#f1e6db;}
+  .alert{padding:12px 16px;border-radius:12px;font-size:14px;margin-bottom:16px;}
+  .alert-info{background:#fff1ea;color:#b1480f;}
+  .alert-success{background:#eaf7ee;color:#1a7a3a;}
+  .alert-warning{background:#fff4e5;color:#8a5a00;}
+  table{width:100%;border-collapse:collapse;}
+  th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #f1e6db;font-size:14px;}
+  th{color:#8a7363;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
+  tr:last-child td{border-bottom:none;}
+  .status-pill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;}
+  .s-active{background:#fff1ea;color:#f05a22;}
+  .s-paid{background:#eaf7ee;color:#1a7a3a;}
+  .s-late{background:#fdeceb;color:#c4342b;}
+</style>
+{% block extra_style %}{% endblock %}
+</head>
+<body>
+{% if is_impersonating %}
+<div class="impersonate-banner">
+  👁 Pozeráš prostredie používateľa <strong>{{ user.username }}</strong> ako admin {{ real_admin.username }} ·
+  <a href="{% url 'users:impersonate_stop' %}">Skončiť náhľad</a>
+</div>
+{% endif %}
+<header>
+  <a class="logo" href="{% url 'users:my_applications' %}">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>
+    Pôžičky Predlžníkov
+  </a>
+  <div class="mainnav">
+    <a href="{% url 'users:my_applications' %}" class="{% block nav_applications %}{% endblock %}">Moje žiadosti</a>
+    <a href="{% url 'users:my_loans' %}" class="{% block nav_loans %}{% endblock %}">Moje pôžičky</a>
+    <a href="{% url 'users:my_contracts' %}" class="{% block nav_contracts %}{% endblock %}">Moje zmluvy</a>
+    <a href="{% url 'users:my_profile' %}" class="{% block nav_profile %}{% endblock %}">Moje údaje</a>
+    <a href="{% url 'users:account_settings' %}" class="{% block nav_settings %}{% endblock %}">Nastavenia</a>
+    {% if not is_impersonating %}
+    <form method="post" action="{% url 'users:logout' %}">
+      {% csrf_token %}
+      <button type="submit">Odhlásiť sa</button>
+    </form>
+    {% endif %}
+  </div>
+</header>
+<div class="wrap">
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>

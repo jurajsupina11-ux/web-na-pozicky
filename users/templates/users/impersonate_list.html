@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Admin náhľad{% endblock %}
+{% block content %}
+<h1>Admin náhľad – zobraziť prostredie používateľa</h1>
+<p class="text-muted">Vyber si používateľa, do ktorého prostredia sa chceš prepnúť. Jeho heslo nepotrebuješ.</p>
+<table class="table">
+  <thead><tr><th>Používateľ</th><th>Rola</th><th>KYC</th><th>Registrovaný</th><th></th></tr></thead>
+  <tbody>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.username }} {% if u.email %}<br><small class="text-muted">{{ u.email }}</small>{% endif %}</td>
+      <td>{{ u.get_role_display }}</td>
+      <td>{% if u.kyc_completed %}✅{% else %}—{% endif %}</td>
+      <td>{{ u.date_joined|date:"d.m.Y" }}</td>
+      <td><a class="btn btn-sm btn-primary" href="{% url 'users:impersonate_start' u.pk %}">Zobraziť ako</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">Zatiaľ nie je registrovaný žiadny používateľ.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

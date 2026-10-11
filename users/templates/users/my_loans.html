@@ -1,24 +1,45 @@
-{% extends "base.html" %}
+{% extends "borrower_base.html" %}
+{% block nav_loans %}active{% endblock %}
 {% block title %}Moje pôžičky{% endblock %}
 {% block content %}
 <h1>Moje pôžičky</h1>
-<p class="text-muted">Prostredie pre dlžníkov - prístupné, pretože máš aspoň jednu schválenú pôžičku.</p>
 
-<table class="table">
-  <thead>
-    <tr><th>ID</th><th>Suma</th><th>Úrok</th><th>Splatnosť</th><th>Koniec</th><th>Stav</th></tr>
-  </thead>
-  <tbody>
-    {% for loan in loans %}
+{% for loan in loans %}
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+    <div>
+      <div style="font-size:22px;font-weight:800;">{{ loan.amount_requested }} €</div>
+      <div style="color:#6b5a4d;font-size:13.5px;margin-top:3px;">Pôžička #{{ loan.pk }} · splatnosť {{ loan.due_date|date:"d.m.Y" }}</div>
+    </div>
+    {% if loan.status == 'funded' %}<span class="status-pill s-active">Aktívna</span>
+    {% elif loan.status == 'closed' %}<span class="status-pill s-paid">Splatená</span>
+    {% else %}<span class="status-pill s-late">{{ loan.get_status_display }}</span>{% endif %}
+  </div>
+  <table style="margin-top:18px;">
+    <tr><th>Istina</th><th>Úrok (24 % p.a.)</th><th>Spolu na úhradu</th></tr>
     <tr>
-      <td>#{{ loan.pk }}</td>
       <td>{{ loan.amount_requested }} €</td>
-      <td>{{ loan.max_interest_rate }} %</td>
-      <td>{{ loan.duration_days }} dní</td>
-      <td>{{ loan.ends_at }}</td>
-      <td>{{ loan.get_status_display }}</td>
+      <td>{{ loan.interest_amount }} €</td>
+      <td><strong>{{ loan.repay_amount }} €</strong></td>
     </tr>
-    {% endfor %}
-  </tbody>
-</table>
+  </table>
+</div>
+{% endfor %}
+
+<div class="card">
+  <h2>Ako a kam zaplatiť</h2>
+  <p style="color:#6b5a4d;">Splátku pošli bankovým prevodom na nasledujúci účet. Do variabilného symbolu uveď číslo svojej pôžičky.</p>
+  <table>
+    <tr><th>Banka</th><td>{{ bank_details.bank_name }}</td></tr>
+    <tr><th>IBAN</th><td><strong>{{ bank_details.iban }}</strong></td></tr>
+    <tr><th>SWIFT/BIC</th><td>{{ bank_details.swift }}</td></tr>
+    <tr><th>Variabilný symbol</th><td>{{ bank_details.variable_symbol_hint }}</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Potrebuješ viac času?</h2>
+  <p style="color:#6b5a4d;">Odklad splátky o 7 dní je možný za jednorazový poplatok 15 €.</p>
+  <a class="btn btn-outline" href="#">Požiadať o odklad</a>
+</div>
 {% endblock %}

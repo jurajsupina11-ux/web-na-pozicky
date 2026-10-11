@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -6,6 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, ListView
 
 from bids.forms import BidForm
+from bids.models import Bid
 
 from .models import Auction
 from .forms import AuctionForm
@@ -70,4 +73,31 @@ def place_bid(request, pk):
         else:
             messages.error(request, 'Ponuku sa nepodarilo odoslať, skontrolujte údaje.')
     return redirect(auction.get_absolute_url())
+
+
+@login_required
+def investor_dashboard(request):
+    """Prostredie pre investora - prehľad portfólia (čo investor dal) a miesto,
+    kde môže získať ďalšie pôžičky (otvorené aktívne žiadosti)."""
+    my_bids = Bid.objects.filter(lender=request.user).select_related('auction')
+    total_invested = sum((b.amount for b in my_bids), Decimal('0'))
+    active_bids = my_bids.filter(auction__status=Auction.Status.ACTIVE)
+    funded_bids = my_bids.filter(auction__status__in=[Auction.Status.FUNDED, Auction.Status.CLOSED])
+    expected_yield = sum(
+        (b.amount * (b.interest_rate / Decimal('100')) * (b.auction.duration_days / Decimal('365')) for b in funded_bids),
+        Decimal('0'),
+    )
+    open_auctions = Auction.objects.filter(status=Auction.Status.ACTIVE).exclude(
+        bids__lender=request.user,
+    ).distinct()
+    context = {
+        'my_bids': my_bids,
+        'active_bids': active_bids,
+        'funded_bids': funded_bids,
+        'total_invested': total_invested,
+        'active_count': active_bids.count(),
+        'expected_yield': round(expected_yield, 2),
+        'open_auctions': open_auctions,
+    }
+    return render(request, 'auctions/investor_dashboard.html', context)
 

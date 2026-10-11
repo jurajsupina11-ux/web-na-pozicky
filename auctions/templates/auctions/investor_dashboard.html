@@ -1,0 +1,73 @@
+{% extends "investor_base.html" %}
+{% block nav_dash %}active{% endblock %}
+{% block title %}Dashboard investora{% endblock %}
+{% block content %}
+<div class="toprow">
+  <h1 style="margin:0;">Dashboard investora</h1>
+  <a class="btn btn-primary" href="{% url 'auctions:list' %}">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Získať nové pôžičky
+  </a>
+</div>
+
+<div class="bento">
+  <div class="card stat">
+    <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2"/></svg></div>
+    <b>{{ total_invested }} €</b><span>Celkovo investované</span>
+  </div>
+  <div class="card stat">
+    <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+    <b>{{ active_count }}</b><span>Aktívne pôžičky</span>
+  </div>
+  <div class="card stat">
+    <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
+    <b style="color:#19824a;">+{{ expected_yield }} €</b><span>Očakávaný výnos</span>
+  </div>
+  <div class="card stat">
+    <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+    <b>24 %</b><span>Priemerný úrok p.a.</span>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:16px;">
+  <h2>Moje investície</h2>
+  <table>
+    <tr><th>Žiadateľ</th><th>Suma</th><th>Úrok</th><th>Splatnosť</th><th>Stav</th></tr>
+    {% for bid in my_bids %}
+    <tr>
+      <td>{{ bid.auction.borrower.username }}</td>
+      <td>{{ bid.amount }} €</td>
+      <td>{{ bid.interest_rate }} %</td>
+      <td>{{ bid.auction.duration_days }} dní</td>
+      <td>
+        {% if bid.auction.status == 'active' %}<span class="pill pill-neutral">Čaká sa</span>
+        {% elif bid.auction.status == 'funded' %}<span class="pill pill-up">Aktívna</span>
+        {% elif bid.auction.status == 'closed' %}<span class="pill pill-up">Splatená</span>
+        {% else %}<span class="pill pill-down">{{ bid.auction.get_status_display }}</span>{% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">Zatiaľ si nič nefinancoval. <a href="{% url 'auctions:list' %}">Prezri si dostupné žiadosti</a>.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<div class="card">
+  <h2>Miesto, kde môžeš získať ďalšie pôžičky</h2>
+  <table>
+    <tr><th>Žiadateľ</th><th>Suma</th><th>Max. úrok</th><th>Splatnosť</th><th>Vyfinancované</th><th></th></tr>
+    {% for auction in open_auctions %}
+    <tr>
+      <td>{{ auction.borrower.username }}</td>
+      <td>{{ auction.amount_requested }} €</td>
+      <td>{{ auction.max_interest_rate }} %</td>
+      <td>{{ auction.duration_days }} dní</td>
+      <td>{{ auction.funding_progress|floatformat:0 }} %</td>
+      <td><a class="btn btn-outline" href="{% url 'auctions:detail' auction.pk %}">Financovať</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">Momentálne nie sú k dispozícii žiadne nové žiadosti.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

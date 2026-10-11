@@ -1,0 +1,20 @@
+{% extends "borrower_base.html" %}
+{% block nav_settings %}active{% endblock %}
+{% block title %}Nastavenia účtu{% endblock %}
+{% block content %}
+<h1>Nastavenia účtu</h1>
+
+<div class="card">
+  <h2>Notifikácie</h2>
+  <p style="color:#6b5a4d;">E-mailové upozornenia na blížiacu sa splatnosť a schválenie pôžičky.</p>
+  <label style="display:flex;align-items:center;gap:10px;font-size:14px;">
+    <input type="checkbox" checked disabled> Zasielať e-mailové upozornenia
+  </label>
+</div>
+
+<div class="card">
+  <h2>Zmena hesla</h2>
+  <p style="color:#6b5a4d;">Funkcia zmeny hesla bude dostupná v ďalšej verzii.</p>
+  <a class="btn btn-outline" href="#">Zmeniť heslo</a>
+</div>
+{% endblock %}

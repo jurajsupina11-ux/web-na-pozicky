@@ -1,0 +1,27 @@
+{% extends "borrower_base.html" %}
+{% block nav_profile %}active{% endblock %}
+{% block title %}Moje údaje{% endblock %}
+{% block content %}
+<h1>Moje údaje</h1>
+
+<div class="card">
+  <h2>Prístupové údaje</h2>
+  <table>
+    <tr><th>Používateľské meno</th><td>{{ user.username }}</td></tr>
+    <tr><th>E-mail</th><td>{{ user.email|default:"-" }}</td></tr>
+    <tr><th>Telefón</th><td>{{ user.phone_number|default:"-" }}</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Osobné údaje (overenie identity)</h2>
+  <table>
+    <tr><th>Meno a priezvisko</th><td>{{ user.first_name }} {{ user.last_name }}</td></tr>
+    <tr><th>Dátum narodenia</th><td>{{ user.date_of_birth|date:"d.m.Y"|default:"-" }}</td></tr>
+    <tr><th>Číslo OP</th><td>{{ user.id_card_number|default:"-" }}</td></tr>
+    <tr><th>Rodné číslo</th><td>{{ user.birth_number|default:"-" }}</td></tr>
+    <tr><th>Adresa</th><td>{{ user.street_address }}, {{ user.postal_code }} {{ user.city }}</td></tr>
+    <tr><th>IBAN pre výplatu</th><td>{{ user.bank_account_iban|default:"-" }}</td></tr>
+  </table>
+</div>
+{% endblock %}

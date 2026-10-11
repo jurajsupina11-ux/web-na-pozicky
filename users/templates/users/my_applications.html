@@ -1,4 +1,5 @@
-{% extends "base.html" %}
+{% extends "borrower_base.html" %}
+{% block nav_applications %}active{% endblock %}
 {% block title %}Moje žiadosti{% endblock %}
 {% block content %}
 <h1>Moje žiadosti o pôžičku</h1>
@@ -15,22 +16,24 @@
   </div>
 {% endif %}
 
-<table class="table">
-  <thead>
-    <tr><th>ID</th><th>Suma</th><th>Splatnosť</th><th>Stav</th><th>Vyfinancované</th></tr>
-  </thead>
-  <tbody>
-    {% for a in applications %}
-    <tr>
-      <td>#{{ a.pk }}</td>
-      <td>{{ a.amount_requested }} €</td>
-      <td>{{ a.duration_days }} dní</td>
-      <td>{{ a.get_status_display }}</td>
-      <td>{{ a.funding_progress|floatformat:0 }} %</td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="5">Zatiaľ nemáš žiadnu žiadosť.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="card">
+  <table>
+    <thead>
+      <tr><th>ID</th><th>Suma</th><th>Splatnosť</th><th>Stav</th><th>Vyfinancované</th></tr>
+    </thead>
+    <tbody>
+      {% for a in applications %}
+      <tr>
+        <td>#{{ a.pk }}</td>
+        <td>{{ a.amount_requested }} €</td>
+        <td>{{ a.duration_days }} dní</td>
+        <td>{{ a.get_status_display }}</td>
+        <td>{{ a.funding_progress|floatformat:0 }} %</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">Zatiaľ nemáš žiadnu žiadosť.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endblock %}
