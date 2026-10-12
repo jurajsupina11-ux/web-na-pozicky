@@ -39,7 +39,18 @@ Appka bude dostupná na http://127.0.0.1:8000/, admin na /admin/.
 
 ## Pravidelné úlohy (Render Cron Jobs)
 
-Nasledovné management commandy je potrebné spúšťať pravidelne (napr. raz denne cez Render Cron Job):
+`render.yaml` už obsahuje definíciu dvoch Cron Job služieb (`pozicky-splatnosti-pripomienky` a
+`pozicky-automaticky-odkup`), ktoré sa vytvoria automaticky pri ďalšom **Blueprint sync** na Render
+(Dashboard → príslušný Blueprint → "Sync"). Ak boli služby vytvorené ručne pred touto zmenou, over si
+v Render Dashboarde, že:
+
+1. Obe cron služby majú nastavenú premennú `SECRET_KEY` (keďže `sync: false`, treba ju doplniť ručne
+   rovnakou hodnotou ako vo web service, inak Django pri štarte zlyhá).
+2. Schedule je v UTC: `0 6 * * *` (06:00 UTC = 08:00 SEČ) pre pripomienky, `30 6 * * *` pre odkup.
+
+Manuálne spustenie pre test: v Render Dashboarde otvor danú cron službu → záložka **Runs** → **Trigger Run**.
+
+Príkazy, ktoré cron joby spúšťajú:
 
 - `python manage.py send_due_date_reminders` - e-mailové pripomienky blížiacej sa/prekročenej splatnosti.
 - `python manage.py process_buybacks` - garancia odkúpenia: automaticky odkúpi pôžičky nesplatené > 90 dní po splatnosti.
