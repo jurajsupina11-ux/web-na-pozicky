@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'auctions',
     'bids',
     'designs',
+    'adminpanel',
 ]
 
 MIDDLEWARE = [
@@ -83,6 +84,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'users.context_processors.impersonation',
                 'core.context_processors.notifications',
+                'adminpanel.context_processors.admin_badges',
             ],
         },
     },
@@ -104,6 +106,11 @@ DATABASES = {
 
 # Custom user model
 AUTH_USER_MODEL = 'users.User'
+
+#: Vlastný backend navyše odmieta prihlásenie pre účty zablokované administrátorom.
+AUTHENTICATION_BACKENDS = [
+    'users.backends.BlockAwareModelBackend',
+]
 
 
 # Password validation

@@ -1,0 +1,35 @@
+{% extends "adminpanel/_base.html" %}
+{% block nav_users %}active{% endblock %}
+{% block title %}Používatelia{% endblock %}
+{% block content %}
+<h1>Používatelia</h1>
+
+<form method="get" style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap;">
+  <input type="text" name="q" value="{{ query }}" placeholder="Meno, e-mail, rodné číslo, display ID...">
+  <select name="role" style="padding:8px 10px;border:1px solid #dbe4f5;border-radius:8px;font-size:13px;">
+    <option value="">Všetky role</option>
+    <option value="borrower" {% if role_filter == 'borrower' %}selected{% endif %}>Dlžník</option>
+    <option value="lender" {% if role_filter == 'lender' %}selected{% endif %}>Investor</option>
+  </select>
+  <button type="submit" class="btn btn-primary">Hľadať</button>
+</form>
+
+<div class="card">
+  <table>
+    <tr><th>Username</th><th>Meno</th><th>Rola</th><th>Display ID</th><th>Registrácia</th><th>Stav</th><th></th></tr>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.username }}</td>
+      <td>{{ u.first_name }} {{ u.last_name }}</td>
+      <td>{{ u.get_role_display }}</td>
+      <td>{{ u.display_id }}</td>
+      <td>{{ u.date_joined|date:"d.m.Y" }}</td>
+      <td>{% if u.is_blocked %}<span class="pill pill-bad">Zablokovaný</span>{% else %}<span class="pill pill-ok">Aktívny</span>{% endif %}</td>
+      <td><a class="btn btn-outline" href="{% url 'adminpanel:user_detail' u.pk %}">Detail</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7">Žiadni používatelia nezodpovedajú hľadaniu.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

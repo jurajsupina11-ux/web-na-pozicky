@@ -1,0 +1,36 @@
+{% extends "adminpanel/_base.html" %}
+{% block nav_applications %}active{% endblock %}
+{% block title %}Žiadosti o pôžičku{% endblock %}
+{% block content %}
+<h1>Žiadosti o pôžičku</h1>
+
+<div class="filter-bar">
+  <a href="?status=pending_review" class="{% if status_filter == 'pending_review' %}active{% endif %}">Čaká na posúdenie</a>
+  <a href="?status=counter_offer" class="{% if status_filter == 'counter_offer' %}active{% endif %}">Protiponuka</a>
+  <a href="?status=rejected" class="{% if status_filter == 'rejected' %}active{% endif %}">Zamietnuté</a>
+  <a href="?status=active" class="{% if status_filter == 'active' %}active{% endif %}">Aktívne</a>
+  <a href="?status=signing" class="{% if status_filter == 'signing' %}active{% endif %}">Čaká na podpis</a>
+  <a href="?status=funded" class="{% if status_filter == 'funded' %}active{% endif %}">Vyfinancované</a>
+  <a href="?status=closed" class="{% if status_filter == 'closed' %}active{% endif %}">Splatené</a>
+  <a href="?status=all" class="{% if status_filter == 'all' %}active{% endif %}">Všetky</a>
+</div>
+
+<div class="card">
+  <table>
+    <tr><th>ID</th><th>Dlžník</th><th>Suma</th><th>Dní</th><th>Stav</th><th>Podané</th><th></th></tr>
+    {% for a in applications %}
+    <tr>
+      <td>#{{ a.pk }}</td>
+      <td>{{ a.borrower.username }} ({{ a.borrower.display_id }})</td>
+      <td>{{ a.amount_requested }} €</td>
+      <td>{{ a.duration_days }}</td>
+      <td>{{ a.get_status_display }}</td>
+      <td>{{ a.created_at|date:"d.m.Y H:i" }}</td>
+      <td><a class="btn btn-outline" href="{% url 'adminpanel:application_detail' a.pk %}">Detail</a></td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7">Žiadne žiadosti v tomto stave.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

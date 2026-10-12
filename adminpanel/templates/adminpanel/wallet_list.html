@@ -1,0 +1,45 @@
+{% extends "adminpanel/_base.html" %}
+{% block nav_wallet %}active{% endblock %}
+{% block title %}Peňaženka{% endblock %}
+{% block content %}
+<h1>Vklady a výbery peňazí</h1>
+
+<div class="filter-bar">
+  <a href="?status=pending" class="{% if status_filter == 'pending' %}active{% endif %}">Čakajúce</a>
+  <a href="?status=completed" class="{% if status_filter == 'completed' %}active{% endif %}">Vybavené</a>
+  <a href="?status=rejected" class="{% if status_filter == 'rejected' %}active{% endif %}">Zamietnuté</a>
+  <a href="?status=all" class="{% if status_filter == 'all' %}active{% endif %}">Všetky</a>
+</div>
+
+<div class="card">
+  <table>
+    <tr><th>Používateľ</th><th>Typ</th><th>Suma</th><th>IBAN</th><th>Stav</th><th>Vytvorené</th><th></th></tr>
+    {% for tx in transactions %}
+    <tr>
+      <td>{{ tx.user.username }} ({{ tx.user.display_id }})</td>
+      <td>{{ tx.get_kind_display }}</td>
+      <td>{{ tx.amount }} €</td>
+      <td>{{ tx.iban|default:"—" }}</td>
+      <td>
+        {% if tx.status == 'pending' %}<span class="pill pill-warn">Čaká sa</span>
+        {% elif tx.status == 'completed' %}<span class="pill pill-ok">Vybavené</span>
+        {% else %}<span class="pill pill-bad">Zamietnuté</span>{% endif %}
+      </td>
+      <td>{{ tx.created_at|date:"d.m.Y H:i" }}</td>
+      <td>
+        {% if tx.status == 'pending' %}
+        <form method="post" action="{% url 'adminpanel:wallet_confirm' tx.pk %}" style="display:inline;">
+          {% csrf_token %}<button type="submit" class="btn btn-primary">Potvrdiť</button>
+        </form>
+        <form method="post" action="{% url 'adminpanel:wallet_reject' tx.pk %}" style="display:inline;">
+          {% csrf_token %}<button type="submit" class="btn btn-danger">Zamietnuť</button>
+        </form>
+        {% else %}—{% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7">Žiadne transakcie v tomto stave.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

@@ -156,7 +156,8 @@
   <div class="bottom">
     Prihlásený ako<br><strong style="color:#0f1729;">{{ user.username }}</strong>
     {% if user.is_superuser or real_admin.is_superuser %}
-    <a href="{% url 'users:impersonate_list' %}" style="display:block;text-align:center;margin-top:8px;background:#fff4e5;color:#8a5a00;border:1px solid #ffdca0;border-radius:8px;padding:7px;font-size:12px;text-decoration:none;font-weight:600;">Admin náhľad</a>
+    <a href="{% url 'adminpanel:dashboard' %}" style="display:block;text-align:center;margin-top:8px;background:#eaf0ff;color:#2554ea;border:1px solid #dbe4f5;border-radius:8px;padding:7px;font-size:12px;text-decoration:none;font-weight:600;">Admin prostredie</a>
+    <a href="{% url 'users:impersonate_list' %}" style="display:block;text-align:center;margin-top:6px;background:#fff4e5;color:#8a5a00;border:1px solid #ffdca0;border-radius:8px;padding:7px;font-size:12px;text-decoration:none;font-weight:600;">Admin náhľad</a>
     {% endif %}
     {% if not is_impersonating %}
     <form method="post" action="{% url 'users:logout' %}">

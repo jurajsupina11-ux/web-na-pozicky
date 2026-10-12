@@ -122,6 +122,13 @@ class User(AbstractUser):
     #: (zatiaľ len privítanie, riziká investície doplníme neskôr).
     welcome_message_seen = models.BooleanField(default=False)
 
+    #: Administrátor môže účet ručne zablokovať (napr. podozrenie na podvod) -
+    #: zablokovaný používateľ sa nevie prihlásiť (pozri users.backends).
+    is_blocked = models.BooleanField(
+        default=False,
+        help_text='Zablokovaný účet sa nemôže prihlásiť (nastavuje administrátor v Admin prostredí).',
+    )
+
     @property
     def masked_birth_number(self):
         """Rodné číslo zobrazené len čiastočne (napr. 9001011234 -> 900101****)

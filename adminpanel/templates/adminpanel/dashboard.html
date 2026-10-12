@@ -1,0 +1,38 @@
+{% extends "adminpanel/_base.html" %}
+{% block nav_dashboard %}active{% endblock %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="stat-grid">
+  <div class="card stat-box"><b>{{ pending_applications }}</b><span>Žiadosti čakajúce na posúdenie</span></div>
+  <div class="card stat-box"><b>{{ counter_offers }}</b><span>Čakajúce protiponuky</span></div>
+  <div class="card stat-box"><b>{{ pending_deposits }}</b><span>Čakajúce vklady</span></div>
+  <div class="card stat-box"><b>{{ pending_withdrawals }}</b><span>Čakajúce výbery</span></div>
+  <div class="card stat-box"><b>{{ active_loans_count }}</b><span>Aktívne pôžičky</span></div>
+  <div class="card stat-box" style="{% if overdue_loans_count %}color:#c4342b;{% endif %}"><b>{{ overdue_loans_count }}</b><span>Pôžičky po splatnosti</span></div>
+  <div class="card stat-box"><b>{{ total_invested }} €</b><span>Celkový investovaný objem</span></div>
+  <div class="card stat-box"><b>{{ total_wallet_balance }} €</b><span>Súčet zostatkov na peňaženkách</span></div>
+</div>
+
+<div class="card">
+  <h2>Noví používatelia za posledných 7 dní: {{ new_users_week }}</h2>
+</div>
+
+<div class="card">
+  <h2>Posledné akcie administrátorov</h2>
+  <table>
+    <tr><th>Akcia</th><th>Admin</th><th>Detail</th><th>Kedy</th></tr>
+    {% for entry in recent_audit %}
+    <tr>
+      <td>{{ entry.action }}</td>
+      <td>{{ entry.admin }}</td>
+      <td>{{ entry.details }}</td>
+      <td>{{ entry.created_at|date:"d.m.Y H:i" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">Zatiaľ žiadne akcie.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

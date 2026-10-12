@@ -1,0 +1,21 @@
+{% extends "adminpanel/_base.html" %}
+{% block nav_audit %}active{% endblock %}
+{% block title %}Audit log{% endblock %}
+{% block content %}
+<h1>Audit log - akcie administrátorov</h1>
+<div class="card">
+  <table>
+    <tr><th>Kedy</th><th>Admin</th><th>Akcia</th><th>Detail</th></tr>
+    {% for entry in entries %}
+    <tr>
+      <td>{{ entry.created_at|date:"d.m.Y H:i" }}</td>
+      <td>{{ entry.admin }}</td>
+      <td>{{ entry.action }}</td>
+      <td>{{ entry.details }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">Zatiaľ žiadne akcie.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}
