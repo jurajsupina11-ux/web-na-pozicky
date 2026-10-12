@@ -39,7 +39,8 @@ def send_investor_welcome(user):
             f'Tvoj bezpečnostný kód je: {user.security_code}\n\n'
             f'Tento kód budeš potrebovať vždy, keď:\n'
             f'- požiadaš o výber peňazí z peňaženky na svoj bankový účet,\n'
-            f'- budeš meniť bankový účet (IBAN), na ktorý sa ti majú peniaze posielať.\n\n'
+            f'- budeš meniť bankový účet (IBAN), na ktorý sa ti majú peniaze posielať,\n'
+            f'- budeš meniť heslo k účtu.\n\n'
             f'Kód si ulož na bezpečné miesto a nikomu ho neposkytuj.\n\n'
             f'Peniaze posielame výhradne na slovenské bankové účty (SK IBAN) a platby spracúvame '
             f'v pracovné dni od 8:00 do 16:00.\n\n'
@@ -50,15 +51,18 @@ def send_investor_welcome(user):
 
 
 def send_loan_application_received(user, auction):
-    """Dlžníkovi: potvrdenie prijatia žiadosti o pôžičku."""
+    """Dlžníkovi: potvrdenie prijatia žiadosti o pôžičku + bezpečnostný kód,
+    ktorý bude potrebovať na zmenu hesla, zmenu bankového účtu a žiadosť o výber."""
     _send(
-        'Žiadosť o pôžičku bola prijatá',
+        'Žiadosť o pôžičku bola prijatá - tvoj bezpečnostný kód',
         (
             f'Dobrý deň,\n\n'
             f'vaša žiadosť o pôžičku {auction.amount_requested} € na {auction.duration_days} dní '
             f'bola úspešne prijatá a zobrazená investorom.\n\n'
             f'Hneď ako ju niektorý investor financuje, dostanete ďalší e-mail a prístup '
             f'do svojho účtu (Moje pôžičky).\n\n'
+            f'Tvoj bezpečnostný kód je: {user.security_code}\n\n'
+            f'Tento kód budeš potrebovať vždy, keď budeš meniť heslo k účtu alebo bankový účet (IBAN).\n\n'
             f'S pozdravom,\nPôžičky Predlžníkov'
         ),
         user.email,

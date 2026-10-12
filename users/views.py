@@ -10,9 +10,13 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 from auctions.models import Auction
-from core.emails import send_investor_welcome, send_loan_application_received, send_repayment_reported
+from core.emails import (
+    send_investor_welcome, send_loan_application_received, send_loan_approved, send_repayment_reported,
+)
 
-from .forms import BankAccountForm, BorrowerApplicationForm, KYCForm, SignUpForm
+from .forms import (
+    BankAccountForm, BorrowerApplicationForm, KYCForm, SecurityCodePasswordChangeForm, SignUpForm,
+)
 from .models import User
 
 
@@ -51,7 +55,7 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         user = self.request.user
         if user.role == User.Role.BORROWER:
-            return reverse_lazy('users:dashboard')
+            return reverse_lazy('users:my_applications')
         return reverse_lazy('auctions:investor_dashboard')
 
 
@@ -70,8 +74,10 @@ class CustomLogoutView(LogoutView):
 
 
 class CustomPasswordChangeView(PasswordChangeView):
-    """Zmena hesla - šablóna sa líši podľa role prihláseného používateľa."""
+    """Zmena hesla - vyžaduje zadanie bezpečnostného kódu (z e-mailu pri registrácii),
+    šablóna sa líši podľa role prihláseného používateľa."""
     success_url = reverse_lazy('users:password_change_done')
+    form_class = SecurityCodePasswordChangeForm
 
     def get_template_names(self):
         if self.request.user.role == User.Role.BORROWER:
@@ -110,7 +116,7 @@ def loan_application(request):
     a požiada o pôžičku (osobné/KYC údaje + parametre úveru)."""
     if request.user.is_authenticated:
         if request.user.role == User.Role.BORROWER:
-            return redirect('users:dashboard')
+            return redirect('users:my_applications')
         messages.info(request, 'Si prihlásený ako investor. Odhlás sa, ak chceš žiadať o pôžičku.')
         return redirect('auctions:list')
 
@@ -125,23 +131,10 @@ def loan_application(request):
                 request,
                 'Žiadosť o pôžičku bola odoslaná. Hneď ako ju investor financuje, dostaneš sa do prostredia pre dlžníkov.',
             )
-            return redirect('users:dashboard')
+            return redirect('users:my_applications')
     else:
         form = BorrowerApplicationForm()
     return render(request, 'users/loan_application.html', {'form': form})
-
-
-@login_required
-def my_applications(request):
-    """Prehľad vlastných žiadostí (aukcií) dlžníka - dostupné aj bez schválenej pôžičky."""
-    applications = Auction.objects.filter(borrower=request.user)
-    has_approved = applications.filter(
-        status__in=[Auction.Status.FUNDED, Auction.Status.CLOSED],
-    ).exists()
-    return render(request, 'users/my_applications.html', {
-        'applications': applications,
-        'has_approved': has_approved,
-    })
 
 
 #: Údaje platiteľa, na ktorého účet majú dlžníci zasielať splátky.
@@ -174,13 +167,17 @@ def _annotate_loan(loan):
 
 
 @login_required
-def dashboard(request):
+def my_applications(request):
     """Hlavná vstupná stránka prostredia pre dlžníkov - prehľad stavu účtu,
-    aktuálneho dlhu, najbližšej splatnosti a rýchlych akcií."""
+    aktuálneho dlhu, najbližšej splatnosti a zoznamu vlastných žiadostí.
+    Ak má dlžník všetky pôžičky splatené (alebo zatiaľ žiadnu žiadosť),
+    "Požičať si znova"/"Požiadať o pôžičku" ho vráti na kalkulačku parametrov
+    novej pôžičky (users:loan_application)."""
     applications = Auction.objects.filter(borrower=request.user)
     active_loans = applications.filter(status=Auction.Status.FUNDED)
     closed_loans = applications.filter(status=Auction.Status.CLOSED)
     pending_applications = applications.filter(status=Auction.Status.ACTIVE)
+    has_approved = active_loans.exists() or closed_loans.exists()
 
     for loan in active_loans:
         _annotate_loan(loan)
@@ -188,7 +185,9 @@ def dashboard(request):
     total_debt = sum((loan.repay_amount for loan in active_loans), Decimal('0'))
     next_due_loan = min(active_loans, key=lambda loan: loan.due_date, default=None)
 
-    return render(request, 'users/dashboard.html', {
+    return render(request, 'users/my_applications.html', {
+        'applications': applications,
+        'has_approved': has_approved,
         'active_loans': active_loans,
         'closed_loans_count': closed_loans.count(),
         'pending_applications': pending_applications,
@@ -200,11 +199,12 @@ def dashboard(request):
 
 @login_required
 def my_loans(request):
-    """Prostredie pre dlžníkov - prístupné až keď má aspoň jednu schválenú (vyfinancovanú) pôžičku.
-    Obsahuje aktuálny stav pôžičky aj údaje, ako a kam ju zaplatiť."""
+    """Prostredie pre dlžníkov - prístupné až keď má aspoň jednu schválenú (vyfinancovanú,
+    alebo čakajúcu na podpis zmluvy) pôžičku. Obsahuje aktuálny stav pôžičky aj údaje,
+    ako a kam ju zaplatiť."""
     loans = Auction.objects.filter(
         borrower=request.user,
-        status__in=[Auction.Status.FUNDED, Auction.Status.CLOSED],
+        status__in=[Auction.Status.SIGNING, Auction.Status.FUNDED, Auction.Status.CLOSED],
     )
     if not loans.exists():
         messages.warning(
@@ -213,7 +213,7 @@ def my_loans(request):
         )
         return redirect('users:my_applications')
 
-    for loan in loans:
+    for loan in loans.filter(status=Auction.Status.FUNDED):
         _annotate_loan(loan)
 
     return render(request, 'users/my_loans.html', {
@@ -221,6 +221,26 @@ def my_loans(request):
         'bank_details': REPAYMENT_BANK_DETAILS,
         'postpone_fee': POSTPONE_FEE,
     })
+
+
+@login_required
+def sign_loan_contract(request, loan_id):
+    """Dlžník podpíše Zmluvu o pôžičke priamo vo svojom účte - až po podpise
+    sa pôžička považuje za schválenú (FUNDED) a peniaze mu vyplácame."""
+    loan = get_object_or_404(Auction, pk=loan_id, borrower=request.user, status=Auction.Status.SIGNING)
+    bid = loan.bids.select_related('lender').first()
+    if request.method == 'POST':
+        from django.utils import timezone
+        loan.contract_signed_at = timezone.now()
+        loan.status = Auction.Status.FUNDED
+        loan.save(update_fields=['contract_signed_at', 'status'])
+        send_loan_approved(loan.borrower, loan)
+        messages.success(
+            request,
+            'Zmluva bola podpísaná. Peniaze ti pošleme na tvoj bankový účet v pracovné dni od 8:00 do 16:00.',
+        )
+        return redirect('users:my_loans')
+    return render(request, 'users/sign_loan_contract.html', {'loan': loan, 'bid': bid})
 
 
 @login_required
@@ -317,7 +337,7 @@ def my_contracts(request):
     """Moje zmluvy - prehľad zmluvných dokumentov k pôžičkám dlžníka."""
     contracts = Auction.objects.filter(
         borrower=request.user,
-        status__in=[Auction.Status.FUNDED, Auction.Status.CLOSED],
+        status__in=[Auction.Status.SIGNING, Auction.Status.FUNDED, Auction.Status.CLOSED],
     )
     return render(request, 'users/my_contracts.html', {'contracts': contracts})
 
@@ -326,7 +346,7 @@ def _get_contract_loan_and_bid(request, loan_id):
     """Spoločná pomocná funkcia - nájde pôžičku dlžníka a jej financujúcu investíciu (Bid)."""
     loan = get_object_or_404(
         Auction, pk=loan_id, borrower=request.user,
-        status__in=[Auction.Status.FUNDED, Auction.Status.CLOSED],
+        status__in=[Auction.Status.SIGNING, Auction.Status.FUNDED, Auction.Status.CLOSED],
     )
     bid = loan.bids.select_related('lender').first()
     return loan, bid
@@ -410,7 +430,7 @@ def impersonate_start(request, user_id):
     request.session['impersonate_user_id'] = target.pk
     messages.info(request, f'Zobrazuješ prostredie používateľa „{target.username}“.')
     if target.role == User.Role.BORROWER:
-        return redirect('users:dashboard')
+        return redirect('users:my_applications')
     return redirect('auctions:investor_dashboard')
 
 

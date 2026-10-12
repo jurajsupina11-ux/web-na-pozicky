@@ -18,6 +18,7 @@ class Auction(models.Model):
         ACTIVE = 'active', 'Aktívna'
         CLOSED = 'closed', 'Uzavretá'
         CANCELLED = 'cancelled', 'Zrušená'
+        SIGNING = 'signing', 'Čaká na podpis zmluvy'
         FUNDED = 'funded', 'Vyfinancovaná'
 
     borrower = models.ForeignKey(
@@ -48,6 +49,13 @@ class Auction(models.Model):
     payment_reported = models.BooleanField(
         default=False,
         help_text='Dlžník nahlásil úhradu pôžičky - čaká na overenie platby.',
+    )
+
+    # Podpis zmluvy o pôžičke dlžníkom - až po podpise sa peniaze vyplácajú
+    # (pôžička prejde zo stavu SIGNING do FUNDED).
+    contract_signed_at = models.DateTimeField(
+        null=True, blank=True,
+        help_text='Kedy dlžník podpísal Zmluvu o pôžičke - predtým sa peniaze nevyplácajú.',
     )
 
     # Garancia odkúpenia - ak dlžník nesplatí do BUYBACK_DAYS dní po splatnosti,

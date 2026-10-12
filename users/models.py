@@ -133,7 +133,7 @@ class User(AbstractUser):
             self.display_id = _generate_display_id()
         if not self.referral_code:
             self.referral_code = _generate_referral_code()
-        if not self.security_code and self.role == self.Role.LENDER:
+        if not self.security_code:
             self.security_code = _generate_security_code()
         super().save(*args, **kwargs)
 

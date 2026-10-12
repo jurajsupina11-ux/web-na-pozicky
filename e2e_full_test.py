@@ -147,8 +147,8 @@ if auction:
 r = c.get('/accounts/moje-pozicky/', follow=True)
 check('Borrower blocked from Moje pozicky before funding (redirected)', 'moje-ziadosti' in r.redirect_chain[-1][0] if r.redirect_chain else False, str(r.redirect_chain))
 
-# Borrower dashboard should show pending application
-r = c.get('/accounts/dashboard/')
+# Borrower dashboard (Moje ziadosti) should show pending application
+r = c.get('/accounts/moje-ziadosti/')
 check('Borrower dashboard accessible', r.status_code == 200)
 check('Borrower dashboard shows pending application hint', b'ekajet' in r.content or b'iadosti' in r.content)
 
@@ -163,7 +163,7 @@ r = c.post(f'/aukcie/{auction.pk}/bid/', {'amount': '200', 'interest_rate': '24'
 check('Investor bid submission succeeds', r.status_code == 200, f'status={r.status_code}')
 
 auction.refresh_from_db()
-check('Auction fully funded after bid covering full amount', auction.status == Auction.Status.FUNDED, f'status={auction.status}')
+check('Auction awaiting contract signature after full funding', auction.status == Auction.Status.SIGNING, f'status={auction.status}')
 
 investor.refresh_from_db()
 check('Investor wallet debited by bid amount', investor.wallet_balance == Decimal('300.00'), f'balance={investor.wallet_balance}')
@@ -176,7 +176,17 @@ c.logout()
 # ========== 6. BORROWER CAN NOW ACCESS LOAN ENVIRONMENT ==========
 c.force_login(borrower)
 r = c.get('/accounts/moje-pozicky/')
-check('Borrower can access Moje pozicky after funding', r.status_code == 200)
+check('Borrower can access Moje pozicky while awaiting signature', r.status_code == 200)
+check('Moje pozicky shows signing hint', b'podpis' in r.content.lower())
+
+# Borrower signs the loan contract -> loan becomes FUNDED
+r = c.post(f'/accounts/moje-pozicky/{auction.pk}/podpisat-zmluvu/', follow=True)
+check('Contract signing succeeds', r.status_code == 200)
+auction.refresh_from_db()
+check('Auction fully funded (FUNDED) after contract signature', auction.status == Auction.Status.FUNDED, f'status={auction.status}')
+check('Auction records contract_signed_at timestamp', auction.contract_signed_at is not None)
+
+r = c.get('/accounts/moje-pozicky/')
 check('Moje pozicky shows the loan amount', b'200' in r.content)
 
 r = c.get('/accounts/moje-ziadosti/')
@@ -279,6 +289,7 @@ r = c.post('/accounts/nastavenia/zmena-hesla/', {
     'old_password': 'SuperSecret123!',
     'new_password1': 'EvenMoreSecret456!',
     'new_password2': 'EvenMoreSecret456!',
+    'security_code': investor2.security_code,
 }, follow=True)
 check('Password change succeeds', r.status_code == 200)
 investor2.refresh_from_db()  # in-memory password hash is stale after the change; needed for later force_login()
@@ -293,6 +304,7 @@ r = c.post('/accounts/nastavenia/zmena-hesla/', {
     'old_password': 'WRONG_PASSWORD',
     'new_password1': 'Whatever123!',
     'new_password2': 'Whatever123!',
+    'security_code': investor2.security_code,
 }, follow=True)
 check('Password change rejects wrong old password', b'incorrect' in r.content.lower() or r.status_code == 200)
 c.logout()
@@ -334,7 +346,7 @@ if admin:
 
     r = c.get(f'/accounts/admin-nahlad/{borrower.pk}/', follow=True)
     check('Admin can start impersonating borrower', r.status_code == 200)
-    r = c.get('/accounts/dashboard/')
+    r = c.get('/accounts/moje-ziadosti/')
     check('Admin sees borrower dashboard while impersonating', r.status_code == 200)
 
     r = c.get('/accounts/admin-nahlad/stop/', follow=True)

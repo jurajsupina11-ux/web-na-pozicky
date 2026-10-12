@@ -129,12 +129,13 @@
       <td>{{ bid.auction.duration_days }} dní</td>
       <td>
         {% if bid.auction.status == 'active' %}<span class="pill pill-neutral">Čaká sa</span>
+        {% elif bid.auction.status == 'signing' %}<span class="pill pill-neutral">Čaká na podpis zmluvy</span>
         {% elif bid.auction.status == 'funded' %}<span class="pill pill-up">Aktívna</span>
         {% elif bid.auction.status == 'closed' %}<span class="pill pill-up">Splatená</span>
         {% else %}<span class="pill pill-down">{{ bid.auction.get_status_display }}</span>{% endif %}
       </td>
       <td style="font-size:12.5px;">
-        {% if bid.auction.status != 'active' %}
+        {% if bid.auction.status == 'funded' or bid.auction.status == 'closed' %}
         <a href="{% url 'auctions:contract_loan_agreement' bid.pk %}">Zmluva</a>
         {% if bid.previous_lender_id %}
         · <a href="{% url 'auctions:contract_assignment_agreement' bid.pk %}">Postúpenie</a>

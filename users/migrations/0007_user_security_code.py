@@ -7,10 +7,12 @@ from django.db import migrations, models
 
 
 def _assign_security_codes(apps, schema_editor):
-    """Doplní bezpečnostný kód existujúcim investorom (rola 'lender'), ktorí
-    ho ešte nemajú - novým investorom sa kód generuje automaticky pri save()."""
+    """Doplní bezpečnostný kód všetkým existujúcim používateľom (investorom aj
+    dlžníkom), ktorí ho ešte nemajú - novým používateľom sa kód generuje
+    automaticky pri save() (slúži na potvrdenie zmeny hesla, zmeny IBAN a
+    žiadosti o výber peňazí)."""
     User = apps.get_model('users', 'User')
-    for user in User.objects.filter(role='lender', security_code=''):
+    for user in User.objects.filter(security_code=''):
         user.security_code = ''.join(random.choices(string.digits, k=8))
         user.save(update_fields=['security_code'])
 

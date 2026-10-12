@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
@@ -154,6 +154,28 @@ class BankAccountForm(forms.ModelForm):
         if self.user and self.user.role == User.Role.LENDER:
             if not code or code != self.user.security_code:
                 raise ValidationError('Nesprávny bezpečnostný kód.')
+        return code
+
+
+class SecurityCodePasswordChangeForm(PasswordChangeForm):
+    """Zmena hesla vyžaduje zadanie bezpečnostného kódu (z e-mailu pri registrácii),
+    rovnako ako žiadosť o výber peňazí a zmena IBAN - ochrana pred zneužitím účtu."""
+
+    security_code = forms.CharField(
+        label='Bezpečnostný kód (z e-mailu pri registrácii)',
+        max_length=20,
+    )
+
+    field_order = ['old_password', 'new_password1', 'new_password2', 'security_code']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        _apply_autocomplete_and_classes(self)
+
+    def clean_security_code(self):
+        code = self.cleaned_data.get('security_code', '').strip()
+        if not code or code != self.user.security_code:
+            raise ValidationError('Nesprávny bezpečnostný kód.')
         return code
 
 

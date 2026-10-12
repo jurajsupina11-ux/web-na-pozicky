@@ -48,10 +48,17 @@ investor.wallet_balance = Decimal('200')
 investor.save()
 r = c.post(f'/aukcie/{auction.pk}/bid/', {}, follow=True)
 auction.refresh_from_db()
-check('Full funding works without amount/interest_rate POST fields', auction.status == Auction.Status.FUNDED, f'status={auction.status}')
+check('Full funding moves auction to SIGNING (awaiting contract)', auction.status == Auction.Status.SIGNING, f'status={auction.status}')
 bid = Bid.objects.filter(auction=auction).first()
 check('Bid amount equals full requested amount', bid.amount == Decimal('200'), f'amount={bid.amount}')
 check('Bid interest rate equals auction max_interest_rate', bid.interest_rate == Decimal('24'), f'rate={bid.interest_rate}')
+c.logout()
+
+# Borrower signs the contract -> auction becomes FUNDED and money is released
+c.force_login(borrower)
+r = c.post(f'/accounts/moje-pozicky/{auction.pk}/podpisat-zmluvu/', follow=True)
+auction.refresh_from_db()
+check('Auction becomes FUNDED after borrower signs contract', auction.status == Auction.Status.FUNDED, f'status={auction.status}')
 c.logout()
 
 # ===== buyback after 90 days =====

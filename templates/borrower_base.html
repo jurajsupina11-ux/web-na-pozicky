@@ -6,7 +6,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;}
-  body{margin:0;font-family:'Manrope',Arial,sans-serif;background:#fffdfb;color:#20150d;-webkit-font-smoothing:antialiased;}
+  body{margin:0;font-family:'Manrope',Arial,sans-serif;background:#fffdfb;color:#20150d;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100vh;}
   a{color:inherit;}
   .impersonate-banner{background:#fff4e5;color:#8a5a00;font-size:12.5px;padding:8px 24px;text-align:center;}
   .impersonate-banner a{color:#8a5a00;font-weight:700;text-decoration:underline;}
@@ -18,7 +18,7 @@
   .mainnav a.active{background:#fff1ea;color:#f05a22;}
   .mainnav form{display:inline;}
   .mainnav button{background:none;border:none;color:#6b5a4d;font-size:14.5px;font-weight:600;padding:10px 16px;border-radius:10px;cursor:pointer;font-family:inherit;}
-  .wrap{max-width:900px;margin:0 auto;padding:36px 24px 80px;}
+  .wrap{max-width:900px;margin:0 auto;padding:36px 24px 80px;flex:1;width:100%;}
   .card{background:#fff;border:1px solid #f1e6db;border-radius:20px;padding:26px;margin-bottom:16px;}
   h1{font-size:28px;font-weight:800;letter-spacing:-0.02em;line-height:1.15;margin:0 0 18px;}
   h2{font-size:17px;font-weight:700;margin:0 0 14px;}
@@ -83,7 +83,7 @@
 </div>
 {% endif %}
 <header>
-  <a class="logo" href="{% url 'users:dashboard' %}">
+  <a class="logo" href="{% url 'users:my_applications' %}">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>
     Pôžičky Predlžníkov
   </a>
@@ -91,7 +91,6 @@
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
   </button>
   <div class="mainnav" id="mainnav">
-    <a href="{% url 'users:dashboard' %}" class="{% block nav_dashboard %}{% endblock %}">Dashboard</a>
     <a href="{% url 'users:my_applications' %}" class="{% block nav_applications %}{% endblock %}">Moje žiadosti</a>
     <a href="{% url 'users:my_loans' %}" class="{% block nav_loans %}{% endblock %}">Moje pôžičky</a>
     <a href="{% url 'users:my_offers' %}" class="{% block nav_offers %}{% endblock %}">Ponuky</a>

@@ -89,11 +89,19 @@ def place_bid(request, pk):
         request.user.save(update_fields=['wallet_balance'])
         send_investment_confirmation(request.user, bid)
 
-        # Pôžička je vyfinancovaná celá naraz - okamžite sa schváli.
-        auction.status = Auction.Status.FUNDED
+        # Pôžička je vyfinancovaná celá naraz, ale peniaze sa dlžníkovi vyplatia
+        # až po tom, čo si v svojom účte podpíše Zmluvu o pôžičke.
+        auction.status = Auction.Status.SIGNING
         auction.save(update_fields=['status'])
-        send_loan_approved(auction.borrower, auction)
-        messages.success(request, 'Pôžička bola vyfinancovaná celá a bola schválená.')
+        notify(
+            auction.borrower,
+            'Tvoja žiadosť bola financovaná - podpíš zmluvu',
+            'Investor financoval celú tvoju žiadosť o pôžičku. Prihlás sa do svojho účtu a podpíš '
+            'Zmluvu o pôžičke, aby sme ti mohli peniaze vyplatiť.',
+            kind=Notification.Kind.SUCCESS,
+            url=reverse_lazy('users:my_loans'),
+        )
+        messages.success(request, 'Pôžička bola vyfinancovaná celá - čaká sa na podpis zmluvy dlžníkom.')
 
         # Referral program - ak je toto prvá investícia pozvaného používateľa,
         # pripíše sa jednorazový bonus (€) pozvanému aj jeho pozývateľovi.
