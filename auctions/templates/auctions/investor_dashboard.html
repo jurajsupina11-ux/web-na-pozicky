@@ -112,7 +112,7 @@
   {% if my_bids %}
   <div class="table-scroll">
   <table>
-    <tr><th>Žiadateľ</th><th>Suma</th><th>Úrok</th><th>Splatnosť</th><th>Stav</th><th>Predaj</th></tr>
+    <tr><th>Žiadateľ</th><th>Suma</th><th>Úrok</th><th>Splatnosť</th><th>Stav</th><th>Dokumenty</th><th>Predaj</th></tr>
     {% for bid in my_bids %}
     <tr>
       <td>{{ bid.auction.borrower.display_name }}</td>
@@ -124,6 +124,14 @@
         {% elif bid.auction.status == 'funded' %}<span class="pill pill-up">Aktívna</span>
         {% elif bid.auction.status == 'closed' %}<span class="pill pill-up">Splatená</span>
         {% else %}<span class="pill pill-down">{{ bid.auction.get_status_display }}</span>{% endif %}
+      </td>
+      <td style="font-size:12.5px;">
+        {% if bid.auction.status != 'active' %}
+        <a href="{% url 'auctions:contract_loan_agreement' bid.pk %}">Zmluva</a>
+        {% if bid.previous_lender_id %}
+        · <a href="{% url 'auctions:contract_assignment_agreement' bid.pk %}">Postúpenie</a>
+        {% endif %}
+        {% else %}—{% endif %}
       </td>
       <td>
         {% if bid.auction.status == 'funded' %}

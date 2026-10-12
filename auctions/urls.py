@@ -11,6 +11,15 @@ urlpatterns = [
     path('historia/export.pdf', views.investor_history_pdf, name='investor_history_pdf'),
     path('danovy-vykaz/', views.tax_statement, name='tax_statement'),
     path('danovy-vykaz/<int:year>/export.pdf', views.tax_statement_pdf, name='tax_statement_pdf'),
+    path('investicia/<int:bid_id>/zmluva.pdf', views.contract_loan_agreement_pdf, name='contract_loan_agreement'),
+    path(
+        'investicia/<int:bid_id>/zmluva-o-postupeni.pdf',
+        views.contract_assignment_agreement_pdf, name='contract_assignment_agreement',
+    ),
+    path(
+        'investicia/<int:bid_id>/oznamenie-o-postupeni.pdf',
+        views.contract_assignment_notice_pdf, name='contract_assignment_notice',
+    ),
     path('ziadosti/', views.open_auctions_view, name='open_auctions'),
     path('trh/', views.marketplace, name='marketplace'),
     path('trh/<int:bid_id>/kupit/', views.marketplace_buy, name='marketplace_buy'),

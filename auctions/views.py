@@ -372,6 +372,43 @@ def tax_statement_pdf(request, year):
 
 
 @login_required
+def contract_loan_agreement_pdf(request, bid_id):
+    """Stiahnutie Zmluvy o pôžičke (PDF) investorom - za svoju vlastnú investíciu."""
+    from core.contracts import generate_loan_agreement_pdf
+    bid = get_object_or_404(Bid, pk=bid_id, lender=request.user)
+    return generate_loan_agreement_pdf(bid.auction, bid)
+
+
+@login_required
+def contract_assignment_agreement_pdf(request, bid_id):
+    """Stiahnutie Zmluvy o postúpení pohľadávky (PDF) - dostupné kupujúcemu aj
+    predávajúcemu investorovi, ak bola táto investícia prevedená na sekundárnom trhu."""
+    from core.contracts import generate_assignment_agreement_pdf
+    bid = get_object_or_404(Bid, pk=bid_id)
+    if request.user.pk not in (bid.lender_id, getattr(bid, 'previous_lender_id', None)):
+        messages.error(request, 'Nemáš prístup k tomuto dokumentu.')
+        return redirect('auctions:investor_dashboard')
+    if not bid.previous_lender_id:
+        messages.error(request, 'Táto investícia ešte nebola prevedená na sekundárnom trhu.')
+        return redirect('auctions:investor_dashboard')
+    return generate_assignment_agreement_pdf(bid)
+
+
+@login_required
+def contract_assignment_notice_pdf(request, bid_id):
+    """Stiahnutie Oznámenia o postúpení pohľadávky (PDF) - informuje dlžníka o zmene veriteľa."""
+    from core.contracts import generate_assignment_notice_pdf
+    bid = get_object_or_404(Bid, pk=bid_id)
+    if request.user.pk not in (bid.lender_id, getattr(bid, 'previous_lender_id', None), bid.auction.borrower_id):
+        messages.error(request, 'Nemáš prístup k tomuto dokumentu.')
+        return redirect('auctions:investor_dashboard')
+    if not bid.previous_lender_id:
+        messages.error(request, 'Táto investícia ešte nebola prevedená na sekundárnom trhu.')
+        return redirect('auctions:investor_dashboard')
+    return generate_assignment_notice_pdf(bid)
+
+
+@login_required
 def open_auctions_view(request):
     """'Čakáreň' - zoznam otvorených žiadostí o pôžičku, do ktorých investor
     ešte nefinancoval. Zobrazí sa po kliknutí na 'Získať nové pôžičky'."""
@@ -474,9 +511,11 @@ def marketplace_buy(request, bid_id):
     seller.wallet_balance += listing.amount
     seller.save(update_fields=['wallet_balance'])
 
+    listing.previous_lender = seller
+    listing.transferred_at = timezone.now()
     listing.lender = request.user
     listing.for_sale = False
-    listing.save(update_fields=['lender', 'for_sale'])
+    listing.save(update_fields=['previous_lender', 'transferred_at', 'lender', 'for_sale'])
 
     messages.success(request, f'Investícia {listing.amount} € bola prevedená na tvoj účet.')
     return redirect('auctions:investor_dashboard')

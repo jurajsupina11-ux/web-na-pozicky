@@ -20,6 +20,12 @@ urlpatterns = [
     path('moje-pozicky/<int:loan_id>/nahlasit-uhradu/', views.report_payment, name='report_payment'),
     path('moje-udaje/', views.my_profile, name='my_profile'),
     path('moje-zmluvy/', views.my_contracts, name='my_contracts'),
+    path('moje-zmluvy/<int:loan_id>/zmluva.pdf', views.contract_loan_agreement_pdf, name='contract_loan_agreement'),
+    path('moje-zmluvy/<int:loan_id>/predpis.pdf', views.contract_payment_notice_pdf, name='contract_payment_notice'),
+    path(
+        'moje-zmluvy/<int:loan_id>/potvrdenie-o-zaniku-dlhu.pdf',
+        views.contract_debt_discharge_pdf, name='contract_debt_discharge',
+    ),
     path('nastavenia/', views.account_settings, name='account_settings'),
     path('nastavenia/zmena-hesla/', views.CustomPasswordChangeView.as_view(), name='password_change'),
     path('nastavenia/zmena-hesla/hotovo/', views.CustomPasswordChangeDoneView.as_view(), name='password_change_done'),

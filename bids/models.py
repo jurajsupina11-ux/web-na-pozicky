@@ -42,6 +42,20 @@ class Bid(models.Model):
         help_text='Kedy bola investícia ponúknutá na predaj - 5 minút od tohto času je možné predaj ešte zastaviť.',
     )
 
+    # História postúpenia pohľadávky na sekundárnom trhu - potrebné na
+    # generovanie Zmluvy o postúpení pohľadávky a Oznámenia o postúpení.
+    previous_lender = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='sold_bids',
+        help_text='Pôvodný investor, od ktorého bola táto investícia naposledy odkúpená na sekundárnom trhu.',
+    )
+    transferred_at = models.DateTimeField(
+        null=True, blank=True,
+        help_text='Kedy bola investícia naposledy prevedená na nového investora na sekundárnom trhu.',
+    )
+
     class Meta:
         ordering = ['interest_rate', '-amount']
         constraints = [

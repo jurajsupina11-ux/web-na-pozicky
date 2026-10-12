@@ -321,6 +321,50 @@ def my_contracts(request):
     return render(request, 'users/my_contracts.html', {'contracts': contracts})
 
 
+def _get_contract_loan_and_bid(request, loan_id):
+    """Spoločná pomocná funkcia - nájde pôžičku dlžníka a jej financujúcu investíciu (Bid)."""
+    loan = get_object_or_404(
+        Auction, pk=loan_id, borrower=request.user,
+        status__in=[Auction.Status.FUNDED, Auction.Status.CLOSED],
+    )
+    bid = loan.bids.select_related('lender').first()
+    return loan, bid
+
+
+@login_required
+def contract_loan_agreement_pdf(request, loan_id):
+    """Stiahnutie Zmluvy o pôžičke (PDF) dlžníkom."""
+    from core.contracts import generate_loan_agreement_pdf
+    loan, bid = _get_contract_loan_and_bid(request, loan_id)
+    if not bid:
+        messages.error(request, 'K tejto pôžičke zatiaľ nie je priradený žiadny investor.')
+        return redirect('users:my_contracts')
+    return generate_loan_agreement_pdf(loan, bid)
+
+
+@login_required
+def contract_payment_notice_pdf(request, loan_id):
+    """Stiahnutie Predpisu k úhrade (PDF) dlžníkom."""
+    from core.contracts import generate_payment_notice_pdf
+    loan, bid = _get_contract_loan_and_bid(request, loan_id)
+    if not bid:
+        messages.error(request, 'K tejto pôžičke zatiaľ nie je priradený žiadny investor.')
+        return redirect('users:my_contracts')
+    return generate_payment_notice_pdf(loan, bid)
+
+
+@login_required
+def contract_debt_discharge_pdf(request, loan_id):
+    """Stiahnutie Potvrdenia o zániku dlhu (PDF) - len pre splatené pôžičky."""
+    from core.contracts import generate_debt_discharge_certificate_pdf
+    loan = get_object_or_404(Auction, pk=loan_id, borrower=request.user, status=Auction.Status.CLOSED)
+    bid = loan.bids.select_related('lender').first()
+    if not bid:
+        messages.error(request, 'K tejto pôžičke zatiaľ nie je priradený žiadny investor.')
+        return redirect('users:my_contracts')
+    return generate_debt_discharge_certificate_pdf(loan, bid)
+
+
 @login_required
 def account_settings(request):
     """Nastavenia účtu - vrátane zmeny bankového účtu (IBAN), na ktorý sa
