@@ -54,6 +54,43 @@ class User(AbstractUser):
         help_text='Voľný zostatok investora na účte (pripravený na investíciu alebo výplatu).',
     )
 
+    # GDPR - súhlas so spracovaním osobných údajov, zaznamenaný pri žiadosti
+    # o pôžičku alebo registrácii investora.
+    gdpr_consent_given = models.BooleanField(
+        default=False,
+        help_text='Používateľ súhlasil so spracovaním osobných údajov (GDPR).',
+    )
+    gdpr_consent_at = models.DateTimeField(
+        null=True, blank=True,
+        help_text='Čas udelenia GDPR súhlasu.',
+    )
+
+    @property
+    def masked_birth_number(self):
+        """Rodné číslo zobrazené len čiastočne (napr. 9001011234 -> 900101****)
+        - aj majiteľovi účtu sa v bežnom zobrazení ukazuje maskované, celé
+        číslo nie je nikde v appke verejne vypisované."""
+        value = self.birth_number or ''
+        if len(value) <= 4:
+            return value
+        return value[:-4] + '*' * 4
+
+    @property
+    def masked_id_card_number(self):
+        """Číslo OP zobrazené len čiastočne (napr. AB123456 -> AB12****)."""
+        value = self.id_card_number or ''
+        if len(value) <= 4:
+            return value
+        return value[:-4] + '*' * 4
+
+    @property
+    def masked_bank_account_iban(self):
+        """IBAN zobrazený len čiastočne (prvé 4 a posledné 4 znaky)."""
+        value = (self.bank_account_iban or '').replace(' ', '')
+        if len(value) <= 8:
+            return value
+        return f'{value[:4]} •••• •••• {value[-4:]}'
+
     def save(self, *args, **kwargs):
         if not self.display_id:
             self.display_id = _generate_display_id()

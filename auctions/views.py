@@ -9,6 +9,7 @@ from django.views.generic import CreateView, DetailView, ListView
 
 from bids.forms import BidForm
 from bids.models import Bid
+from core.emails import send_investment_confirmation, send_loan_approved
 
 from .models import Auction
 from .forms import AuctionForm
@@ -75,6 +76,7 @@ def place_bid(request, pk):
             # Suma investície sa strháva z peňaženky investora hneď pri odoslaní ponuky.
             request.user.wallet_balance -= amount
             request.user.save(update_fields=['wallet_balance'])
+            send_investment_confirmation(request.user, bid)
 
             messages.success(request, 'Vaša ponuka bola odoslaná.')
             # Keď je žiadosť plne vyfinancovaná, pôžička sa automaticky schváli -
@@ -82,6 +84,7 @@ def place_bid(request, pk):
             if auction.funding_progress >= 100:
                 auction.status = Auction.Status.FUNDED
                 auction.save(update_fields=['status'])
+                send_loan_approved(auction.borrower, auction)
                 messages.success(request, 'Žiadosť bola plne vyfinancovaná a pôžička bola schválená.')
         else:
             messages.error(request, 'Ponuku sa nepodarilo odoslať, skontrolujte údaje.')

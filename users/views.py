@@ -10,6 +10,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 from auctions.models import Auction
+from core.emails import send_loan_application_received, send_repayment_reported
 
 from .forms import BankAccountForm, BorrowerApplicationForm, KYCForm, SignUpForm
 from .models import User
@@ -72,8 +73,9 @@ def loan_application(request):
         form = BorrowerApplicationForm(request.POST)
         if form.is_valid():
             user = form.create_user()
-            form.create_auction(user)
+            auction = form.create_auction(user)
             login(request, user)
+            send_loan_application_received(user, auction)
             messages.success(
                 request,
                 'Žiadosť o pôžičku bola odoslaná. Hneď ako ju investor financuje, dostaneš sa do prostredia pre dlžníkov.',
@@ -197,6 +199,8 @@ def report_payment(request, loan_id):
     if request.method == 'POST':
         loan.payment_reported = True
         loan.save(update_fields=['payment_reported'])
+        for bid in loan.bids.select_related('lender'):
+            send_repayment_reported(bid.lender, loan)
         messages.success(
             request,
             'Ďakujeme, nahlásenie úhrady sme zaznamenali. Platbu overíme do 1 pracovného dňa.',

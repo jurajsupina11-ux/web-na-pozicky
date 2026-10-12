@@ -154,6 +154,27 @@ LOGIN_REDIRECT_URL = 'core:landing'
 LOGOUT_REDIRECT_URL = 'core:landing'
 
 
+# E-mailové notifikácie
+# V DEBUG móde (lokálny vývoj) sa e-maily len vypíšu do konzoly. Na produkcii
+# treba nastaviť SMTP_HOST/SMTP_USER/SMTP_PASSWORD (napr. SendGrid, Mailgun,
+# Gmail SMTP) cez premenné prostredia v Render dashboarde - kód je pripravený,
+# stačí doplniť prístupové údaje, nič sa v kóde meniť nemusí.
+SMTP_HOST = config('SMTP_HOST', default='')
+if SMTP_HOST:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = SMTP_HOST
+    EMAIL_PORT = config('SMTP_PORT', default=587, cast=int)
+    EMAIL_HOST_USER = config('SMTP_USER', default='')
+    EMAIL_HOST_PASSWORD = config('SMTP_PASSWORD', default='')
+    EMAIL_USE_TLS = config('SMTP_USE_TLS', default=True, cast=bool)
+else:
+    # Bez nastaveného SMTP sa e-maily vypisujú do logu/konzoly - appka funguje
+    # ďalej bez chyby, len reálne e-maily neodosiela.
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Pôžičky Predlžníkov <noreply@pozickypredlznikov.sk>')
+
+
 # Security (relevant behind Render's proxy / HTTPS)
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 if not DEBUG:

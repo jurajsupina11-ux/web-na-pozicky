@@ -26,6 +26,8 @@
   .field{margin-bottom:16px;}
   .field label{display:block;font-size:13px;font-weight:600;color:#33406b;margin-bottom:6px;}
   .field input{width:100%;padding:12px 14px;border:1px solid #d6ddee;border-radius:10px;font-size:14px;font-family:inherit;background:#fff;}
+  .field input[type=checkbox]{width:auto;display:inline-block;margin-right:8px;vertical-align:middle;}
+  .field:has(input[type=checkbox]) label{display:inline;font-weight:400;font-size:13px;color:#33406b;}
   .field input:focus{outline:none;border-color:#5b8dff;box-shadow:0 0 0 3px rgba(91,141,255,.18);}
   .errorlist{color:#c23b3b;font-size:13px;margin:4px 0 0;padding:0;list-style:none;}
   .btn-submit{width:100%;background:#1b4fd1;color:#fff;border:none;padding:14px;border-radius:10px;font-weight:700;font-size:15px;cursor:pointer;margin-top:8px;}

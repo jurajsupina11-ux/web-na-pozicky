@@ -50,6 +50,12 @@ class SignUpForm(UserCreationForm):
     """Registrácia investora (veriteľa). Dlžníci tento formulár nepoužívajú -
     žiadajú rovno o úver cez BorrowerApplicationForm."""
 
+    gdpr_consent = forms.BooleanField(
+        label='Súhlasím so spracovaním osobných údajov (GDPR) a s obchodnými podmienkami.',
+        required=True,
+        error_messages={'required': 'Pre registráciu je potrebné udeliť súhlas so spracovaním osobných údajov.'},
+    )
+
     class Meta(UserCreationForm.Meta):
         model = User
         fields = ('username', 'email', 'phone_number')
@@ -61,6 +67,8 @@ class SignUpForm(UserCreationForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.role = User.Role.LENDER
+        user.gdpr_consent_given = True
+        user.gdpr_consent_at = timezone.now()
         if commit:
             user.save()
         return user
@@ -146,6 +154,11 @@ class BorrowerApplicationForm(forms.Form):
     purpose = forms.CharField(
         label='Účel pôžičky', widget=forms.Textarea(attrs={'rows': 3}),
     )
+    gdpr_consent = forms.BooleanField(
+        label='Súhlasím so spracovaním osobných údajov (GDPR) a s obchodnými podmienkami.',
+        required=True,
+        error_messages={'required': 'Pre odoslanie žiadosti je potrebné udeliť súhlas so spracovaním osobných údajov.'},
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -186,6 +199,8 @@ class BorrowerApplicationForm(forms.Form):
             postal_code=self.cleaned_data['postal_code'],
             bank_account_iban=self.cleaned_data['bank_account_iban'],
             kyc_completed=True,
+            gdpr_consent_given=True,
+            gdpr_consent_at=timezone.now(),
         )
         user.set_password(self.cleaned_data['password1'])
         user.save()
