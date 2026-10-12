@@ -23,12 +23,22 @@
   .btn{display:inline-block;padding:13px 28px;border-radius:30px;text-decoration:none;font-weight:700;font-size:14px;cursor:pointer;border:none;}
   .btn-primary{background:#fff;color:#c2410c;}
   .btn-outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.6);margin-left:10px;}
-  .calc-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:26px;}
-  .calc-card label{display:block;font-size:13px;color:#ffe4d4;margin-bottom:6px;}
-  .calc-card input[type=range]{width:100%;accent-color:#fff;margin-bottom:16px;}
-  .calc-card .val{font-weight:800;color:#fff;}
-  .calc-card .result div{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.2);font-size:14px;}
-  .calc-card .result div:last-child{border-bottom:none;font-size:16px;}
+  .calc-card{background:#fff;border-radius:22px;padding:30px;box-shadow:0 24px 60px rgba(90,30,0,.28);}
+  .calc-card .calc-label{font-size:14px;font-weight:700;color:#2a1b10;margin-bottom:14px;}
+  .calc-row{display:flex;align-items:center;gap:14px;margin-bottom:8px;}
+  .calc-btn{width:40px;height:40px;flex-shrink:0;border-radius:12px;border:none;background:#fff1ea;color:#c2410c;font-size:20px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+  .calc-btn:hover{background:#ffd9bf;}
+  .calc-track-wrap{flex:1;position:relative;padding-top:30px;}
+  .calc-card input[type=range]{width:100%;margin:0;accent-color:#c2410c;height:6px;}
+  .calc-bubble{position:absolute;top:0;left:50%;transform:translateX(-50%);background:#8a1538;color:#fff;font-weight:800;font-size:15px;padding:6px 16px;border-radius:10px;white-space:nowrap;}
+  .calc-bubble:after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%) rotate(45deg);width:10px;height:10px;background:#8a1538;}
+  .calc-minmax{display:flex;justify-content:space-between;font-size:12px;color:#b08a73;margin:2px 2px 22px;}
+  .calc-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;border-top:1px solid #ffd9bf;padding-top:18px;margin-top:6px;}
+  .calc-summary .row{font-size:13.5px;color:#5c3a24;}
+  .calc-summary .row strong{display:block;font-size:15px;color:#2a1b10;margin-top:2px;}
+  .calc-summary .row.highlight strong{color:#c2410c;}
+  .calc-cta{display:block;width:100%;text-align:center;margin-top:24px;background:#8a1538;color:#fff;border:none;padding:16px;border-radius:30px;font-weight:800;font-size:15px;letter-spacing:.03em;text-decoration:none;text-transform:uppercase;}
+  .calc-cta:hover{background:#6f1029;}
   .wrap{max-width:1100px;margin:0 auto;padding:60px 28px;}
   .section-title{text-align:center;margin-bottom:36px;}
   .section-title h2{font-size:28px;margin:0 0 8px;}
@@ -61,7 +71,8 @@
     .wrap{padding:40px 18px;}
     .section-title h2{font-size:22px;}
     .cta{padding:40px 18px;}
-    .calc-card{padding:18px;}
+    .calc-card{padding:20px;}
+    .calc-summary{grid-template-columns:1fr;}
   }
 
   /* === Animácie === */
@@ -104,28 +115,65 @@
       <a class="btn btn-outline" href="#ako-funguje">Ako to funguje</a>
     </div>
     <div class="calc-card">
-      <label>Suma: <span class="val" id="amountVal">{{ amount }}</span> €</label>
-      <input type="range" id="amount" min="50" max="500" step="10" value="{{ amount }}">
-      <label>Splatnosť: <span class="val" id="daysVal">{{ days }}</span> dní</label>
-      <input type="range" id="days" min="1" max="30" step="1" value="{{ days }}">
-      <div class="result">
-        <div><span>Úrok (24 % p.a.)</span><strong id="interestVal">{{ interest }} €</strong></div>
-        <div><span>Poplatok platforme (20 % z istiny)</span><strong id="feeVal">{{ fee }} €</strong></div>
-        <div><span>Spolu splatíš</span><strong id="totalVal">{{ total_to_repay }} €</strong></div>
-        <div><span>Na účet ti prijde</span><strong id="netVal">{{ net_to_borrower }} €</strong></div>
+      <div class="calc-label">Chcem si požičať:</div>
+      <div class="calc-row">
+        <button type="button" class="calc-btn" id="amountMinus">−</button>
+        <div class="calc-track-wrap">
+          <div class="calc-bubble" id="amountBubble">{{ amount }} €</div>
+          <input type="range" id="amount" min="50" max="500" step="10" value="{{ amount }}">
+        </div>
+        <button type="button" class="calc-btn" id="amountPlus">+</button>
       </div>
+      <div class="calc-minmax"><span>50 €</span><span>500 €</span></div>
+
+      <div class="calc-label">Počet dní:</div>
+      <div class="calc-row">
+        <button type="button" class="calc-btn" id="daysMinus">−</button>
+        <div class="calc-track-wrap">
+          <div class="calc-bubble" id="daysBubble">{{ days }} dní</div>
+          <input type="range" id="days" min="1" max="30" step="1" value="{{ days }}">
+        </div>
+        <button type="button" class="calc-btn" id="daysPlus">+</button>
+      </div>
+      <div class="calc-minmax"><span>1 deň</span><span>30 dní</span></div>
+
+      <div class="calc-summary">
+        <div class="row">Chcem si požičať<strong id="amountVal">{{ amount }},00 €</strong></div>
+        <div class="row">Aukčný poplatok<strong id="feeVal">{{ fee }} €</strong></div>
+        <div class="row">Počet dní<strong id="daysVal">{{ days }} dní</strong></div>
+        <div class="row highlight">Na účet dostanete<strong id="netVal">{{ net_to_borrower }} €</strong></div>
+        <div class="row">Úrok<strong id="interestVal">{{ interest }} €</strong></div>
+        <div class="row highlight">Spolu vrátiť<strong id="totalVal">{{ total_to_repay }} €</strong></div>
+      </div>
+
+      <a href="{% url 'users:loan_application' %}" class="calc-cta">Pokračovať</a>
     </div>
   </div>
 </section>
 <script>
 const amount=document.getElementById('amount'),days=document.getElementById('days');
+const amountBubble=document.getElementById('amountBubble'),daysBubble=document.getElementById('daysBubble');
+function positionBubble(input,bubble){
+  const min=parseFloat(input.min),max=parseFloat(input.max),val=parseFloat(input.value);
+  const pct=(val-min)/(max-min);
+  const offset=(pct-0.5)*(input.offsetWidth-20);
+  bubble.style.left='calc(50% + '+offset+'px)';
+}
 function recalc(){const a=parseFloat(amount.value),d=parseFloat(days.value);
 const interest=Math.round(a*0.24*(d/365)*100)/100,fee=Math.round(a*0.20*100)/100;
 const total=Math.round((a+interest)*100)/100,net=Math.round((a-fee)*100)/100;
-amountVal.textContent=a.toFixed(0);daysVal.textContent=d.toFixed(0);
+amountBubble.textContent=a.toFixed(0)+' €';daysBubble.textContent=d.toFixed(0)+' dní';
+amountVal.textContent=a.toFixed(2)+' €';daysVal.textContent=d.toFixed(0)+' dní';
 interestVal.textContent=interest.toFixed(2)+' €';feeVal.textContent=fee.toFixed(2)+' €';
-totalVal.textContent=total.toFixed(2)+' €';netVal.textContent=net.toFixed(2)+' €';}
+totalVal.textContent=total.toFixed(2)+' €';netVal.textContent=net.toFixed(2)+' €';
+positionBubble(amount,amountBubble);positionBubble(days,daysBubble);}
 amount.addEventListener('input',recalc);days.addEventListener('input',recalc);
+window.addEventListener('resize',recalc);
+document.getElementById('amountMinus').addEventListener('click',function(){amount.value=Math.max(+amount.min,+amount.value-10);recalc();});
+document.getElementById('amountPlus').addEventListener('click',function(){amount.value=Math.min(+amount.max,+amount.value+10);recalc();});
+document.getElementById('daysMinus').addEventListener('click',function(){days.value=Math.max(+days.min,+days.value-1);recalc();});
+document.getElementById('daysPlus').addEventListener('click',function(){days.value=Math.min(+days.max,+days.value+1);recalc();});
+setTimeout(recalc,50);
 </script>
 
 <div class="wrap">

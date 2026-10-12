@@ -69,6 +69,12 @@
 </div>
 {% endif %}
 
+{% if active_loans or has_any_application %}
+<div class="quick-actions">
+  <a class="btn btn-primary" href="{% url 'users:loan_application' %}">Požičať si znova</a>
+</div>
+{% endif %}
+
 <div class="quick-actions">
   <a class="btn btn-primary" href="{% url 'users:my_applications' %}">Moje žiadosti</a>
   <a class="btn btn-outline" href="{% url 'users:my_contracts' %}">Moje zmluvy</a>
