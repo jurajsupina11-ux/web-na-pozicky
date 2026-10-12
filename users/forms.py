@@ -32,6 +32,15 @@ AUTOCOMPLETE_MAP = {
 }
 
 
+def validate_sk_iban(value):
+    """Peniaze sa dajú posielať iba na slovenské bankové účty (SK IBAN)."""
+    cleaned = (value or '').replace(' ', '').upper()
+    if not cleaned.startswith('SK'):
+        raise ValidationError('Peniaze je možné posielať iba na slovenský bankový účet (IBAN musí začínať SK).')
+    if len(cleaned) != 24:
+        raise ValidationError('Slovenský IBAN musí mať presne 24 znakov (napr. SK89 0900 0000 0000 0000 0000).')
+
+
 def _apply_autocomplete_and_classes(form):
     """Pridá Bootstrap triedy a autocomplete atribúty na všetky polia formulára,
     aby sa dali pekne naštýlovať a aby prehliadač (Google účet v Chrome) mohol
@@ -97,6 +106,11 @@ class KYCForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         _apply_autocomplete_and_classes(self)
 
+    def clean_bank_account_iban(self):
+        value = self.cleaned_data['bank_account_iban']
+        validate_sk_iban(value)
+        return value.replace(' ', '').upper()
+
     def save(self, commit=True):
         user = super().save(commit=False)
         user.kyc_completed = True
@@ -107,16 +121,40 @@ class KYCForm(forms.ModelForm):
 
 class BankAccountForm(forms.ModelForm):
     """Zmena bankového účtu (IBAN), na ktorý sa vyplácajú peniaze - pre
-    investora aj dlžníka, dostupné v Nastaveniach účtu."""
+    investora aj dlžníka, dostupné v Nastaveniach účtu. Peniaze sa posielajú
+    iba na slovenské bankové účty (SK IBAN). Zmena IBAN u investora vyžaduje
+    zadanie bezpečnostného kódu, ktorý dostal e-mailom pri registrácii."""
+
+    security_code = forms.CharField(
+        label='Bezpečnostný kód (z e-mailu pri registrácii)',
+        max_length=20, required=False,
+    )
 
     class Meta:
         model = User
         fields = ('bank_account_iban',)
-        labels = {'bank_account_iban': 'IBAN pre výplatu peňazí'}
+        labels = {'bank_account_iban': 'IBAN pre výplatu peňazí (len SK účty)'}
 
     def __init__(self, *args, **kwargs):
+        self.user = kwargs.get('instance')
         super().__init__(*args, **kwargs)
         _apply_autocomplete_and_classes(self)
+        # Bezpečnostný kód sa vyžaduje len pre investorov (majú ho z registrácie);
+        # dlžníci kód nedostávajú, ich IBAN sa overuje inak (osobné údaje pri KYC).
+        if not self.user or self.user.role != User.Role.LENDER:
+            self.fields.pop('security_code', None)
+
+    def clean_bank_account_iban(self):
+        value = self.cleaned_data['bank_account_iban']
+        validate_sk_iban(value)
+        return value.replace(' ', '').upper()
+
+    def clean_security_code(self):
+        code = self.cleaned_data.get('security_code', '').strip()
+        if self.user and self.user.role == User.Role.LENDER:
+            if not code or code != self.user.security_code:
+                raise ValidationError('Nesprávny bezpečnostný kód.')
+        return code
 
 
 class BorrowerApplicationForm(forms.Form):
@@ -175,6 +213,11 @@ class BorrowerApplicationForm(forms.Form):
         if User.objects.filter(username=username).exists():
             raise ValidationError('Toto používateľské meno je už obsadené.')
         return username
+
+    def clean_bank_account_iban(self):
+        value = self.cleaned_data['bank_account_iban']
+        validate_sk_iban(value)
+        return value.replace(' ', '').upper()
 
     def clean(self):
         cleaned = super().clean()

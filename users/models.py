@@ -6,6 +6,13 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
+def _generate_security_code():
+    """Vygeneruje náhodný 8-miestny bezpečnostný kód (číslice) - posiela sa
+    investorovi e-mailom po úspešnej registrácii a slúži na potvrdenie žiadosti
+    o výber peňazí a na zmenu bankového účtu (IBAN)."""
+    return ''.join(random.choices(string.digits, k=8))
+
+
 def _generate_referral_code():
     """Vygeneruje náhodný unikátny 8-miestny odporúčací kód (písmená+čísla)."""
     alphabet = string.ascii_uppercase + string.digits
@@ -91,6 +98,10 @@ class User(AbstractUser):
         help_text='Odmena za toto odporúčanie už bola pripísaná (aby sa nevyplatila dvakrát).',
     )
 
+    # Bezpečnostný (2FA-like) kód pre investorov - zaslaný e-mailom po úspešnej
+    # registrácii, vyžaduje sa pri žiadosti o výber peňazí a pri zmene IBAN.
+    security_code = models.CharField(max_length=10, blank=True)
+
     @property
     def masked_birth_number(self):
         """Rodné číslo zobrazené len čiastočne (napr. 9001011234 -> 900101****)
@@ -122,6 +133,8 @@ class User(AbstractUser):
             self.display_id = _generate_display_id()
         if not self.referral_code:
             self.referral_code = _generate_referral_code()
+        if not self.security_code and self.role == self.Role.LENDER:
+            self.security_code = _generate_security_code()
         super().save(*args, **kwargs)
 
     #: Minimálny investovaný objem (€) na jednotlivé vernostné stupne pre investorov.

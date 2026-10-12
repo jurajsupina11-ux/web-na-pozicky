@@ -91,3 +91,43 @@ class Auction(models.Model):
             (self.total_bid_amount / self.amount_requested) * Decimal('100'),
         )
 
+
+class WalletTransaction(models.Model):
+    """Evidencia vkladov a výberov investorskej peňaženky. Platforma nemá
+    napojenú platobnú bránu - investor pošle peniaze na náš bankový účet,
+    administrátor manuálne potvrdí príjem a pripíše sumu na peňaženku
+    (DEPOSIT); pri výbere investor požiada o výber (vyžaduje bezpečnostný
+    kód), suma sa mu okamžite odpíše z peňaženky a administrátor manuálne
+    zrealizuje bankový prevod a označí transakciu ako vybavenú."""
+
+    class Kind(models.TextChoices):
+        DEPOSIT = 'deposit', 'Vklad'
+        WITHDRAWAL = 'withdrawal', 'Výber'
+
+    class Status(models.TextChoices):
+        PENDING = 'pending', 'Čaká sa'
+        COMPLETED = 'completed', 'Vybavené'
+        REJECTED = 'rejected', 'Zamietnuté'
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='wallet_transactions',
+    )
+    kind = models.CharField(max_length=10, choices=Kind.choices)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.PENDING)
+    iban = models.CharField(
+        max_length=34, blank=True,
+        help_text='IBAN, na ktorý sa má suma odoslať (pri výbere) - kópia z profilu v čase žiadosti.',
+    )
+    note = models.CharField(max_length=200, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.get_kind_display()} {self.amount} € - {self.user} ({self.get_status_display()})'
+

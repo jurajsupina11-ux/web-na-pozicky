@@ -15,7 +15,7 @@ django.setup()
 from decimal import Decimal
 from django.test import Client
 from django.contrib.auth import get_user_model
-from auctions.models import Auction
+from auctions.models import Auction, WalletTransaction
 from bids.models import Bid
 
 User = get_user_model()
@@ -82,11 +82,22 @@ r = c.post('/accounts/login/dlznik/', {'username': 'e2e_investor', 'password': '
 check('Investor can technically log in via borrower login page (no hard role gate)', r.status_code == 200)
 c.logout()
 
-# ========== 3. WALLET DEPOSIT (investor needs funds before bidding) ==========
+# ========== 3. WALLET DEPOSIT (manual bank transfer - request + admin confirmation) ==========
 c.force_login(investor)
 r = c.post('/aukcie/penazenka/vklad/', {'amount': '500'}, follow=True)
 investor.refresh_from_db()
-check('Wallet deposit of 500 EUR works', investor.wallet_balance == Decimal('500.00'), f'balance={investor.wallet_balance}')
+check('Wallet deposit request does NOT auto-credit (manual bank process)', investor.wallet_balance == Decimal('0.00'), f'balance={investor.wallet_balance}')
+
+deposit_tx = WalletTransaction.objects.filter(user=investor, kind=WalletTransaction.Kind.DEPOSIT).first()
+check('Deposit WalletTransaction record created with PENDING status', deposit_tx is not None and deposit_tx.status == WalletTransaction.Status.PENDING)
+
+# simulate admin confirming the deposit (bank transfer received)
+deposit_tx.status = WalletTransaction.Status.COMPLETED
+investor.wallet_balance += deposit_tx.amount
+investor.save(update_fields=['wallet_balance'])
+deposit_tx.save(update_fields=['status'])
+investor.refresh_from_db()
+check('After admin confirmation, wallet balance credited', investor.wallet_balance == Decimal('500.00'), f'balance={investor.wallet_balance}')
 
 r = c.post('/aukcie/penazenka/vklad/', {'amount': '-50'}, follow=True)
 investor.refresh_from_db()
@@ -240,13 +251,24 @@ investor2.refresh_from_db()
 check('Buyer wallet debited', investor2.wallet_balance == Decimal('300.00'), f'balance={investor2.wallet_balance}')
 c.logout()
 
-# ========== 8. WALLET WITHDRAW ==========
+# ========== 8. WALLET WITHDRAW (requires SK IBAN + security code) ==========
 c.force_login(investor2)
-r = c.post('/aukcie/penazenka/vyber/', {'amount': '50'}, follow=True)
-investor2.refresh_from_db()
-check('Wallet withdraw works', investor2.wallet_balance == Decimal('250.00'), f'balance={investor2.wallet_balance}')
+investor2.bank_account_iban = 'SK8909000000000011117777'
+investor2.save(update_fields=['bank_account_iban'])
 
-r = c.post('/aukcie/penazenka/vyber/', {'amount': '999999'}, follow=True)
+# missing/wrong security code should be rejected
+r = c.post('/aukcie/penazenka/vyber/', {'amount': '50', 'security_code': 'wrong'}, follow=True)
+investor2.refresh_from_db()
+check('Wallet withdraw rejects wrong security code', investor2.wallet_balance == Decimal('300.00'), f'balance={investor2.wallet_balance}')
+
+r = c.post('/aukcie/penazenka/vyber/', {'amount': '50', 'security_code': investor2.security_code}, follow=True)
+investor2.refresh_from_db()
+check('Wallet withdraw works with correct security code', investor2.wallet_balance == Decimal('250.00'), f'balance={investor2.wallet_balance}')
+
+withdraw_tx = WalletTransaction.objects.filter(user=investor2, kind=WalletTransaction.Kind.WITHDRAWAL).first()
+check('Withdrawal WalletTransaction record created', withdraw_tx is not None and withdraw_tx.iban == investor2.bank_account_iban)
+
+r = c.post('/aukcie/penazenka/vyber/', {'amount': '999999', 'security_code': investor2.security_code}, follow=True)
 investor2.refresh_from_db()
 check('Wallet withdraw rejects amount exceeding balance', investor2.wallet_balance == Decimal('250.00'), f'balance={investor2.wallet_balance}')
 c.logout()

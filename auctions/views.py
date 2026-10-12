@@ -15,7 +15,7 @@ from bids.models import Bid
 from core.emails import send_investment_confirmation, send_loan_approved
 from core.models import Notification, notify
 
-from .models import Auction
+from .models import Auction, WalletTransaction
 from .forms import AuctionForm
 
 #: Jednorazový bonus (€) pre pozývateľa aj pozvaného po prvej investícii pozvaného.
@@ -418,18 +418,35 @@ def open_auctions_view(request):
     return render(request, 'auctions/open_auctions.html', {'open_auctions': open_auctions})
 
 
+#: Bankové údaje, na ktoré majú investori posielať vklady (manuálny proces,
+#: bez platobnej brány - admin po prijatí platby ručne potvrdí vklad).
+DEPOSIT_BANK_DETAILS = {
+    'bank_name': 'Fio banka, a.s., pobočka zahraničnej banky',
+    'iban': 'SK89 8330 0000 0021 0167 2695',
+    'swift': 'FIOZSKBA',
+}
+
+
 @login_required
 def wallet_deposit(request):
-    """Simulovaný vklad peňazí na investorskú peňaženku."""
+    """Žiadosť o vklad na investorskú peňaženku - platforma nemá platobnú
+    bránu, investor peniaze pošle na náš bankový účet a administrátor po
+    prijatí platby ručne potvrdí vklad (pripíše sumu na peňaženku)."""
     if request.method == 'POST':
         try:
             amount = Decimal(request.POST.get('amount', '0'))
         except Exception:
             amount = Decimal('0')
         if amount > 0:
-            request.user.wallet_balance += amount
-            request.user.save(update_fields=['wallet_balance'])
-            messages.success(request, f'Na účet bolo pripísaných {amount} €.')
+            WalletTransaction.objects.create(
+                user=request.user, kind=WalletTransaction.Kind.DEPOSIT, amount=amount,
+            )
+            messages.success(
+                request,
+                f'Žiadosť o vklad {amount} € bola zaznamenaná. Pošli túto sumu na náš bankový účet '
+                f'({DEPOSIT_BANK_DETAILS["iban"]}, VS: {request.user.display_id}) - po prijatí platby '
+                f'ti sumu pripíšeme na peňaženku (zvyčajne do 1 pracovného dňa).',
+            )
         else:
             messages.error(request, 'Zadaj platnú sumu na vklad.')
     return redirect('auctions:investor_dashboard')
@@ -437,20 +454,40 @@ def wallet_deposit(request):
 
 @login_required
 def wallet_withdraw(request):
-    """Simulovaná výplata peňazí z investorskej peňaženky na bankový účet."""
+    """Žiadosť o výber peňazí z investorskej peňaženky na bankový účet -
+    vyžaduje bezpečnostný kód zaslaný e-mailom pri registrácii. Suma sa
+    odpíše z peňaženky ihneď, administrátor následne ručne zrealizuje
+    bankový prevod na IBAN uložený v profile investora."""
     if request.method == 'POST':
         try:
             amount = Decimal(request.POST.get('amount', '0'))
         except Exception:
             amount = Decimal('0')
+        code = (request.POST.get('security_code') or '').strip()
+
         if amount <= 0:
             messages.error(request, 'Zadaj platnú sumu na výplatu.')
+        elif not request.user.bank_account_iban:
+            messages.error(
+                request,
+                'Najprv si v Nastaveniach účtu nastav slovenský bankový účet (IBAN), na ktorý sa majú peniaze poslať.',
+            )
+        elif not code or code != request.user.security_code:
+            messages.error(request, 'Nesprávny bezpečnostný kód. Kód nájdeš v e-maile, ktorý si dostal pri registrácii.')
         elif amount > request.user.wallet_balance:
             messages.error(request, 'Na účte nemáš dostatok voľných prostriedkov.')
         else:
             request.user.wallet_balance -= amount
             request.user.save(update_fields=['wallet_balance'])
-            messages.success(request, f'Žiadosť o výplatu {amount} € bola odoslaná na tvoj bankový účet.')
+            WalletTransaction.objects.create(
+                user=request.user, kind=WalletTransaction.Kind.WITHDRAWAL, amount=amount,
+                iban=request.user.bank_account_iban,
+            )
+            messages.success(
+                request,
+                f'Žiadosť o výplatu {amount} € bola úspešne odoslaná. Platby spracúvame v pracovné dni '
+                f'od 8:00 do 16:00 - peniaze ti v tomto čase pošleme na tvoj bankový účet.',
+            )
     return redirect('auctions:investor_dashboard')
 
 

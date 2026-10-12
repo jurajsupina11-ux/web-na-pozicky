@@ -64,12 +64,20 @@
     <form method="post" action="{% url 'auctions:wallet_withdraw' %}">
       {% csrf_token %}
       <input type="number" name="amount" step="0.01" min="1" placeholder="Suma €" required>
+      <input type="text" name="security_code" placeholder="Bezpečnostný kód" required style="width:140px;">
       <button type="submit" class="outline">Vyplatiť</button>
     </form>
   </div>
   <svg class="wallet-illustration" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.35">
     <rect x="2" y="6" width="20" height="14" rx="3"/><path d="M16 6V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2"/><circle cx="17" cy="13" r="2"/>
   </svg>
+</div>
+
+<div class="card" style="margin-bottom:16px;background:#f6f8fb;border:1px dashed #dbe4f5;font-size:13px;color:#55607a;">
+  <strong style="color:#33406b;">Ako funguje vklad a výber:</strong>
+  Vklad pošli na účet <strong>SK89 8330 0000 0021 0167 2695</strong> (Fio banka) s variabilným symbolom <strong>{{ request.user.display_id }}</strong> -
+  po prijatí platby ti sumu pripíšeme na peňaženku. Pri výbere zadaj bezpečnostný kód, ktorý si dostal e-mailom pri registrácii.
+  Platby (vklady aj výbery) spracúvame v <strong>pracovné dni od 8:00 do 16:00</strong>, peniaze posielame iba na slovenské bankové účty (SK IBAN).
 </div>
 
 <div class="bento">

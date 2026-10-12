@@ -54,12 +54,13 @@ Príkazy, ktoré cron joby spúšťajú:
 
 - `python manage.py send_due_date_reminders` - e-mailové pripomienky blížiacej sa/prekročenej splatnosti.
 - `python manage.py process_buybacks` - garancia odkúpenia: automaticky odkúpi pôžičky nesplatené > 90 dní po splatnosti.
+- `python manage.py close_expired_auctions` - automaticky zruší žiadosti o pôžičku, ktoré neboli vyfinancované do konca lehoty (ends_at).
 
 ## Ďalšie kroky (MVP backlog)
 
 - [ ] KYC overenie identity užívateľov
-- [ ] Automatické uzatváranie aukcií po uplynutí `ends_at` (Celery/cron alebo Render Cron Job)
-- [ ] Platobná integrácia (napr. Stripe, alebo lokálny platobný gateway)
+- [x] Automatické uzatváranie aukcií po uplynutí `ends_at` (Render Cron Job - `close_expired_auctions`)
+- [x] Platobný proces: žiadne platobné brány - manuálne bankové prevody (vklad investor -> náš účet, výber náš účet -> investor)
 - [ ] REST API (django-rest-framework je už nainštalovaný) pre budúcu mobilnú appku (Google Play)
-- [ ] E-mailové notifikácie (nová ponuka, koniec aukcie)
+- [x] E-mailové notifikácie (nová ponuka, koniec aukcie, bezpečnostný kód pri registrácii)
 - [ ] Produkčné nastavenie statických súborov / médií (napr. S3-compatible storage)

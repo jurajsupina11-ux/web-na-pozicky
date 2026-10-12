@@ -30,7 +30,8 @@ COMPANY = {
     'dic': '2122361164',
     'email': 'info@insightpartners.sk',
     'web': 'www.pozickypredlznikov.sk',
-    'phone': '',  # TODO: doplniť zákaznícku linku, ak bude zriadená
+    'phone': '+421 910 314 417',
+    'contact_person': 'Juraj Šupina',
 }
 
 #: Bankové údaje, na ktoré dlžníci zasielajú splátky (zhodné s users.views.REPAYMENT_BANK_DETAILS).
@@ -292,7 +293,8 @@ def generate_loan_agreement_pdf(loan, bid):
     el.append(sig_table)
     el.append(Spacer(1, 10 * mm))
     el.append(Paragraph(
-        f'{COMPANY["name"]}, {COMPANY["address"]}, IČO: {COMPANY["ico"]}, {COMPANY["email"]}, {COMPANY["web"]}',
+        f'{COMPANY["name"]}, {COMPANY["address"]}, IČO: {COMPANY["ico"]}, {COMPANY["email"]}, '
+        f'{COMPANY["phone"]}, {COMPANY["web"]}',
         styles['Small'],
     ))
 
@@ -338,8 +340,8 @@ def generate_payment_notice_pdf(loan, bid):
         ),
         Spacer(1, 10 * mm),
         Paragraph(
-            f'{COMPANY["email"]} · {COMPANY["web"]}<br/>{COMPANY["name"]}, {COMPANY["address"]}, '
-            f'IČO: {COMPANY["ico"]}', styles['Small'],
+            f'{COMPANY["email"]} · {COMPANY["phone"]} · {COMPANY["web"]}<br/>{COMPANY["name"]}, '
+            f'{COMPANY["address"]}, IČO: {COMPANY["ico"]}', styles['Small'],
         ),
     ]
     doc.build(el)
@@ -542,7 +544,7 @@ def generate_debt_discharge_certificate_pdf(loan, bid):
         Spacer(1, 10 * mm),
         Paragraph(
             f'{COMPANY["name"]}<br/>{COMPANY["address"]}<br/>IČO: {COMPANY["ico"]}<br/>'
-            f'E-mail: {COMPANY["email"]}<br/>{COMPANY["web"]}', styles['Normal'],
+            f'E-mail: {COMPANY["email"]}<br/>Telefón: {COMPANY["phone"]}<br/>{COMPANY["web"]}', styles['Normal'],
         ),
     ]
     doc.build(el)

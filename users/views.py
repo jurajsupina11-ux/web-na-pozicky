@@ -10,7 +10,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 from auctions.models import Auction
-from core.emails import send_loan_application_received, send_repayment_reported
+from core.emails import send_investor_welcome, send_loan_application_received, send_repayment_reported
 
 from .forms import BankAccountForm, BorrowerApplicationForm, KYCForm, SignUpForm
 from .models import User
@@ -38,6 +38,7 @@ class SignUpView(CreateView):
                 form.instance.referred_by = referrer
         response = super().form_valid(form)
         login(self.request, self.object)
+        send_investor_welcome(self.object)
         return response
 
 

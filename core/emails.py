@@ -27,6 +27,28 @@ def _send(subject, message, to_email):
         logger.exception('Nepodarilo sa odoslať e-mail "%s" na adresu %s', subject, to_email)
 
 
+def send_investor_welcome(user):
+    """Investorovi: po úspešnej registrácii mu pošleme bezpečnostný kód,
+    ktorý bude potrebovať na potvrdenie žiadosti o výber peňazí a na zmenu
+    bankového účtu (IBAN) v Nastaveniach."""
+    _send(
+        'Vitaj na Pôžičky Predlžníkov - tvoj bezpečnostný kód',
+        (
+            f'Dobrý deň,\n\n'
+            f'vitaj medzi investormi na Pôžičky Predlžníkov!\n\n'
+            f'Tvoj bezpečnostný kód je: {user.security_code}\n\n'
+            f'Tento kód budeš potrebovať vždy, keď:\n'
+            f'- požiadaš o výber peňazí z peňaženky na svoj bankový účet,\n'
+            f'- budeš meniť bankový účet (IBAN), na ktorý sa ti majú peniaze posielať.\n\n'
+            f'Kód si ulož na bezpečné miesto a nikomu ho neposkytuj.\n\n'
+            f'Peniaze posielame výhradne na slovenské bankové účty (SK IBAN) a platby spracúvame '
+            f'v pracovné dni od 8:00 do 16:00.\n\n'
+            f'S pozdravom,\nPôžičky Predlžníkov'
+        ),
+        user.email,
+    )
+
+
 def send_loan_application_received(user, auction):
     """Dlžníkovi: potvrdenie prijatia žiadosti o pôžičku."""
     _send(
@@ -127,6 +149,21 @@ def send_buyback_notice_borrower(user, auction):
             f'vaša pôžička #{auction.pk} ({auction.amount_requested} €) nebola splatená do 90 dní po splatnosti '
             f'a bola odkúpená platformou Pôžičky Predlžníkov. Váš dlh teraz evidujeme priamo voči platforme, '
             f'prosíme uhraďte dlžnú sumu čo najskôr, inak bude pristúpené k ďalšiemu vymáhaniu.\n\n'
+            f'S pozdravom,\nPôžičky Predlžníkov'
+        ),
+        user.email,
+    )
+
+
+def send_auction_expired(user, auction):
+    """Dlžníkovi: žiadosť o pôžičku nebola vyfinancovaná do konca lehoty a bola zrušená."""
+    _send(
+        'Tvoja žiadosť o pôžičku nebola vyfinancovaná',
+        (
+            f'Dobrý deň,\n\n'
+            f'tvoja žiadosť o pôžičku {auction.amount_requested} € bohužiaľ nebola vyfinancovaná žiadnym '
+            f'investorom v stanovenej lehote a bola zrušená.\n\n'
+            f'Môžeš podať novú žiadosť vo svojom účte.\n\n'
             f'S pozdravom,\nPôžičky Predlžníkov'
         ),
         user.email,

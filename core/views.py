@@ -53,6 +53,8 @@ COMPANY_DETAILS = {
     'ico': '56609060',
     'dic': '2122361164',
     'email': 'info@insightpartners.sk',
+    'phone': '+421 910 314 417',
+    'contact_person': 'Juraj Šupina',
 }
 
 
