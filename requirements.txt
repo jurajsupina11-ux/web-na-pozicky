@@ -6,3 +6,4 @@ dj-database-url==3.1.2
 python-decouple==3.8
 djangorestframework==3.18.3
 reportlab==5.0.1
+boto3==1.35.99

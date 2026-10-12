@@ -1,11 +1,18 @@
 databases:
   - name: pozicky-db
-    plan: free
+    plan: starter
+    # Starter plán (platený): trvalé úložisko bez 90-dňovej expirácie, denné
+    # automatické zálohy so 7-dňovou retenciou, viac RAM/CPU a súbežných
+    # spojení oproti bezplatnému plánu. Zmena plánu sa prejaví po manuálnom
+    # potvrdení platby v Render Dashboarde (Blueprint sync ju len pripraví).
 
 services:
   - type: web
     name: pozicky-predlznikov
     env: python
+    # Web service môže zostať na free pláne dlhšie (najmä kritický je upgrade
+    # databázy), prejdi na starter web plán, keď narastie návštevnosť
+    # (free web service sa po neaktivite uspáva, čo spomaľuje prvé požiadavky).
     plan: free
     buildCommand: "./build.sh"
     startCommand: "gunicorn config.wsgi:application"
@@ -68,4 +75,30 @@ services:
           name: pozicky-db
           property: connectionString
       - key: SECRET_KEY
+        sync: false
+
+  - type: cron
+    name: pozicky-zaloha-databazy
+    env: python
+    plan: free
+    # Raz týždenne v nedeľu o 3:00 - nezávislá záloha databázy mimo Render
+    # (pg_dump nahraný na S3-kompatibilné úložisko), pozri core/management/
+    # commands/backup_database.py pre detaily a potrebné env premenné.
+    schedule: "0 3 * * 0"
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python manage.py backup_database"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pozicky-db
+          property: connectionString
+      - key: SECRET_KEY
+        sync: false
+      - key: BACKUP_S3_BUCKET
+        sync: false
+      - key: BACKUP_S3_ENDPOINT_URL
+        sync: false
+      - key: BACKUP_S3_ACCESS_KEY
+        sync: false
+      - key: BACKUP_S3_SECRET_KEY
         sync: false
