@@ -1,36 +1,65 @@
-{% extends "base.html" %}
+{% extends "investor_base.html" %}
+{% block nav_rooms %}active{% endblock %}
 {% block title %}{{ auction.title }}{% endblock %}
+{% block extra_style %}
+<style>
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:13px;font-weight:600;color:#33406b;margin-bottom:6px;}
+  .field input{width:100%;max-width:300px;padding:10px 12px;border:1px solid #dbe4f5;border-radius:8px;font-size:14px;font-family:inherit;}
+  .field input:focus{outline:none;border-color:#2554ea;}
+</style>
+{% endblock %}
 {% block content %}
-<h1>{{ auction.title }}</h1>
-<p>{{ auction.description }}</p>
-<ul class="list-group mb-4">
-    <li class="list-group-item">Žiadaná suma: {{ auction.amount_requested }} €</li>
-    <li class="list-group-item">Max. úrok: {{ auction.max_interest_rate }} %</li>
-    <li class="list-group-item">Splatnosť: {{ auction.duration_days }} dní</li>
-    <li class="list-group-item">Koniec aukcie: {{ auction.ends_at }}</li>
-    <li class="list-group-item">Vyfinancované: {{ auction.funding_progress|floatformat:0 }} %</li>
-</ul>
+<div class="toprow">
+  <h1 style="margin:0;">{{ auction.title }}</h1>
+  <a class="btn btn-outline" style="margin:0;" href="{% url 'auctions:open_auctions' %}">← Späť na žiadosti</a>
+</div>
 
-<h3>Ponuky veriteľov</h3>
-<div class="table-responsive">
-<table class="table">
+<div class="card" style="margin-bottom:16px;">
+  <h2>Parametre žiadosti</h2>
+  <div class="table-scroll">
+  <table>
+    <tr><th>Žiadateľ</th><td>{{ auction.borrower.display_name }}</td></tr>
+    <tr><th>Žiadaná suma</th><td>{{ auction.amount_requested }} €</td></tr>
+    <tr><th>Max. úrok</th><td>{{ auction.max_interest_rate }} %</td></tr>
+    <tr><th>Splatnosť</th><td>{{ auction.duration_days }} dní</td></tr>
+    <tr><th>Koniec aukcie</th><td>{{ auction.ends_at|date:"d.m.Y H:i" }}</td></tr>
+    <tr><th>Vyfinancované</th><td>{{ auction.funding_progress|floatformat:0 }} %</td></tr>
+  </table>
+  </div>
+  {% if auction.description %}<p style="color:#55607a;margin-top:16px;">{{ auction.description }}</p>{% endif %}
+</div>
+
+<div class="card" style="margin-bottom:16px;">
+  <h2>Ponuky veriteľov</h2>
+  <div class="table-scroll">
+  <table>
     <thead><tr><th>Veriteľ</th><th>Suma</th><th>Úrok</th><th>Stav</th></tr></thead>
     <tbody>
     {% for bid in bids %}
-        <tr><td>{{ bid.lender.display_name }}</td><td>{{ bid.amount }} €</td><td>{{ bid.interest_rate }} %</td><td>{{ bid.get_status_display }}</td></tr>
+      <tr><td>{{ bid.lender.display_name }}</td><td>{{ bid.amount }} €</td><td>{{ bid.interest_rate }} %</td><td>{{ bid.get_status_display }}</td></tr>
     {% empty %}
-        <tr><td colspan="4">Zatiaľ žiadne ponuky.</td></tr>
+      <tr><td colspan="4">Zatiaľ žiadne ponuky.</td></tr>
     {% endfor %}
     </tbody>
-</table>
+  </table>
+  </div>
 </div>
 
 {% if user.is_authenticated and auction.is_open %}
-<h3>Pridať ponuku</h3>
-<form method="post" action="{% url 'auctions:place_bid' auction.pk %}">
+<div class="card">
+  <h2>Financovať túto žiadosť</h2>
+  <form method="post" action="{% url 'auctions:place_bid' auction.pk %}">
     {% csrf_token %}
-    {{ bid_form.as_p }}
-    <button type="submit" class="btn btn-success">Odoslať ponuku</button>
-</form>
+    {% for field in bid_form %}
+      <div class="field">
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.errors %}<div style="color:#c4342b;font-size:13px;margin-top:4px;">{{ field.errors }}</div>{% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Odoslať ponuku</button>
+  </form>
+</div>
 {% endif %}
 {% endblock %}

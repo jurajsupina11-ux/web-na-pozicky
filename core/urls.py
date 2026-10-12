@@ -10,4 +10,6 @@ urlpatterns = [
     path('pre-ziadatelov/', views.landing_borrower, name='borrower'),
     path('kontakt/', views.contact, name='contact'),
     path('caste-otazky/', views.faq, name='faq'),
+    path('obchodne-podmienky/', views.terms, name='terms'),
+    path('ochrana-osobnych-udajov/', views.privacy, name='privacy'),
 ]

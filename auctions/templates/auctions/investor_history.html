@@ -1,0 +1,59 @@
+{% extends "investor_base.html" %}
+{% block nav_history %}active{% endblock %}
+{% block title %}História investícií{% endblock %}
+{% block extra_style %}
+<style>
+  .filter-row{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:16px;}
+  .filter-row .field label{display:block;font-size:12px;font-weight:600;color:#55607a;margin-bottom:5px;}
+  .filter-row .field input{padding:9px 12px;border:1px solid #dbe4f5;border-radius:8px;font-size:14px;font-family:inherit;}
+</style>
+{% endblock %}
+{% block content %}
+<div class="toprow">
+  <h1 style="margin:0;">História investícií</h1>
+  <a class="btn btn-outline" style="margin:0;" href="{% url 'auctions:investor_dashboard' %}">← Dashboard</a>
+</div>
+
+<div class="card">
+  <form method="get" class="filter-row">
+    <div class="field">
+      <label for="od">Od</label>
+      <input type="date" id="od" name="od" value="{{ date_from }}">
+    </div>
+    <div class="field">
+      <label for="do">Do</label>
+      <input type="date" id="do" name="do" value="{{ date_to }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Filtrovať</button>
+    <a class="btn btn-outline" href="{% url 'auctions:investor_history_pdf' %}?od={{ date_from }}&do={{ date_to }}">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M6 10l6 5 6-5"/><path d="M4 21h16"/></svg>
+      Exportovať do PDF
+    </a>
+  </form>
+
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Dátum</th><th>Žiadateľ</th><th>Suma</th><th>Úrok</th><th>Splatnosť</th><th>Stav</th></tr></thead>
+    <tbody>
+      {% for bid in bids %}
+      <tr>
+        <td>{{ bid.created_at|date:"d.m.Y" }}</td>
+        <td>{{ bid.auction.borrower.display_name }}</td>
+        <td>{{ bid.amount }} €</td>
+        <td>{{ bid.interest_rate }} %</td>
+        <td>{{ bid.auction.duration_days }} dní</td>
+        <td>{{ bid.auction.get_status_display }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">Za zvolené obdobie nemáš žiadne investície.</td></tr>
+      {% endfor %}
+    </tbody>
+    {% if bids %}
+    <tfoot>
+      <tr><td colspan="2" style="font-weight:700;">Spolu</td><td style="font-weight:700;">{{ total_amount }} €</td><td colspan="3"></td></tr>
+    </tfoot>
+    {% endif %}
+  </table>
+  </div>
+</div>
+{% endblock %}

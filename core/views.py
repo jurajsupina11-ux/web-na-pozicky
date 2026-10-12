@@ -57,3 +57,13 @@ def contact(request):
 def faq(request):
     """Stránka s často kladenými otázkami (pre investorov aj žiadateľov)."""
     return render(request, 'core/faq.html')
+
+
+def terms(request):
+    """Všeobecné obchodné podmienky."""
+    return render(request, 'core/terms.html', {'company': COMPANY_DETAILS})
+
+
+def privacy(request):
+    """Zásady ochrany osobných údajov (GDPR)."""
+    return render(request, 'core/privacy.html', {'company': COMPANY_DETAILS})

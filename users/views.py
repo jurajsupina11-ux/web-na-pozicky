@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
@@ -54,6 +54,25 @@ class BorrowerLoginView(CustomLoginView):
 
 class CustomLogoutView(LogoutView):
     next_page = reverse_lazy('core:landing')
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+    """Zmena hesla - šablóna sa líši podľa role prihláseného používateľa."""
+    success_url = reverse_lazy('users:password_change_done')
+
+    def get_template_names(self):
+        if self.request.user.role == User.Role.BORROWER:
+            return ['users/password_change_borrower.html']
+        return ['users/password_change_investor.html']
+
+
+class CustomPasswordChangeDoneView(PasswordChangeDoneView):
+    """Potvrdenie úspešnej zmeny hesla - šablóna podľa role."""
+
+    def get_template_names(self):
+        if self.request.user.role == User.Role.BORROWER:
+            return ['users/password_change_done_borrower.html']
+        return ['users/password_change_done_investor.html']
 
 
 @login_required

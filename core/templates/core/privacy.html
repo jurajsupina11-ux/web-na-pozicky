@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ochrana osobných údajov – Pôžičky Predlžníkov</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#fffaf5;color:#2a1b10;}
+  a{color:inherit;}
+  header{background:#fff;border-bottom:1px solid #ffd9bf;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+  header .logo{font-weight:800;font-size:19px;color:#ff6a2b;text-decoration:none;}
+  header nav a{text-decoration:none;color:#8a6a56;font-size:14px;margin-left:16px;}
+  .wrap{max-width:760px;margin:0 auto;padding:60px 24px 80px;}
+  h1{font-size:32px;margin:0 0 10px;}
+  .lead{color:#8a6a56;margin:0 0 32px;font-size:15px;}
+  .card{background:#fff;border:1px solid #ffd9bf;border-radius:20px;padding:32px;}
+  .card h2{font-size:17px;margin:26px 0 10px;}
+  .card h2:first-child{margin-top:0;}
+  .card p,.card li{color:#5c3a24;font-size:14.5px;line-height:1.6;}
+  .card ol,.card ul{padding-left:20px;}
+  footer{text-align:center;padding:30px;color:#b08a73;font-size:12px;background:#fff3ea;}
+  @media(max-width:600px){ .wrap{padding:40px 16px 60px;} .card{padding:22px;} h1{font-size:26px;} }
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="{% url 'core:landing' %}">🔥 Pôžičky Predlžníkov</a>
+  <nav>
+    <a href="{% url 'core:terms' %}">Obchodné podmienky</a>
+    <a href="{% url 'core:contact' %}">Kontakt</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <h1>Ochrana osobných údajov</h1>
+  <p class="lead">Informácie o tom, ako {{ company.name }} spracúva vaše osobné údaje v súlade s GDPR.</p>
+  <div class="card">
+    <h2>1. Prevádzkovateľ</h2>
+    <p>Prevádzkovateľom je {{ company.name }}, so sídlom {{ company.address }}, IČO {{ company.ico }}. Kontakt pre otázky ohľadom ochrany údajov: <a href="mailto:{{ company.email }}" style="color:#ff6a2b;">{{ company.email }}</a>.</p>
+
+    <h2>2. Aké údaje spracúvame</h2>
+    <ul>
+      <li>Identifikačné údaje (meno, priezvisko, dátum narodenia, číslo občianskeho preukazu, rodné číslo)</li>
+      <li>Kontaktné údaje (e-mail, telefónne číslo, adresa)</li>
+      <li>Finančné údaje (bankový účet/IBAN, história pôžičiek a investícií)</li>
+      <li>Technické údaje (prihlasovacie záznamy, IP adresa)</li>
+    </ul>
+
+    <h2>3. Účel spracúvania</h2>
+    <p>Osobné údaje spracúvame výhradne na účely overenia identity, vystavenia zmluvy o pôžičke, správy používateľského účtu a plnenia zákonných povinností. Osobné údaje nikdy nezverejňujeme iným používateľom - vo verejnom rozhraní vystupuje každý používateľ len pod anonymným číselným identifikátorom.</p>
+
+    <h2>4. Doba uchovávania</h2>
+    <p>Údaje uchovávame po dobu trvania zmluvného vzťahu a následne po dobu vyžadovanú platnou legislatívou (napr. účtovnou a daňovou).</p>
+
+    <h2>5. Vaše práva</h2>
+    <ul>
+      <li>Právo na prístup k svojim osobným údajom</li>
+      <li>Právo na opravu nesprávnych údajov</li>
+      <li>Právo na výmaz údajov (ak to neodporuje zákonným povinnostiam)</li>
+      <li>Právo na prenosnosť údajov</li>
+      <li>Právo namietať proti spracúvaniu</li>
+    </ul>
+    <p>Svoje práva si môžete uplatniť na <a href="mailto:{{ company.email }}" style="color:#ff6a2b;">{{ company.email }}</a>.</p>
+
+    <h2>6. Zabezpečenie údajov</h2>
+    <p>Citlivé údaje (rodné číslo, číslo občianskeho preukazu, IBAN) zobrazujeme aj samotnému používateľovi len v maskovanej podobe. Prístup k plným údajom majú len oprávnené osoby na účely nevyhnutné pre fungovanie platformy.</p>
+  </div>
+</div>
+
+<footer>&copy; Pôžičky Predlžníkov · <a href="{% url 'core:landing' %}" style="color:#ff6a2b;">Späť na výber sekcie</a> · <a href="{% url 'core:terms' %}" style="color:#ff6a2b;">Obchodné podmienky</a></footer>
+</body>
+</html>

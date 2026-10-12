@@ -120,6 +120,7 @@
         {{ form.gdpr_consent.label_tag }}
         {% if form.gdpr_consent.errors %}<ul class="errorlist">{% for e in form.gdpr_consent.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
       </div>
+      <p style="font-size:12px;color:#b08a73;margin:-8px 0 16px;">Viac v <a href="{% url 'core:terms' %}" style="color:#ff6a2b;">obchodných podmienkach</a> a <a href="{% url 'core:privacy' %}" style="color:#ff6a2b;">ochrane osobných údajov</a>.</p>
       <button type="submit" class="btn-submit">Odoslať žiadosť o pôžičku</button>
       <p class="note">Odoslaním žiadosti súhlasíš s podmienkami 24 % p.a. úroku a jednorazového aukčného poplatku platforme (mení sa podľa dĺžky splácania, minimálne však 20 €).</p>
     </form>

@@ -1,10 +1,13 @@
+from datetime import datetime, time
 from decimal import Decimal
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views.generic import CreateView, DetailView, ListView
 
 from bids.forms import BidForm
@@ -123,6 +126,116 @@ def investor_dashboard(request):
         'bids_count': my_bids.count(),
     }
     return render(request, 'auctions/investor_dashboard.html', context)
+
+
+def _parse_history_dates(request):
+    """Spoločné parsovanie dátumov 'od'/'do' z GET parametrov pre históriu
+    investícií aj PDF export - vracia (date_from, date_to, bids_queryset)."""
+    date_from_str = request.GET.get('od', '')
+    date_to_str = request.GET.get('do', '')
+    qs = Bid.objects.filter(lender=request.user).select_related('auction').order_by('-created_at')
+
+    date_from = None
+    date_to = None
+    if date_from_str:
+        try:
+            date_from = datetime.strptime(date_from_str, '%Y-%m-%d').date()
+            qs = qs.filter(created_at__gte=timezone.make_aware(datetime.combine(date_from, time.min)))
+        except ValueError:
+            date_from = None
+    if date_to_str:
+        try:
+            date_to = datetime.strptime(date_to_str, '%Y-%m-%d').date()
+            qs = qs.filter(created_at__lte=timezone.make_aware(datetime.combine(date_to, time.max)))
+        except ValueError:
+            date_to = None
+    return date_from_str, date_to_str, qs
+
+
+@login_required
+def investor_history(request):
+    """História investícií investora s filtrom podľa obdobia (od-do) a
+    možnosťou exportu do PDF pre potreby účtovníctva."""
+    date_from_str, date_to_str, bids = _parse_history_dates(request)
+    total_amount = sum((b.amount for b in bids), Decimal('0'))
+    return render(request, 'auctions/investor_history.html', {
+        'bids': bids,
+        'date_from': date_from_str,
+        'date_to': date_to_str,
+        'total_amount': total_amount,
+    })
+
+
+@login_required
+def investor_history_pdf(request):
+    """Export histórie investícií za zvolené obdobie do PDF (napr. pre účtovníctvo)."""
+    import os
+
+    import reportlab
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.units import mm
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    from reportlab.lib.styles import getSampleStyleSheet
+
+    # Bitstream Vera obsahuje diakritiku (á, č, š...) na rozdiel od vstavaných
+    # PDF fontov (Helvetica), ktoré ju nepodporujú.
+    font_path = os.path.join(os.path.dirname(reportlab.__file__), 'fonts', 'Vera.ttf')
+    font_path_bold = os.path.join(os.path.dirname(reportlab.__file__), 'fonts', 'VeraBd.ttf')
+    if 'Vera' not in pdfmetrics.getRegisteredFontNames():
+        pdfmetrics.registerFont(TTFont('Vera', font_path))
+        pdfmetrics.registerFont(TTFont('Vera-Bold', font_path_bold))
+
+    date_from_str, date_to_str, bids = _parse_history_dates(request)
+
+    response = HttpResponse(content_type='application/pdf')
+    filename = f'investicie_{date_from_str or "od"}_{date_to_str or "do"}.pdf'
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    doc = SimpleDocTemplate(response, pagesize=A4, topMargin=18 * mm, bottomMargin=18 * mm)
+    styles = getSampleStyleSheet()
+    styles['Title'].fontName = 'Vera-Bold'
+    styles['Normal'].fontName = 'Vera'
+    elements = [
+        Paragraph('Pôžičky Predlžníkov – história investícií', styles['Title']),
+        Paragraph(
+            f'Obdobie: {date_from_str or "od začiatku"} – {date_to_str or "dnes"}',
+            styles['Normal'],
+        ),
+        Paragraph(f'Investor: {request.user.display_name} ({request.user.username})', styles['Normal']),
+        Spacer(1, 10 * mm),
+    ]
+
+    data = [['Dátum', 'Žiadateľ', 'Suma (€)', 'Úrok (% p.a.)', 'Splatnosť (dní)', 'Stav']]
+    total = Decimal('0')
+    for b in bids:
+        data.append([
+            b.created_at.strftime('%d.%m.%Y'),
+            b.auction.borrower.display_name,
+            f'{b.amount}',
+            f'{b.interest_rate}',
+            f'{b.auction.duration_days}',
+            b.auction.get_status_display(),
+        ])
+        total += b.amount
+    data.append(['', '', f'{total}', '', '', 'Spolu'])
+
+    table = Table(data, colWidths=[25 * mm, 30 * mm, 25 * mm, 28 * mm, 28 * mm, 28 * mm])
+    table.setStyle(TableStyle([
+        ('FONTNAME', (0, 0), (-1, -1), 'Vera'),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2554ea')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Vera-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 9),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#dbe4f5')),
+        ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#eaf0ff')),
+        ('FONTNAME', (0, -1), (-1, -1), 'Vera-Bold'),
+    ]))
+    elements.append(table)
+    doc.build(elements)
+    return response
 
 
 @login_required
