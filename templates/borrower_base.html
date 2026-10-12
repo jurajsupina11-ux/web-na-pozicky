@@ -94,6 +94,7 @@
     <a href="{% url 'users:dashboard' %}" class="{% block nav_dashboard %}{% endblock %}">Dashboard</a>
     <a href="{% url 'users:my_applications' %}" class="{% block nav_applications %}{% endblock %}">Moje žiadosti</a>
     <a href="{% url 'users:my_loans' %}" class="{% block nav_loans %}{% endblock %}">Moje pôžičky</a>
+    <a href="{% url 'users:my_offers' %}" class="{% block nav_offers %}{% endblock %}">Ponuky</a>
     <a href="{% url 'users:my_contracts' %}" class="{% block nav_contracts %}{% endblock %}">Moje zmluvy</a>
     <a href="{% url 'users:my_profile' %}" class="{% block nav_profile %}{% endblock %}">Moje údaje</a>
     <a href="{% url 'users:account_settings' %}" class="{% block nav_settings %}{% endblock %}">Nastavenia</a>
@@ -118,5 +119,8 @@
   {% endif %}
   {% block content %}{% endblock %}
 </div>
+<footer style="text-align:center;padding:24px;color:#b08a73;font-size:12px;">
+  <a href="{% url 'core:faq' %}" style="color:#f05a22;">Časté otázky</a> · <a href="{% url 'core:contact' %}" style="color:#f05a22;">Kontakt</a>
+</footer>
 </body>
 </html>

@@ -1,0 +1,55 @@
+{% extends "borrower_base.html" %}
+{% block nav_offers %}active{% endblock %}
+{% block title %}Ponuky{% endblock %}
+{% block content %}
+<h1>Ponuky</h1>
+
+{% if has_closed_loan %}
+<div class="card" style="background:linear-gradient(135deg,#d84a16,#f05a22);color:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+  <div>
+    <h2 style="color:#fff;margin:0 0 4px;">Máš u nás splatenú pôžičku</h2>
+    <p style="color:#ffe2d2;margin:0;">Ako overený klient môžeš požiadať o ďalšiu pôžičku 50 – 500 € na max. 30 dní, peniaze máš na účte do pár minút.</p>
+  </div>
+  <a class="btn" style="background:#fff;color:#d84a16;" href="{% url 'users:loan_application' %}">Požičať si znova</a>
+</div>
+{% else %}
+<div class="alert alert-info">
+  Zatiaľ nemáš žiadnu splatenú pôžičku. Hneď ako prvú pôžičku úspešne splatíš, zobrazí sa tu ponuka na ďalšiu pôžičku.
+</div>
+{% endif %}
+
+{% if active_loans %}
+<div class="card">
+  <h2>Platobné údaje k aktuálnej pôžičke</h2>
+  {% for loan in active_loans %}
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+    <div>
+      <div style="font-size:22px;font-weight:800;">{{ loan.amount_requested }} €</div>
+      <div style="color:#6b5a4d;font-size:13.5px;margin-top:3px;">Pôžička #{{ loan.pk }} · splatnosť {{ loan.due_date|date:"d.m.Y" }}{% if loan.postponed_days %} (odložené o {{ loan.postponed_days }} dní){% endif %}</div>
+    </div>
+    {% if loan.payment_reported %}<span class="status-pill s-active">Čaká na overenie úhrady</span>
+    {% else %}<span class="status-pill s-active">Aktívna</span>{% endif %}
+  </div>
+  <div class="table-scroll">
+  <table style="margin-bottom:18px;">
+    <tr><th>Istina</th><th>Úrok + poplatky</th><th>Spolu na úhradu</th></tr>
+    <tr>
+      <td>{{ loan.amount_requested }} €</td>
+      <td>{{ loan.interest_amount }} €</td>
+      <td><strong>{{ loan.repay_amount }} €</strong></td>
+    </tr>
+  </table>
+  </div>
+  {% endfor %}
+  <div class="table-scroll">
+  <table>
+    <tr><th>Banka</th><td>{{ bank_details.bank_name }}</td></tr>
+    <tr><th>IBAN</th><td><strong>{{ bank_details.iban }}</strong></td></tr>
+    <tr><th>SWIFT/BIC</th><td>{{ bank_details.swift }}</td></tr>
+    <tr><th>Variabilný symbol</th><td>{{ bank_details.variable_symbol_hint }}</td></tr>
+  </table>
+  </div>
+  <a class="btn btn-outline" style="margin-top:16px;" href="{% url 'users:my_loans' %}">Zobraziť detail v Moje pôžičky</a>
+</div>
+{% endif %}
+{% endblock %}

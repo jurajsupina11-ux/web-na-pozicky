@@ -160,7 +160,8 @@ function positionBubble(input,bubble){
   bubble.style.left='calc(50% + '+offset+'px)';
 }
 function recalc(){const a=parseFloat(amount.value),d=parseFloat(days.value);
-const interest=Math.round(a*0.24*(d/365)*100)/100,fee=Math.round(a*0.20*100)/100;
+const interest=Math.round(a*0.24*(d/365)*100)/100;
+let fee=Math.round(a*0.20*(d/30)*100)/100; if(fee<20){fee=20;}
 const total=Math.round((a+interest)*100)/100,net=Math.round((a-fee)*100)/100;
 amountBubble.textContent=a.toFixed(0)+' €';daysBubble.textContent=d.toFixed(0)+' dní';
 amountVal.textContent=a.toFixed(2)+' €';daysVal.textContent=d.toFixed(0)+' dní';
@@ -202,7 +203,7 @@ setTimeout(recalc,50);
 
 <div class="wrap">
   <div class="section-title"><h2>Časté otázky</h2></div>
-  <div class="faq reveal"><h3>Koľko ma pôžička bude stáť?</h3><p>Úrok 24 % p.a. prepočítaný podľa dní splatnosti a jednorazový poplatok platforme 20 % z istiny - obe sumy vidíš vopred v kalkulačke.</p></div>
+  <div class="faq reveal"><h3>Koľko ma pôžička bude stáť?</h3><p>Úrok 24 % p.a. prepočítaný podľa dní splatnosti a jednorazový aukčný poplatok platforme, ktorý sa mení podľa dĺžky splácania (do 20 % z istiny pri 30-dňovej splatnosti), minimálne však 20 € - obe sumy vidíš vopred v kalkulačke.</p></div>
   <div class="faq reveal"><h3>Čo ak nestihnem splatiť včas?</h3><p>V svojom účte môžeš jedným kliknutím požiadať o odklad splátky o 7 dní za jednorazový poplatok.</p></div>
   <div class="faq reveal"><h3>Aké údaje budem potrebovať?</h3><p>Pri žiadosti zadáš číslo občianskeho preukazu, rodné číslo, adresu a bankový účet, na ktorý sa pôžička vyplatí.</p></div>
 </div>
@@ -215,7 +216,7 @@ setTimeout(recalc,50);
   </div>
 </div>
 
-<footer>&copy; Pôžičky Predlžníkov · <a href="{% url 'core:landing' %}" style="color:#ff6a2b;">Späť na výber sekcie</a></footer>
+<footer>&copy; Pôžičky Predlžníkov · <a href="{% url 'core:landing' %}" style="color:#ff6a2b;">Späť na výber sekcie</a> · <a href="{% url 'core:faq' %}" style="color:#ff6a2b;">Časté otázky</a> · <a href="{% url 'core:contact' %}" style="color:#ff6a2b;">Kontakt</a></footer>
 <script>
   var revealEls2 = document.querySelectorAll('.reveal');
   var observer2 = new IntersectionObserver(function(entries){

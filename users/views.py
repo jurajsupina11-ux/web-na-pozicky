@@ -209,6 +209,25 @@ def report_payment(request, loan_id):
 
 
 @login_required
+def my_offers(request):
+    """Ponuky pre dlžníka - po úspešnom splatení pôžičky sem chodia ponuky
+    na novú pôžičku, spolu s platobnými údajmi aktuálnej aktívnej pôžičky
+    (rovnako ako v časti Moje pôžičky)."""
+    loans = Auction.objects.filter(borrower=request.user)
+    active_loans = loans.filter(status=Auction.Status.FUNDED)
+    closed_loans = loans.filter(status=Auction.Status.CLOSED)
+
+    for loan in active_loans:
+        _annotate_loan(loan)
+
+    return render(request, 'users/my_offers.html', {
+        'active_loans': active_loans,
+        'has_closed_loan': closed_loans.exists(),
+        'bank_details': REPAYMENT_BANK_DETAILS,
+    })
+
+
+@login_required
 def my_profile(request):
     """Moje údaje - osobné a prístupové informácie dlžníka/investora."""
     return render(request, 'users/my_profile.html')

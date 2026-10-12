@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kontakt – Pôžičky Predlžníkov</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#fffaf5;color:#2a1b10;}
+  a{color:inherit;}
+  header{background:#fff;border-bottom:1px solid #ffd9bf;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+  header .logo{font-weight:800;font-size:19px;color:#ff6a2b;text-decoration:none;}
+  header nav a{text-decoration:none;color:#8a6a56;font-size:14px;margin-left:16px;}
+  .wrap{max-width:720px;margin:0 auto;padding:60px 24px 80px;}
+  h1{font-size:32px;margin:0 0 10px;}
+  .lead{color:#8a6a56;margin:0 0 32px;font-size:15px;}
+  .card{background:#fff;border:1px solid #ffd9bf;border-radius:20px;padding:32px;}
+  .card dl{margin:0;}
+  .card dt{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:#ff6a2b;font-weight:700;margin-top:18px;}
+  .card dt:first-child{margin-top:0;}
+  .card dd{margin:4px 0 0;font-size:16px;}
+  .card a.email{color:#ff6a2b;font-weight:700;text-decoration:none;}
+  footer{text-align:center;padding:30px;color:#b08a73;font-size:12px;background:#fff3ea;}
+  @media(max-width:600px){ .wrap{padding:40px 16px 60px;} .card{padding:22px;} h1{font-size:26px;} }
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="{% url 'core:landing' %}">🔥 Pôžičky Predlžníkov</a>
+  <nav>
+    <a href="{% url 'core:faq' %}">Časté otázky</a>
+    <a href="{% url 'users:login' %}">Prihlásiť sa</a>
+  </nav>
+</header>
+
+<div class="wrap">
+  <h1>Kontakt</h1>
+  <p class="lead">Máte otázku k pôžičke, investovaniu alebo fungovaniu platformy? Ozvite sa nám.</p>
+  <div class="card">
+    <dl>
+      <dt>Prevádzkovateľ</dt>
+      <dd>{{ company.name }}</dd>
+      <dt>Sídlo</dt>
+      <dd>{{ company.address }}</dd>
+      <dt>IČO</dt>
+      <dd>{{ company.ico }}</dd>
+      <dt>DIČ</dt>
+      <dd>{{ company.dic }}</dd>
+      <dt>E-mail</dt>
+      <dd><a class="email" href="mailto:{{ company.email }}">{{ company.email }}</a></dd>
+    </dl>
+  </div>
+</div>
+
+<footer>&copy; Pôžičky Predlžníkov · <a href="{% url 'core:landing' %}" style="color:#ff6a2b;">Späť na výber sekcie</a> · <a href="{% url 'core:faq' %}" style="color:#ff6a2b;">Časté otázky</a></footer>
+</body>
+</html>

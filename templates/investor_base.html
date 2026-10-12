@@ -157,6 +157,9 @@
       {% endfor %}
     {% endif %}
     {% block content %}{% endblock %}
+    <footer style="text-align:center;padding:24px 0 10px;color:#8a93a8;font-size:12px;">
+      <a href="{% url 'core:faq' %}" style="color:#2554ea;">Časté otázky</a> · <a href="{% url 'core:contact' %}" style="color:#2554ea;">Kontakt</a>
+    </footer>
   </div>
 </div>
 {% block extra_script %}{% endblock %}

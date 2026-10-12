@@ -13,6 +13,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('moje-ziadosti/', views.my_applications, name='my_applications'),
     path('moje-pozicky/', views.my_loans, name='my_loans'),
+    path('ponuky/', views.my_offers, name='my_offers'),
     path('moje-pozicky/<int:loan_id>/odklad/', views.request_postponement, name='request_postponement'),
     path('moje-pozicky/<int:loan_id>/nahlasit-uhradu/', views.report_payment, name='report_payment'),
     path('moje-udaje/', views.my_profile, name='my_profile'),
