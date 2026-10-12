@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup V3 – Minimalistický prepínač</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#fffaf5;color:#2a1b10;min-height:100vh;display:flex;flex-direction:column;}
+  .mock-tag{position:fixed;top:10px;left:10px;background:#2a1b10;color:#ffb037;font-size:11px;padding:4px 10px;border-radius:6px;z-index:99;font-weight:700;letter-spacing:.03em;}
+  nav{display:flex;justify-content:space-between;align-items:center;padding:22px 32px;}
+  nav .logo{font-weight:800;font-size:18px;}
+  nav a{color:#8a6a56;text-decoration:none;font-size:13.5px;margin-left:20px;}
+  .toggle-wrap{display:flex;justify-content:center;margin:6px 0 10px;}
+  .toggle{display:flex;background:#fff;border:1px solid #ffd9bf;border-radius:999px;padding:4px;gap:2px;}
+  .toggle button{border:none;background:transparent;padding:9px 22px;border-radius:999px;font-size:13.5px;font-weight:700;cursor:pointer;color:#8a6a56;font-family:inherit;}
+  .toggle button.active.inv{background:#1b4fd1;color:#fff;}
+  .toggle button.active.bor{background:#ff6a2b;color:#fff;}
+  main{flex:1;display:flex;align-items:center;justify-content:center;padding:30px 20px 60px;}
+  .stage{max-width:620px;text-align:center;}
+  .stage h1{font-size:46px;line-height:1.08;margin:0 0 18px;letter-spacing:-0.03em;}
+  .stage h1 .hl-inv{color:#1b4fd1;}
+  .stage h1 .hl-bor{color:#ff6a2b;}
+  .stage p{color:#8a6a56;font-size:16px;max-width:460px;margin:0 auto 30px;}
+  .stage .btn{display:inline-block;padding:16px 36px;border-radius:40px;font-weight:800;font-size:15px;text-decoration:none;color:#fff;}
+  .stage .btn.inv{background:#1b4fd1;}
+  .stage .btn.bor{background:#ff6a2b;}
+  .view{display:none;}
+  .view.active{display:block;}
+  .mini-stats{display:flex;justify-content:center;gap:30px;margin-top:40px;flex-wrap:wrap;}
+  .mini-stats div{text-align:center;}
+  .mini-stats b{display:block;font-size:20px;}
+  .mini-stats span{font-size:12px;color:#8a6a56;}
+  footer{text-align:center;padding:20px;color:#b08a73;font-size:12px;}
+</style>
+</head>
+<body>
+<div class="mock-tag">MOCKUP V3</div>
+<nav>
+  <div class="logo">🔥 Pôžičky Predlžníkov</div>
+  <div><a href="#">Ako to funguje</a><a href="#">Časté otázky</a><a href="#">Kontakt</a></div>
+</nav>
+<div class="toggle-wrap">
+  <div class="toggle">
+    <button id="btnInv" class="active inv" onclick="show('inv')">💰 Som investor</button>
+    <button id="btnBor" onclick="show('bor')">🙋 Potrebujem pôžičku</button>
+  </div>
+</div>
+<main>
+  <div class="stage">
+    <div id="viewInv" class="view active">
+      <h1>Zarábaj <span class="hl-inv">24 % p.a.</span><br>na krátkych pôžičkách</h1>
+      <p>Investuj od 10 € do overených žiadostí a dostaň výnos späť do 30 dní.</p>
+      <a class="btn inv" href="#">Vstúpiť ako investor</a>
+      <div class="mini-stats">
+        <div><b>24 %</b><span>úrok p.a.</span></div>
+        <div><b>10 €</b><span>min. investícia</span></div>
+        <div><b>98,4 %</b><span>úspešnosť splácania</span></div>
+      </div>
+    </div>
+    <div id="viewBor" class="view">
+      <h1>Peniaze do <span class="hl-bor">5 minút</span><br>bez čakania na banku</h1>
+      <p>Požičaj si 50 – 500 € na max. 30 dní. Jeden formulár, žiadne papierovanie.</p>
+      <a class="btn bor" href="#">Požiadať o pôžičku</a>
+      <div class="mini-stats">
+        <div><b>50–500 €</b><span>suma pôžičky</span></div>
+        <div><b>30 dní</b><span>max. splatnosť</span></div>
+        <div><b>5 min</b><span>peniaze na účte</span></div>
+      </div>
+    </div>
+  </div>
+</main>
+<footer>&copy; Pôžičky Predlžníkov – licencovaný P2P pôžičkový systém</footer>
+<script>
+function show(which){
+  document.getElementById('viewInv').classList.toggle('active', which==='inv');
+  document.getElementById('viewBor').classList.toggle('active', which==='bor');
+  document.getElementById('btnInv').classList.toggle('active', which==='inv');
+  document.getElementById('btnBor').classList.toggle('active', which==='bor');
+}
+</script>
+</body>
+</html>

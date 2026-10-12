@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup V1 – Dôveryhodnosť a čísla</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#0f1115;color:#fff;}
+  .mock-tag{position:fixed;top:10px;left:10px;background:#111;color:#ffb037;font-size:11px;padding:4px 10px;border-radius:6px;z-index:99;font-weight:700;letter-spacing:.03em;}
+  header{text-align:center;padding:36px 20px 8px;}
+  header .logo{font-weight:800;font-size:22px;}
+  header p{color:#9099ab;margin-top:8px;}
+  .trustbar{display:flex;justify-content:center;gap:34px;flex-wrap:wrap;padding:18px 20px 30px;border-bottom:1px solid #1d212b;}
+  .trustbar div{text-align:center;}
+  .trustbar b{display:block;font-size:22px;color:#ffb037;}
+  .trustbar span{font-size:12px;color:#9099ab;}
+  .choice{display:grid;grid-template-columns:1fr 1fr;}
+  @media(max-width:760px){.choice{grid-template-columns:1fr;}}
+  .panel{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:54px 30px;text-decoration:none;position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1),filter .3s;}
+  .panel:hover{filter:brightness(1.1);transform:scale(1.015);}
+  .investor{background:linear-gradient(160deg,#1b4fd1,#0d2a80);}
+  .borrower{background:linear-gradient(160deg,#ff7a3d,#c2410c);}
+  .panel .icon{font-size:52px;margin-bottom:14px;}
+  .panel h2{color:#fff;font-size:26px;margin:0 0 10px;}
+  .panel p{color:rgba(255,255,255,.85);max-width:360px;text-align:center;margin:0 0 20px;}
+  .panel .btn{background:#fff;color:#111;padding:12px 28px;border-radius:30px;font-weight:700;text-decoration:none;font-size:14px;}
+  .testimonials{display:flex;gap:16px;padding:40px 20px;max-width:1000px;margin:0 auto;flex-wrap:wrap;justify-content:center;}
+  .testimonial{background:#171a21;border:1px solid #262b36;border-radius:14px;padding:18px 20px;max-width:280px;font-size:13.5px;color:#c7cbd6;}
+  .testimonial b{display:block;color:#fff;margin-top:10px;font-size:13px;}
+  footer{text-align:center;padding:18px;color:#5c6478;font-size:12px;}
+</style>
+</head>
+<body>
+<div class="mock-tag">MOCKUP V1</div>
+<div>
+  <header>
+    <div class="logo">🔥 Pôžičky Predlžníkov</div>
+    <p>Vyberte si, čo vás zaujíma</p>
+  </header>
+  <div class="trustbar">
+    <div><b>1 240+</b><span>Spokojných klientov</span></div>
+    <div><b>98,4 %</b><span>Úspešne splatené pôžičky</span></div>
+    <div><b>5 min</b><span>Priemerný čas financovania</span></div>
+    <div><b>24 % p.a.</b><span>Úrok pre investorov</span></div>
+  </div>
+  <div class="choice">
+    <a class="panel investor" href="#">
+      <div class="icon">💰</div>
+      <h2>Som investor</h2>
+      <p>Chcem zarábať na krátkodobých pôžičkách s úrokom 24 % p.a.</p>
+      <span class="btn">Vstúpiť ako investor</span>
+    </a>
+    <a class="panel borrower" href="#">
+      <div class="icon">🙋</div>
+      <h2>Potrebujem pôžičku</h2>
+      <p>Požičiam si 50 – 500 € na max. 30 dní, peniaze do 5 minút.</p>
+      <span class="btn">Požiadať o pôžičku</span>
+    </a>
+  </div>
+  <div class="testimonials">
+    <div class="testimonial">"Peniaze som mal na účte do 4 minút od schválenia." <b>— Marek, Bratislava</b></div>
+    <div class="testimonial">"Investujem pravidelne, výnos je lepší než v banke." <b>— Zuzana, investorka</b></div>
+    <div class="testimonial">"Proces žiadosti bol prekvapivo jednoduchý a rýchly." <b>— Peter, Košice</b></div>
+  </div>
+  <footer>&copy; Pôžičky Predlžníkov – licencovaný P2P pôžičkový systém · Časté otázky · Kontakt</footer>
+</div>
+</body>
+</html>

@@ -198,6 +198,21 @@ DOCUMENTS_DEMO = [
 ]
 
 
+def landing_mockup_v1(request):
+    """Mockup novej úvodnej stránky - varianta 1: štatistiky + dôveryhodnosť."""
+    return render(request, 'designs/landing_mockups/v1.html')
+
+
+def landing_mockup_v2(request):
+    """Mockup novej úvodnej stránky - varianta 2: karty vedľa seba, kompaktná."""
+    return render(request, 'designs/landing_mockups/v2.html')
+
+
+def landing_mockup_v3(request):
+    """Mockup novej úvodnej stránky - varianta 3: minimalistická, jedna CTA s prepínačom."""
+    return render(request, 'designs/landing_mockups/v3.html')
+
+
 def design_my_loans(request, slug):
     design = _get_design(slug)
     context = {

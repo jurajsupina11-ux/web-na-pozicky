@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup V2 – Svetlá karta-centrická</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#f6f7fb;color:#15182b;}
+  .mock-tag{position:fixed;top:10px;left:10px;background:#15182b;color:#ffb037;font-size:11px;padding:4px 10px;border-radius:6px;z-index:99;font-weight:700;letter-spacing:.03em;}
+  .wrap{max-width:980px;margin:0 auto;padding:60px 24px 70px;}
+  .hero{text-align:center;margin-bottom:44px;}
+  .hero .logo{font-weight:800;font-size:20px;color:#15182b;margin-bottom:16px;}
+  .hero h1{font-size:34px;margin:0 0 12px;letter-spacing:-0.02em;}
+  .hero p{color:#656a84;font-size:15px;max-width:460px;margin:0 auto;}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:700px){.cards{grid-template-columns:1fr;}}
+  .card{background:#fff;border-radius:22px;padding:34px 30px;box-shadow:0 10px 30px rgba(21,24,43,.06);text-decoration:none;color:inherit;display:block;transition:transform .25s ease,box-shadow .25s ease;border:1px solid #eceef5;}
+  .card:hover{transform:translateY(-5px);box-shadow:0 20px 40px rgba(21,24,43,.1);}
+  .badge{width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:18px;}
+  .badge.inv{background:#eaf0ff;}
+  .badge.bor{background:#fff1ea;}
+  .card h2{font-size:21px;margin:0 0 8px;}
+  .card p{color:#656a84;font-size:14px;margin:0 0 18px;line-height:1.5;}
+  .card .tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+  .tag{font-size:12px;font-weight:600;padding:5px 11px;border-radius:999px;}
+  .tag.inv{background:#eaf0ff;color:#2554ea;}
+  .tag.bor{background:#fff1ea;color:#f05a22;}
+  .cta{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:14px;}
+  .cta.inv{color:#2554ea;}
+  .cta.bor{color:#f05a22;}
+  .footer-strip{display:flex;justify-content:center;gap:28px;margin-top:40px;color:#656a84;font-size:12px;flex-wrap:wrap;}
+  .footer-strip a{color:#656a84;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="mock-tag">MOCKUP V2</div>
+<div class="wrap">
+  <div class="hero">
+    <div class="logo">🔥 Pôžičky Predlžníkov</div>
+    <h1>Jedna platforma, dve cesty k peniazom</h1>
+    <p>Vyberte si, či chcete peniaze požičať a zarobiť, alebo si ich rýchlo požičať.</p>
+  </div>
+  <div class="cards">
+    <a class="card" href="#">
+      <div class="badge inv">💰</div>
+      <h2>Som investor</h2>
+      <p>Investuj od 10 € do overených krátkodobých pôžičiek a zarábaj úrok 24 % p.a.</p>
+      <div class="tags"><span class="tag inv">24 % p.a.</span><span class="tag inv">Od 10 €</span><span class="tag inv">Sekundárny trh</span></div>
+      <span class="cta inv">Vstúpiť ako investor →</span>
+    </a>
+    <a class="card" href="#">
+      <div class="badge bor">🙋</div>
+      <h2>Potrebujem pôžičku</h2>
+      <p>Požičaj si 50 – 500 € na max. 30 dní. Jeden formulár, peniaze na účte do 5 minút.</p>
+      <div class="tags"><span class="tag bor">50 – 500 €</span><span class="tag bor">Do 30 dní</span><span class="tag bor">Do 5 min</span></div>
+      <span class="cta bor">Požiadať o pôžičku →</span>
+    </a>
+  </div>
+  <div class="footer-strip">
+    <a href="#">Ako to funguje</a>
+    <a href="#">Časté otázky</a>
+    <a href="#">Kontakt</a>
+    <span>&copy; Pôžičky Predlžníkov</span>
+  </div>
+</div>
+</body>
+</html>

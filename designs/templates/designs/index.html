@@ -25,6 +25,15 @@
   <p>5 vizuálnych konceptov na porovnanie. Klikateľné, bez reálnej funkčnosti (okrem kalkulačky).</p>
 </header>
 <div class="wrap">
+  <div class="card">
+    <h2>Nová úvodná stránka (výber investor/dlžník) – 3 varianty</h2>
+    <p>Mockupy na porovnanie novej úvodnej rozlišovacej stránky, bez reálnej funkčnosti.</p>
+    <div class="btns">
+      <a class="b1" href="{% url 'designs:landing_v1' %}">V1 – Dôveryhodnosť a čísla</a>
+      <a class="b1" href="{% url 'designs:landing_v2' %}">V2 – Svetlá karta-centrická</a>
+      <a class="b1" href="{% url 'designs:landing_v3' %}">V3 – Minimalistický prepínač</a>
+    </div>
+  </div>
   {% for d in designs %}
   <div class="card">
     <h2>{{ d.number }}. {{ d.name }}</h2>
