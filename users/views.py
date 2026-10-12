@@ -22,10 +22,25 @@ from .forms import (
 from .models import User, _generate_email_verification_token
 
 
+#: Maximálny počet registrácií z jednej IP adresy za hodinu - jednoduchá
+#: ochrana pred automatizovaným hromadným vytváraním účtov (napr. kvôli
+#: zneužitiu referral bonusov).
+SIGNUP_RATE_LIMIT = 5
+SIGNUP_RATE_LIMIT_WINDOW = 60 * 60
+
+
+def _client_ip(request):
+    forwarded = request.META.get('HTTP_X_FORWARDED_FOR')
+    if forwarded:
+        return forwarded.split(',')[0].strip()
+    return request.META.get('REMOTE_ADDR', 'unknown')
+
+
 class SignUpView(CreateView):
     """Registrácia - len pre investorov (veriteľov). Podporuje odporúčací
     (referral) program cez ?ref=KOD v URL - uloží sa referred_by na nového
-    používateľa, odmena sa pripíše po jeho prvej investícii."""
+    používateľa, odmena sa pripíše po jeho prvej investícii. Obsahuje
+    jednoduchú ochranu pred hromadnými registráciami z jednej IP adresy."""
 
     form_class = SignUpForm
     template_name = 'users/signup.html'
@@ -35,6 +50,20 @@ class SignUpView(CreateView):
         context = super().get_context_data(**kwargs)
         context['ref_code'] = self.request.GET.get('ref', '')
         return context
+
+    def post(self, request, *args, **kwargs):
+        from django.core.cache import cache
+
+        cache_key = f'signup_rate_{_client_ip(request)}'
+        attempts = cache.get(cache_key, 0)
+        if attempts >= SIGNUP_RATE_LIMIT:
+            messages.error(
+                request,
+                'Príliš veľa pokusov o registráciu z tejto siete. Skús to prosím neskôr.',
+            )
+            return redirect('users:signup')
+        cache.set(cache_key, attempts + 1, SIGNUP_RATE_LIMIT_WINDOW)
+        return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         ref_code = self.request.GET.get('ref') or self.request.POST.get('ref_code')
@@ -334,11 +363,20 @@ def sign_loan_contract(request, loan_id):
     return render(request, 'users/sign_loan_contract.html', {'loan': loan, 'bid': bid})
 
 
+def _post_verify_redirect(user):
+    """Kam používateľa presmerovať po úspešnom overení e-mailu - podľa role."""
+    if user.role == User.Role.BORROWER:
+        return redirect('users:my_loans')
+    return redirect('auctions:investor_dashboard')
+
+
 @login_required
 def verify_email_request(request):
-    """Stránka pred podpisom zmluvy - vyžiada si overenie e-mailu (pošle odkaz)."""
+    """Stránka na overenie e-mailu - u dlžníka sa zobrazí pred podpisom zmluvy,
+    u investora pred prvým vkladom/výberom peňazí (vyžaduje overený e-mail, aby
+    bezpečnostný kód a platobné údaje chodili naozaj majiteľovi účtu)."""
     if request.user.email_verified:
-        return redirect('users:my_loans')
+        return _post_verify_redirect(request.user)
     if request.method == 'POST':
         if not request.user.email_verification_token:
             request.user.email_verification_token = _generate_email_verification_token()
@@ -348,7 +386,12 @@ def verify_email_request(request):
         )
         send_email_verification(request.user, verify_url)
         messages.success(request, f'Overovací odkaz sme poslali na {request.user.email}.')
-    return render(request, 'users/verify_email_request.html')
+    template = (
+        'users/verify_email_request.html'
+        if request.user.role == User.Role.BORROWER
+        else 'users/verify_email_request_investor.html'
+    )
+    return render(request, template)
 
 
 def verify_email_confirm(request, token):
@@ -359,10 +402,10 @@ def verify_email_confirm(request, token):
         user.save(update_fields=['email_verified'])
         messages.success(request, 'E-mail bol úspešne overený.')
         if request.user.is_authenticated and request.user.pk == user.pk:
-            return redirect('users:my_loans')
+            return _post_verify_redirect(user)
     else:
         messages.error(request, 'Neplatný alebo už použitý overovací odkaz.')
-    return redirect('users:login_borrower')
+    return redirect('core:landing')
 
 
 @login_required

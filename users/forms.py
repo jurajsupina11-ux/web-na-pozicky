@@ -56,14 +56,48 @@ def _apply_autocomplete_and_classes(form):
 
 
 class SignUpForm(UserCreationForm):
-    """Registrácia investora (veriteľa). Dlžníci tento formulár nepoužívajú -
-    žiadajú rovno o úver cez BorrowerApplicationForm."""
+    """Registrácia investora (veriteľa). Obsahuje aj KYC údaje (overenie identity)
+    a IBAN pre výplatu peňazí - keďže investor posiela aj prijíma reálne peniaze,
+    musíme vedieť, komu skutočne patrí účet (rovnako prísne ako u dlžníka).
+    Dlžníci tento formulár nepoužívajú - žiadajú rovno o úver cez BorrowerApplicationForm.
+
+    Obsahuje aj honeypot pole (website) proti jednoduchým registračným botom -
+    skutoční používatelia ho nikdy nevyplnia, keďže je v UI skrytý."""
+
+    # Honeypot - skryté pole, ktoré vypĺňajú len boty. Ak je vyplnené, žiadosť sa tíško zahodí.
+    website = forms.CharField(label='Webstránka', required=False, widget=forms.TextInput(attrs={
+        'autocomplete': 'off', 'tabindex': '-1', 'style': 'position:absolute;left:-9999px;',
+    }))
+
+    # Osobné / KYC údaje - rovnaký rozsah ako u dlžníka (meno osoby, ktorej skutočne
+    # patria peniaze na účte).
+    first_name = forms.CharField(label='Meno', max_length=150)
+    last_name = forms.CharField(label='Priezvisko', max_length=150)
+    date_of_birth = forms.DateField(
+        label='Dátum narodenia', widget=forms.DateInput(attrs={'type': 'date'}),
+    )
+    id_card_number = forms.CharField(label='Číslo občianskeho preukazu', max_length=20)
+    birth_number = forms.CharField(label='Rodné číslo (bez lomítka)', max_length=15)
+    street_address = forms.CharField(label='Ulica a číslo', max_length=120)
+    city = forms.CharField(label='Mesto', max_length=80)
+    postal_code = forms.CharField(label='PSČ', max_length=10)
+    bank_account_iban = forms.CharField(
+        label='IBAN pre výplatu peňazí (voliteľné, dá sa doplniť aj neskôr)',
+        max_length=34, required=False,
+    )
 
     gdpr_consent = forms.BooleanField(
         label='Súhlasím so spracovaním osobných údajov (GDPR) a s obchodnými podmienkami.',
         required=True,
         error_messages={'required': 'Pre registráciu je potrebné udeliť súhlas so spracovaním osobných údajov.'},
     )
+
+    field_order = [
+        'website', 'username', 'email', 'phone_number',
+        'first_name', 'last_name', 'date_of_birth', 'id_card_number', 'birth_number',
+        'street_address', 'city', 'postal_code', 'bank_account_iban',
+        'password1', 'password2', 'gdpr_consent',
+    ]
 
     class Meta(UserCreationForm.Meta):
         model = User
@@ -72,12 +106,46 @@ class SignUpForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         _apply_autocomplete_and_classes(self)
+        # Honeypot pole nemá dostať bootstrap/placeholder štýlovanie typické pre reálne polia.
+        self.fields['website'].widget.attrs.pop('placeholder', None)
+        self.fields['website'].widget.attrs['class'] = ''
+
+    def clean_website(self):
+        value = self.cleaned_data.get('website', '')
+        if value:
+            raise ValidationError('Registrácia sa nepodarila.')
+        return value
+
+    def clean_birth_number(self):
+        value = normalize_birth_number(self.cleaned_data['birth_number'])
+        if not value.isdigit() or len(value) not in (9, 10):
+            raise ValidationError('Zadaj rodné číslo bez lomítka (9 alebo 10 číslic).')
+        if User.objects.filter(birth_number=value).exists():
+            raise ValidationError('S týmto rodným číslom je už evidovaný iný účet.')
+        return value
+
+    def clean_bank_account_iban(self):
+        value = self.cleaned_data.get('bank_account_iban', '')
+        if value:
+            validate_sk_iban(value)
+            return value.replace(' ', '').upper()
+        return value
 
     def save(self, commit=True):
         user = super().save(commit=False)
         user.role = User.Role.LENDER
         user.gdpr_consent_given = True
         user.gdpr_consent_at = timezone.now()
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.date_of_birth = self.cleaned_data['date_of_birth']
+        user.id_card_number = self.cleaned_data['id_card_number']
+        user.birth_number = self.cleaned_data['birth_number']
+        user.street_address = self.cleaned_data['street_address']
+        user.city = self.cleaned_data['city']
+        user.postal_code = self.cleaned_data['postal_code']
+        user.bank_account_iban = self.cleaned_data.get('bank_account_iban', '')
+        user.kyc_completed = True
         if commit:
             user.save()
         return user

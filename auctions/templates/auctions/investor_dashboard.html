@@ -42,6 +42,13 @@
 </style>
 {% endblock %}
 {% block content %}
+{% if show_welcome %}
+<div class="alert alert-info" style="display:flex;align-items:center;gap:12px;">
+  <span style="font-size:22px;">👋</span>
+  <span>Vitaj medzi investormi na Pôžičky Predlžníkov! Tvoj účet je pripravený - stačí vložiť peniaze
+  na peňaženku a môžeš začať financovať žiadosti o pôžičku.</span>
+</div>
+{% endif %}
 <div class="toprow">
   <h1 style="margin:0;">Dashboard investora</h1>
   <a class="btn btn-primary" href="{% url 'auctions:open_auctions' %}">

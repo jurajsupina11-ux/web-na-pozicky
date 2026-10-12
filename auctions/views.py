@@ -147,6 +147,12 @@ def investor_dashboard(request):
         Decimal('0'),
     )
     for_sale_count = my_bids.filter(for_sale=True).count()
+
+    show_welcome = not request.user.welcome_message_seen
+    if show_welcome:
+        request.user.welcome_message_seen = True
+        request.user.save(update_fields=['welcome_message_seen'])
+
     context = {
         'my_bids': my_bids,
         'active_bids': active_bids,
@@ -159,6 +165,7 @@ def investor_dashboard(request):
         'realized_yield': round(realized_yield, 2),
         'for_sale_count': for_sale_count,
         'bids_count': my_bids.count(),
+        'show_welcome': show_welcome,
     }
     return render(request, 'auctions/investor_dashboard.html', context)
 
@@ -439,7 +446,11 @@ DEPOSIT_BANK_DETAILS = {
 def wallet_deposit(request):
     """Žiadosť o vklad na investorskú peňaženku - platforma nemá platobnú
     bránu, investor peniaze pošle na náš bankový účet a administrátor po
-    prijatí platby ručne potvrdí vklad (pripíše sumu na peňaženku)."""
+    prijatí platby ručne potvrdí vklad (pripíše sumu na peňaženku). Vyžaduje
+    overenú e-mailovú adresu (aby sme vedeli, komu peniaze skutočne patria)."""
+    if not request.user.email_verified:
+        messages.warning(request, 'Pred vkladom je potrebné overiť tvoju e-mailovú adresu.')
+        return redirect('users:verify_email_request')
     if request.method == 'POST':
         try:
             amount = Decimal(request.POST.get('amount', '0'))
@@ -463,9 +474,12 @@ def wallet_deposit(request):
 @login_required
 def wallet_withdraw(request):
     """Žiadosť o výber peňazí z investorskej peňaženky na bankový účet -
-    vyžaduje bezpečnostný kód zaslaný e-mailom pri registrácii. Suma sa
-    odpíše z peňaženky ihneď, administrátor následne ručne zrealizuje
-    bankový prevod na IBAN uložený v profile investora."""
+    vyžaduje overenú e-mailovú adresu a bezpečnostný kód zaslaný e-mailom pri
+    registrácii. Suma sa odpíše z peňaženky ihneď, administrátor následne
+    ručne zrealizuje bankový prevod na IBAN uložený v profile investora."""
+    if not request.user.email_verified:
+        messages.warning(request, 'Pred výberom je potrebné overiť tvoju e-mailovú adresu.')
+        return redirect('users:verify_email_request')
     if request.method == 'POST':
         try:
             amount = Decimal(request.POST.get('amount', '0'))

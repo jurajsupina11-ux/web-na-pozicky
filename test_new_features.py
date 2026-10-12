@@ -130,6 +130,9 @@ check('Signup page with ref param loads', r.status_code == 200)
 
 signup_data = {
     'username': 'nf_ref_investor', 'email': 'nf_ref@example.com', 'phone_number': '+421900000099',
+    'first_name': 'Ref', 'last_name': 'Investor', 'date_of_birth': '1992-02-02',
+    'id_card_number': 'EF112233', 'birth_number': '9202021234',
+    'street_address': 'Ref ulica 1', 'city': 'Kosice', 'postal_code': '04001',
     'password1': 'SuperSecret123!', 'password2': 'SuperSecret123!', 'gdpr_consent': 'on', 'ref_code': ref_code,
 }
 r = c.post(f'/accounts/signup/?ref={ref_code}', signup_data, follow=True)

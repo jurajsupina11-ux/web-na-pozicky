@@ -28,7 +28,9 @@ def check(name, condition, extra=""):
     print(f"[{status}] {name}" + (f" -- {extra}" if extra and status == 'FAIL' else ""))
 
 # cleanup from previous runs
-User.objects.filter(username__in=['e2e_investor', 'e2e_borrower']).delete()
+User.objects.filter(
+    username__in=['e2e_investor', 'e2e_borrower', 'e2e_investor2', 'e2e_bot_investor', '9001011234'],
+).delete()
 
 c = Client(raise_request_exception=False)
 
@@ -55,6 +57,15 @@ signup_data = {
     'username': 'e2e_investor',
     'email': 'e2e_investor@example.com',
     'phone_number': '+421900000001',
+    'first_name': 'Peter',
+    'last_name': 'Investor',
+    'date_of_birth': '1985-05-05',
+    'id_card_number': 'CD987654',
+    'birth_number': '8505051234',
+    'street_address': 'Investicna 1',
+    'city': 'Bratislava',
+    'postal_code': '81101',
+    'bank_account_iban': 'SK8909000000000022228888',
     'password1': 'SuperSecret123!',
     'password2': 'SuperSecret123!',
     'gdpr_consent': 'on',
@@ -68,6 +79,16 @@ if investor:
     check('Investor auto-logged-in after signup', '_auth_user_id' in c.session)
     check('Investor GDPR consent recorded', investor.gdpr_consent_given is True)
     check('Investor display_id generated', bool(investor.display_id) and len(investor.display_id) == 6)
+    check('Investor KYC data saved (kyc_completed)', investor.kyc_completed is True)
+    check('Investor birth number saved', investor.birth_number == '8505051234')
+
+# honeypot field should silently reject bot-like submissions
+bot_signup_data = dict(signup_data)
+bot_signup_data['username'] = 'e2e_bot_investor'
+bot_signup_data['birth_number'] = '8505051235'
+bot_signup_data['website'] = 'http://spam.example.com'
+r = c.post('/accounts/signup/', bot_signup_data, follow=True)
+check('Honeypot field blocks bot-like signup', not User.objects.filter(username='e2e_bot_investor').exists())
 
 c.logout()
 
@@ -84,6 +105,18 @@ c.logout()
 
 # ========== 3. WALLET DEPOSIT (manual bank transfer - request + admin confirmation) ==========
 c.force_login(investor)
+
+# Deposit requires a verified e-mail first
+r = c.post('/aukcie/penazenka/vklad/', {'amount': '500'}, follow=True)
+check('Deposit redirects to e-mail verification when not verified', 'overit-email' in r.redirect_chain[-1][0] if r.redirect_chain else False, str(r.redirect_chain))
+
+r = c.post('/accounts/overit-email/', follow=True)
+check('Investor verification e-mail request succeeds', r.status_code == 200)
+investor.refresh_from_db()
+r = c.get(f'/accounts/overit-email/{investor.email_verification_token}/', follow=True)
+investor.refresh_from_db()
+check('Investor e-mail marked as verified', investor.email_verified is True)
+
 r = c.post('/aukcie/penazenka/vklad/', {'amount': '500'}, follow=True)
 investor.refresh_from_db()
 check('Wallet deposit request does NOT auto-credit (manual bank process)', investor.wallet_balance == Decimal('0.00'), f'balance={investor.wallet_balance}')
@@ -261,7 +294,10 @@ c.logout()
 
 # second investor to buy from marketplace
 User.objects.filter(username='e2e_investor2').delete()
-investor2 = User.objects.create_user(username='e2e_investor2', password='SuperSecret123!', role=User.Role.LENDER)
+investor2 = User.objects.create_user(
+    username='e2e_investor2', password='SuperSecret123!', role=User.Role.LENDER,
+    email='e2e_investor2@example.com', email_verified=True,
+)
 investor2.wallet_balance = Decimal('500.00')
 investor2.save(update_fields=['wallet_balance'])
 

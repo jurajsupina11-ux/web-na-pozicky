@@ -74,15 +74,24 @@
       <h2>Vytvoriť investorský účet</h2>
       <p class="sub">Vyplň údaje nižšie, alebo ich nechaj doplniť prehliadačom automaticky.</p>
       {% if ref_code %}<p style="background:#eaf7ee;color:#1a7a3a;padding:10px 14px;border-radius:10px;font-size:13px;">🎁 Registruješ sa na pozvanie priateľa - po prvej investícii dostanete obaja bonus 10 €.</p>{% endif %}
+      <p style="background:#eef3ff;color:#1b4fd1;padding:10px 14px;border-radius:10px;font-size:13px;">
+        👋 Vitaj! Keďže aj investorský účet pracuje s reálnymi peniazmi, potrebujeme overiť tvoju totožnosť -
+        preto formulár obsahuje aj osobné údaje, rovnako ako pri žiadosti o pôžičku.
+      </p>
       <form method="post" autocomplete="on">
         {% csrf_token %}
         <input type="hidden" name="ref_code" value="{{ ref_code }}">
         {% for field in form %}
+          {% if field.name != 'website' %}
           <div class="field">
             {{ field.label_tag }}
             {{ field }}
+            {% if field.name == 'password1' %}<p style="font-size:12px;color:#5c6a8f;margin:4px 0 0;">Minimálne 8 znakov, nesmie byť príliš jednoduché ani celé číselné.</p>{% endif %}
             {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
           </div>
+          {% else %}
+          {{ field }}
+          {% endif %}
         {% endfor %}
         <p style="font-size:12px;color:#5c6a8f;margin:4px 0 0;">Viac v <a href="{% url 'core:terms' %}" style="color:#1b4fd1;">obchodných podmienkach</a> a <a href="{% url 'core:privacy' %}" style="color:#1b4fd1;">ochrane osobných údajov</a>.</p>
         <button type="submit" class="btn-submit">Vytvoriť účet</button>
