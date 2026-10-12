@@ -69,6 +69,8 @@
   <div class="links">
     <a href="{% url 'core:faq' %}">Časté otázky</a>
     <a href="{% url 'core:contact' %}">Kontakt</a>
+    <a href="{% url 'users:login_borrower' %}">Prihlásiť sa ako žiadateľ</a>
+    <a href="{% url 'users:login_investor' %}">Prihlásiť sa ako investor</a>
   </div>
 </nav>
 <div class="toggle-wrap fade-in">
@@ -98,7 +100,7 @@
       <div class="stage-inner">
         <div class="fade-in">
           <h1>Zarábaj <span class="hl-inv">24 % p.a.</span><br>na krátkych pôžičkách</h1>
-          <p>Investuj od 10 € do overených žiadostí a dostaň výnos späť do 30 dní.</p>
+          <p>Investuj od 50 € do overených žiadostí a dostaň výnos späť do 30 dní.</p>
           <a class="btn inv" href="{% url 'core:investor' %}">Vstúpiť ako investor</a>
           <div class="mini-stats">
             <div><b>24 %</b><span>úrok p.a.</span></div>
@@ -128,7 +130,7 @@
       <div class="benefit-grid">
         <div class="benefit inv"><div class="circle">📈</div><h3>Vysoký výnos</h3><p>Úrok až 24 % p.a. na krátkodobých pôžičkách.</p></div>
         <div class="benefit inv"><div class="circle">🔍</div><h3>Overení žiadatelia</h3><p>Každý žiadateľ prejde overením identity (KYC).</p></div>
-        <div class="benefit inv"><div class="circle">📊</div><h3>Diverzifikácia</h3><p>Rozlož investíciu už od 10 € do viacerých pôžičiek.</p></div>
+        <div class="benefit inv"><div class="circle">📊</div><h3>Diverzifikácia</h3><p>Rozlož investíciu už od 50 € do viacerých pôžičiek.</p></div>
         <div class="benefit inv"><div class="circle">🔄</div><h3>Sekundárny trh</h3><p>Investíciu môžeš kedykoľvek predať inému investorovi.</p></div>
       </div>
     </div>
