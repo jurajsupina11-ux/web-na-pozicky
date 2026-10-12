@@ -17,7 +17,7 @@
     <thead><tr><th>Veriteľ</th><th>Suma</th><th>Úrok</th><th>Stav</th></tr></thead>
     <tbody>
     {% for bid in bids %}
-        <tr><td>{{ bid.lender }}</td><td>{{ bid.amount }} €</td><td>{{ bid.interest_rate }} %</td><td>{{ bid.get_status_display }}</td></tr>
+        <tr><td>{{ bid.lender.display_name }}</td><td>{{ bid.amount }} €</td><td>{{ bid.interest_rate }} %</td><td>{{ bid.get_status_display }}</td></tr>
     {% empty %}
         <tr><td colspan="4">Zatiaľ žiadne ponuky.</td></tr>
     {% endfor %}

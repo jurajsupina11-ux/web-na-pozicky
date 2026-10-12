@@ -14,8 +14,8 @@
     <tr><th>Predávajúci</th><th>Žiadateľ</th><th>Suma</th><th>Úrok</th><th>Splatnosť</th><th></th></tr>
     {% for listing in listings %}
     <tr>
-      <td>{{ listing.lender.username }}</td>
-      <td>{{ listing.auction.borrower.username }}</td>
+      <td>{{ listing.lender.display_name }}</td>
+      <td>{{ listing.auction.borrower.display_name }}</td>
       <td>{{ listing.amount }} €</td>
       <td>{{ listing.interest_rate }} %</td>
       <td>{{ listing.auction.duration_days }} dní</td>

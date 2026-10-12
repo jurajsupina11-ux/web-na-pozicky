@@ -115,7 +115,7 @@
     <tr><th>Žiadateľ</th><th>Suma</th><th>Úrok</th><th>Splatnosť</th><th>Stav</th><th>Predaj</th></tr>
     {% for bid in my_bids %}
     <tr>
-      <td>{{ bid.auction.borrower.username }}</td>
+      <td>{{ bid.auction.borrower.display_name }}</td>
       <td>{{ bid.amount }} €</td>
       <td>{{ bid.interest_rate }} %</td>
       <td>{{ bid.auction.duration_days }} dní</td>

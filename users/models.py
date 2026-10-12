@@ -1,7 +1,18 @@
+import random
 from decimal import Decimal
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+
+def _generate_display_id():
+    """Vygeneruje náhodný unikátny 6-miestny verejný identifikátor používateľa.
+    Slúži na anonymné zobrazenie v appke (iní používatelia vidia len toto číslo,
+    nikdy reálne meno) - napr. #482913."""
+    while True:
+        candidate = f'{random.randint(0, 999999):06d}'
+        if not User.objects.filter(display_id=candidate).exists():
+            return candidate
 
 
 class User(AbstractUser):
@@ -11,6 +22,11 @@ class User(AbstractUser):
         BORROWER = 'borrower', 'Žiadateľ o pôžičku'
         LENDER = 'lender', 'Veriteľ'
         BOTH = 'both', 'Žiadateľ aj veriteľ'
+
+    #: Verejný anonymný identifikátor (6-miestne číslo) - zobrazuje sa ostatným
+    #: používateľom namiesto mena/username. Reálne meno vidí len majiteľ účtu
+    #: a administrátor.
+    display_id = models.CharField(max_length=6, unique=True, blank=True)
 
     phone_number = models.CharField(max_length=20, blank=True)
     role = models.CharField(max_length=10, choices=Role.choices, default=Role.BOTH)
@@ -37,6 +53,19 @@ class User(AbstractUser):
         max_digits=10, decimal_places=2, default=Decimal('0'),
         help_text='Voľný zostatok investora na účte (pripravený na investíciu alebo výplatu).',
     )
+
+    def save(self, *args, **kwargs):
+        if not self.display_id:
+            self.display_id = _generate_display_id()
+        super().save(*args, **kwargs)
+
+    @property
+    def display_name(self):
+        """Verejné zobrazenie používateľa - vždy len anonymné číslo #123456,
+        nikdy reálne meno ani username. Použiť všade, kde jeden používateľ
+        vidí informácie o inom používateľovi (napr. v zozname žiadostí,
+        ponúk na sekundárnom trhu a pod.)."""
+        return f'#{self.display_id}'
 
     def __str__(self):
         return self.username
