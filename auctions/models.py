@@ -7,7 +7,11 @@ from django.utils import timezone
 
 
 class Auction(models.Model):
-    """A short-term loan request put up for auction by a borrower."""
+    """A short-term loan request put up for auction by a borrower.
+
+    Pôžičky sa financujú vždy len celé naraz (all-or-nothing) - jedna pôžička
+    = jeden investor = jedna ponuka (Bid). Čiastočné spolufinancovanie viacerými
+    investormi nie je podporované."""
 
     class Status(models.TextChoices):
         DRAFT = 'draft', 'Koncept'
@@ -46,6 +50,15 @@ class Auction(models.Model):
         help_text='Dlžník nahlásil úhradu pôžičky - čaká na overenie platby.',
     )
 
+    # Garancia odkúpenia - ak dlžník nesplatí do BUYBACK_DAYS dní po splatnosti,
+    # platforma automaticky odkúpi pohľadávku od investora (investor dostane
+    # istinu + dohodnutý úrok späť na peňaženku, platforma preberá vymáhanie).
+    bought_back = models.BooleanField(
+        default=False,
+        help_text='Pôžička bola automaticky odkúpená platformou od investora (garancia odkúpenia po 90 dňoch).',
+    )
+    bought_back_at = models.DateTimeField(null=True, blank=True)
+
     class Meta:
         ordering = ['-created_at']
 
@@ -58,6 +71,12 @@ class Auction(models.Model):
     @property
     def is_open(self):
         return self.status == self.Status.ACTIVE and self.ends_at > timezone.now()
+
+    @property
+    def computed_due_date(self):
+        """Termín splatnosti pôžičky vrátane prípadných odkladov."""
+        from datetime import timedelta
+        return self.starts_at + timedelta(days=self.duration_days + self.postponed_days)
 
     @property
     def total_bid_amount(self) -> Decimal:

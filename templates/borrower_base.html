@@ -98,6 +98,10 @@
     <a href="{% url 'users:my_contracts' %}" class="{% block nav_contracts %}{% endblock %}">Moje zmluvy</a>
     <a href="{% url 'users:my_profile' %}" class="{% block nav_profile %}{% endblock %}">Moje údaje</a>
     <a href="{% url 'users:account_settings' %}" class="{% block nav_settings %}{% endblock %}">Nastavenia</a>
+    <a href="{% url 'core:notifications' %}" class="{% block nav_notifications %}{% endblock %}">
+      Notifikácie{% if unread_notifications_count %} <span style="background:#f05a22;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 7px;margin-left:3px;">{{ unread_notifications_count }}</span>{% endif %}
+    </a>
+    <a href="{% url 'users:referral' %}" class="{% block nav_referral %}{% endblock %}">Pozvi priateľa</a>
     <a href="{% url 'users:loan_application' %}" style="background:#f05a22;color:#fff;border-radius:10px;padding:10px 18px;text-decoration:none;font-weight:700;font-size:14.5px;">Požičať si znova</a>
     {% if user.is_superuser or real_admin.is_superuser %}
     <a href="{% url 'users:impersonate_list' %}" style="background:#fff4e5;color:#8a5a00;border-radius:10px;padding:10px 16px;text-decoration:none;font-weight:600;font-size:14.5px;">Admin náhľad</a>

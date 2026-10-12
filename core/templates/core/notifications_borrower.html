@@ -1,0 +1,29 @@
+{% extends "borrower_base.html" %}
+{% block title %}Notifikácie{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+  <h1 style="margin:0;">Notifikácie</h1>
+  {% if notifications %}
+  <a class="btn btn-outline" href="{% url 'core:notifications_mark_all_read' %}">Označiť všetky ako prečítané</a>
+  {% endif %}
+</div>
+
+{% if notifications %}
+  {% for n in notifications %}
+  <div class="card" style="{% if not n.is_read %}border-color:#f05a22;{% endif %}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+      <div>
+        <h2 style="margin-bottom:4px;">{{ n.title }}</h2>
+        {% if n.message %}<p style="color:#6b5a4d;margin:0;">{{ n.message }}</p>{% endif %}
+        <p style="color:#b08a73;font-size:12px;margin:8px 0 0;">{{ n.created_at|date:"d.m.Y H:i" }}</p>
+      </div>
+      {% if not n.is_read %}
+      <a class="btn btn-outline" style="padding:8px 14px;font-size:13px;" href="{% url 'core:notification_mark_read' n.pk %}">Prečítané</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+  <div class="card"><p style="color:#6b5a4d;margin:0;">Zatiaľ nemáš žiadne notifikácie.</p></div>
+{% endif %}
+{% endblock %}

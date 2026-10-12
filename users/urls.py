@@ -23,6 +23,7 @@ urlpatterns = [
     path('nastavenia/', views.account_settings, name='account_settings'),
     path('nastavenia/zmena-hesla/', views.CustomPasswordChangeView.as_view(), name='password_change'),
     path('nastavenia/zmena-hesla/hotovo/', views.CustomPasswordChangeDoneView.as_view(), name='password_change_done'),
+    path('pozvi-priatela/', views.referral, name='referral'),
     path('admin-nahlad/', views.impersonate_list, name='impersonate_list'),
     path('admin-nahlad/<int:user_id>/', views.impersonate_start, name='impersonate_start'),
     path('admin-nahlad/stop/', views.impersonate_stop, name='impersonate_stop'),

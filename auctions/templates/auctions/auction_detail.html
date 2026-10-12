@@ -49,16 +49,13 @@
 {% if user.is_authenticated and auction.is_open %}
 <div class="card">
   <h2>Financovať túto žiadosť</h2>
+  <p style="color:#55607a;margin-top:0;">
+    Pôžičky sa financujú vždy celé naraz - jeden investor financuje presne {{ auction.amount_requested }} €
+    s úrokom {{ auction.max_interest_rate }} % p.a. Čiastočné spolufinancovanie nie je možné.
+  </p>
   <form method="post" action="{% url 'auctions:place_bid' auction.pk %}">
     {% csrf_token %}
-    {% for field in bid_form %}
-      <div class="field">
-        {{ field.label_tag }}
-        {{ field }}
-        {% if field.errors %}<div style="color:#c4342b;font-size:13px;margin-top:4px;">{{ field.errors }}</div>{% endif %}
-      </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-primary">Odoslať ponuku</button>
+    <button type="submit" class="btn btn-primary">Financovať celú pôžičku ({{ auction.amount_requested }} €)</button>
   </form>
 </div>
 {% endif %}

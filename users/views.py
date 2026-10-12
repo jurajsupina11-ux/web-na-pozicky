@@ -17,13 +17,25 @@ from .models import User
 
 
 class SignUpView(CreateView):
-    """Registrácia - len pre investorov (veriteľov)."""
+    """Registrácia - len pre investorov (veriteľov). Podporuje odporúčací
+    (referral) program cez ?ref=KOD v URL - uloží sa referred_by na nového
+    používateľa, odmena sa pripíše po jeho prvej investícii."""
 
     form_class = SignUpForm
     template_name = 'users/signup.html'
     success_url = reverse_lazy('auctions:investor_dashboard')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['ref_code'] = self.request.GET.get('ref', '')
+        return context
+
     def form_valid(self, form):
+        ref_code = self.request.GET.get('ref') or self.request.POST.get('ref_code')
+        if ref_code:
+            referrer = User.objects.filter(referral_code=ref_code).exclude(pk=None).first()
+            if referrer:
+                form.instance.referred_by = referrer
         response = super().form_valid(form)
         login(self.request, self.object)
         return response
@@ -238,6 +250,40 @@ def report_payment(request, loan_id):
             'Ďakujeme, nahlásenie úhrady sme zaznamenali. Platbu overíme do 1 pracovného dňa.',
         )
     return redirect('users:my_loans')
+
+
+#: Jednorazový bonus (€) pre pozývateľa aj pozvaného po prvej investícii pozvaného.
+REFERRAL_BONUS = Decimal('10')
+
+
+@login_required
+def referral(request):
+    """Odporúčací program - vlastný odkaz na pozvanie, prehľad pozvaných a
+    (pre investorov) vernostný program podľa celkového investovaného objemu.
+    Šablóna sa líši podľa role prihláseného používateľa."""
+    referral_url = request.build_absolute_uri(
+        f"{reverse_lazy('users:signup')}?ref={request.user.referral_code}",
+    )
+    referrals = request.user.referrals.all()
+    context = {
+        'referral_code': request.user.referral_code,
+        'referral_url': referral_url,
+        'referrals': referrals,
+        'referral_bonus': REFERRAL_BONUS,
+        'rewarded_count': referrals.filter(referral_reward_granted=True).count(),
+        'total_referral_bonus': referrals.filter(referral_reward_granted=True).count() * REFERRAL_BONUS,
+    }
+    if request.user.role == User.Role.BORROWER:
+        return render(request, 'users/referral_borrower.html', context)
+
+    context.update({
+        'loyalty_tier': request.user.loyalty_tier,
+        'loyalty_tier_label': request.user.loyalty_tier_label,
+        'loyalty_next_threshold': request.user.loyalty_next_threshold,
+        'total_invested_lifetime': request.user.total_invested_lifetime,
+        'loyalty_tiers': User.LoyaltyTier,
+    })
+    return render(request, 'users/referral_investor.html', context)
 
 
 @login_required

@@ -1,0 +1,44 @@
+{% extends "investor_base.html" %}
+{% block title %}Notifikácie{% endblock %}
+{% block content %}
+<div class="toprow">
+  <h1 style="margin:0;">Notifikácie</h1>
+  {% if notifications %}
+  <a class="btn btn-outline" style="margin:0;" href="{% url 'core:notifications_mark_all_read' %}">Označiť všetky ako prečítané</a>
+  {% endif %}
+</div>
+
+<div class="card">
+  {% if notifications %}
+  <div class="table-scroll">
+  <table>
+    <thead><tr><th>Dátum</th><th>Správa</th><th>Stav</th><th></th></tr></thead>
+    <tbody>
+    {% for n in notifications %}
+      <tr style="{% if not n.is_read %}font-weight:600;{% endif %}">
+        <td>{{ n.created_at|date:"d.m.Y H:i" }}</td>
+        <td>
+          <div>{{ n.title }}</div>
+          {% if n.message %}<div style="font-weight:400;color:#55607a;font-size:13px;margin-top:3px;">{{ n.message }}</div>{% endif %}
+        </td>
+        <td>
+          {% if n.is_read %}<span class="pill pill-neutral">Prečítané</span>
+          {% else %}<span class="pill pill-up">Nové</span>{% endif %}
+        </td>
+        <td>
+          {% if not n.is_read %}
+          <a class="btn btn-outline" style="margin:0;padding:6px 12px;font-size:12px;" href="{% url 'core:notification_mark_read' n.pk %}">Označiť ako prečítané</a>
+          {% elif n.url %}
+          <a class="btn btn-outline" style="margin:0;padding:6px 12px;font-size:12px;" href="{{ n.url }}">Zobraziť</a>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <p style="color:#55607a;">Zatiaľ nemáš žiadne notifikácie.</p>
+  {% endif %}
+</div>
+{% endblock %}

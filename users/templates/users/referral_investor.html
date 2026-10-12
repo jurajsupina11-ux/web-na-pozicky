@@ -1,0 +1,46 @@
+{% extends "investor_base.html" %}
+{% block nav_referral %}active{% endblock %}
+{% block title %}Pozvi priateľa a vernostný program{% endblock %}
+{% block content %}
+<h1>Pozvi priateľa a vernostný program</h1>
+
+<div class="card" style="margin-bottom:16px;">
+  <h2>Odporúčací program</h2>
+  <p style="color:#55607a;">Pozvi priateľa cez svoj odkaz - hneď ako urobí svoju prvú investíciu, dostanete obaja bonus {{ referral_bonus }} € na peňaženku.</p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px;">
+    <input type="text" readonly value="{{ referral_url }}" id="refUrl" style="flex:1;min-width:240px;padding:11px 14px;border:1px solid #dbe4f5;border-radius:8px;font-size:13.5px;font-family:inherit;background:#f6f8fb;">
+    <button type="button" class="btn btn-primary" onclick="navigator.clipboard.writeText(document.getElementById('refUrl').value);this.textContent='Skopírované ✓';">Kopírovať odkaz</button>
+  </div>
+  <div class="bento" style="margin-top:20px;">
+    <div class="card stat"><b>{{ referral_code }}</b><span>Tvoj odporúčací kód</span></div>
+    <div class="card stat"><b>{{ referrals.count }}</b><span>Pozvaných priateľov</span></div>
+    <div class="card stat"><b>{{ rewarded_count }}</b><span>Odmenených odporúčaní</span></div>
+    <div class="card stat"><b>{{ total_referral_bonus }} €</b><span>Celkom získaný bonus</span></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Vernostný program</h2>
+  <p style="color:#55607a;">Tvoj vernostný stupeň sa odvíja od celkového investovaného objemu za celú dobu.</p>
+  <div style="display:flex;align-items:center;gap:14px;margin:16px 0;">
+    <span class="pill pill-up" style="font-size:15px;padding:8px 16px;">{{ loyalty_tier_label }}</span>
+    <span style="color:#55607a;font-size:14px;">Celkovo investované: <strong>{{ total_invested_lifetime }} €</strong></span>
+  </div>
+  {% if loyalty_next_threshold %}
+  <p style="color:#55607a;font-size:13.5px;">Doinvestuj ešte <strong>{{ loyalty_next_threshold }} €</strong> na posun na ďalší stupeň.</p>
+  {% else %}
+  <p style="color:#19824a;font-size:13.5px;">Dosiahol/-la si najvyšší vernostný stupeň 🎉</p>
+  {% endif %}
+  <div class="table-scroll" style="margin-top:14px;">
+  <table>
+    <thead><tr><th>Stupeň</th><th>Od investovaného objemu</th><th>Výhody</th></tr></thead>
+    <tbody>
+      <tr><td>🥉 Bronz</td><td>0 €</td><td>Základné podmienky platformy</td></tr>
+      <tr><td>🥈 Striebro</td><td>1 000 €</td><td>Prednostný prístup k novým žiadostiam o 1 hodinu skôr</td></tr>
+      <tr><td>🥇 Zlato</td><td>5 000 €</td><td>+ zľava 50 % na poplatok pri výbere z peňaženky</td></tr>
+      <tr><td>💎 Platina</td><td>20 000 €</td><td>+ osobný account manažér, bez poplatkov za výber</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "borrower_base.html" %}
+{% block nav_referral %}active{% endblock %}
+{% block title %}Pozvi priateľa{% endblock %}
+{% block content %}
+<h1>Pozvi priateľa</h1>
+<div class="card">
+  <h2>Odporúčací program</h2>
+  <p>Pozvi priateľa, ktorý hľadá pôžičku alebo chce investovať. Hneď ako sa zaregistruje cez tvoj odkaz a urobí svoju prvú investíciu/pôžičku, dostanete obaja bonus {{ referral_bonus }} €.</p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px;">
+    <input type="text" readonly value="{{ referral_url }}" id="refUrl" style="flex:1;min-width:220px;padding:13px 16px;border:1px solid #f1e6db;border-radius:12px;font-size:13.5px;font-family:inherit;background:#fffaf5;">
+    <button type="button" class="btn btn-primary" onclick="navigator.clipboard.writeText(document.getElementById('refUrl').value);this.textContent='Skopírované ✓';">Kopírovať odkaz</button>
+  </div>
+</div>
+<div class="card">
+  <h2>Prehľad</h2>
+  <p>Tvoj kód: <strong>{{ referral_code }}</strong> · Pozvaných: <strong>{{ referrals.count }}</strong> · Odmenených: <strong>{{ rewarded_count }}</strong></p>
+</div>
+{% endblock %}

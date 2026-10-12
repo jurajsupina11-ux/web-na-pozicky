@@ -37,6 +37,13 @@ Appka bude dostupná na http://127.0.0.1:8000/, admin na /admin/.
 3. Nastav env premenné: `SECRET_KEY`, `DEBUG=False`, `ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS`.
 4. V DNS nastaveniach domény `pozickypredlznikov.sk` nasmeruj na Render (Custom Domain v Render dashboarde).
 
+## Pravidelné úlohy (Render Cron Jobs)
+
+Nasledovné management commandy je potrebné spúšťať pravidelne (napr. raz denne cez Render Cron Job):
+
+- `python manage.py send_due_date_reminders` - e-mailové pripomienky blížiacej sa/prekročenej splatnosti.
+- `python manage.py process_buybacks` - garancia odkúpenia: automaticky odkúpi pôžičky nesplatené > 90 dní po splatnosti.
+
 ## Ďalšie kroky (MVP backlog)
 
 - [ ] KYC overenie identity užívateľov

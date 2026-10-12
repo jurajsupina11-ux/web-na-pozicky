@@ -13,9 +13,13 @@ from django.views.generic import CreateView, DetailView, ListView
 from bids.forms import BidForm
 from bids.models import Bid
 from core.emails import send_investment_confirmation, send_loan_approved
+from core.models import Notification, notify
 
 from .models import Auction
 from .forms import AuctionForm
+
+#: Jednorazový bonus (€) pre pozývateľa aj pozvaného po prvej investícii pozvaného.
+REFERRAL_BONUS = Decimal('10')
 
 
 class AuctionListView(ListView):
@@ -59,38 +63,61 @@ class AuctionCreateView(LoginRequiredMixin, CreateView):
 
 @login_required
 def place_bid(request, pk):
+    """Financovanie žiadosti o pôžičku - vždy len celá naraz (all-or-nothing).
+    Jedna pôžička = jeden investor = jedna investícia za podmienok žiadosti
+    (celá požadovaná suma, úrok podľa max_interest_rate aukcie)."""
     auction = get_object_or_404(Auction, pk=pk, status=Auction.Status.ACTIVE)
     if request.method == 'POST':
-        form = BidForm(request.POST)
-        if form.is_valid():
-            amount = form.cleaned_data['amount']
-            if amount > request.user.wallet_balance:
-                messages.error(
-                    request,
-                    'Na peňaženke nemáš dostatok voľných prostriedkov na túto investíciu. Najprv vlož peniaze na účet.',
+        amount = auction.amount_requested
+        if amount > request.user.wallet_balance:
+            messages.error(
+                request,
+                'Na peňaženke nemáš dostatok voľných prostriedkov na financovanie celej tejto pôžičky. '
+                'Pôžičky sa financujú vždy celé naraz, nie je možné investovať len časť.',
+            )
+            return redirect(auction.get_absolute_url())
+
+        bid = Bid.objects.create(
+            auction=auction,
+            lender=request.user,
+            amount=amount,
+            interest_rate=auction.max_interest_rate,
+        )
+
+        # Suma investície sa strháva z peňaženky investora hneď pri financovaní.
+        request.user.wallet_balance -= amount
+        request.user.save(update_fields=['wallet_balance'])
+        send_investment_confirmation(request.user, bid)
+
+        # Pôžička je vyfinancovaná celá naraz - okamžite sa schváli.
+        auction.status = Auction.Status.FUNDED
+        auction.save(update_fields=['status'])
+        send_loan_approved(auction.borrower, auction)
+        messages.success(request, 'Pôžička bola vyfinancovaná celá a bola schválená.')
+
+        # Referral program - ak je toto prvá investícia pozvaného používateľa,
+        # pripíše sa jednorazový bonus (€) pozvanému aj jeho pozývateľovi.
+        referrer = request.user.referred_by
+        if referrer and not request.user.referral_reward_granted:
+            is_first_investment = Bid.objects.filter(lender=request.user).count() == 1
+            if is_first_investment:
+                request.user.wallet_balance += REFERRAL_BONUS
+                request.user.referral_reward_granted = True
+                request.user.save(update_fields=['wallet_balance', 'referral_reward_granted'])
+                referrer.wallet_balance += REFERRAL_BONUS
+                referrer.save(update_fields=['wallet_balance'])
+                notify(
+                    request.user,
+                    f'Odmena za registráciu na pozvanie: +{REFERRAL_BONUS} €',
+                    'Vďaka za prvú investíciu - bonus bol pripísaný na tvoju peňaženku.',
+                    kind=Notification.Kind.SUCCESS,
                 )
-                return redirect(auction.get_absolute_url())
-
-            bid = form.save(commit=False)
-            bid.auction = auction
-            bid.lender = request.user
-            bid.save()
-
-            # Suma investície sa strháva z peňaženky investora hneď pri odoslaní ponuky.
-            request.user.wallet_balance -= amount
-            request.user.save(update_fields=['wallet_balance'])
-            send_investment_confirmation(request.user, bid)
-
-            messages.success(request, 'Vaša ponuka bola odoslaná.')
-            # Keď je žiadosť plne vyfinancovaná, pôžička sa automaticky schváli -
-            # dlžník sa odblokuje do prostredia pre dlžníkov (Moje pôžičky).
-            if auction.funding_progress >= 100:
-                auction.status = Auction.Status.FUNDED
-                auction.save(update_fields=['status'])
-                send_loan_approved(auction.borrower, auction)
-                messages.success(request, 'Žiadosť bola plne vyfinancovaná a pôžička bola schválená.')
-        else:
-            messages.error(request, 'Ponuku sa nepodarilo odoslať, skontrolujte údaje.')
+                notify(
+                    referrer,
+                    f'Odmena za odporúčanie: +{REFERRAL_BONUS} €',
+                    'Tvoj pozvaný priateľ práve urobil prvú investíciu - bonus bol pripísaný na tvoju peňaženku.',
+                    kind=Notification.Kind.SUCCESS,
+                )
     return redirect(auction.get_absolute_url())
 
 
@@ -223,6 +250,112 @@ def investor_history_pdf(request):
     data.append(['', '', f'{total}', '', '', 'Spolu'])
 
     table = Table(data, colWidths=[25 * mm, 30 * mm, 25 * mm, 28 * mm, 28 * mm, 28 * mm])
+    table.setStyle(TableStyle([
+        ('FONTNAME', (0, 0), (-1, -1), 'Vera'),
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2554ea')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+        ('FONTNAME', (0, 0), (-1, 0), 'Vera-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 9),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#dbe4f5')),
+        ('BACKGROUND', (0, -1), (-1, -1), colors.HexColor('#eaf0ff')),
+        ('FONTNAME', (0, -1), (-1, -1), 'Vera-Bold'),
+    ]))
+    elements.append(table)
+    doc.build(elements)
+    return response
+
+
+def _tax_statement_data(user, year):
+    """Vráti (bids_in_year, total_interest) pre daňový výkaz investora za daný rok.
+    Zarátavajú sa len úrokové príjmy zo splatených (CLOSED) pôžičiek, ktorých
+    splatnosť pripadla na daný rok - to je príjem, ktorý sa reálne realizoval."""
+    bids = Bid.objects.filter(
+        lender=user,
+        auction__status=Auction.Status.CLOSED,
+    ).select_related('auction')
+    bids_in_year = [b for b in bids if b.auction.computed_due_date.year == year]
+    for b in bids_in_year:
+        b.interest_amount = round(
+            b.amount * (b.interest_rate / Decimal('100')) * (Decimal(b.auction.duration_days) / Decimal('365')),
+            2,
+        )
+    total_interest = sum((b.interest_amount for b in bids_in_year), Decimal('0'))
+    return bids_in_year, round(total_interest, 2)
+
+
+@login_required
+def tax_statement(request):
+    """Ročný súhrnný výkaz úrokových príjmov investora - podklad pre daňové
+    priznanie (príjem z poskytnutia peňažných prostriedkov, § 7 zákona o dani
+    z príjmov)."""
+    current_year = timezone.now().year
+    available_years = sorted({
+        b.auction.computed_due_date.year
+        for b in Bid.objects.filter(lender=request.user, auction__status=Auction.Status.CLOSED).select_related('auction')
+    }, reverse=True) or [current_year]
+    selected_year = int(request.GET.get('rok', available_years[0]))
+    bids_in_year, total_interest = _tax_statement_data(request.user, selected_year)
+
+    return render(request, 'auctions/tax_statement.html', {
+        'available_years': available_years,
+        'selected_year': selected_year,
+        'bids_in_year': bids_in_year,
+        'total_interest': total_interest,
+    })
+
+
+@login_required
+def tax_statement_pdf(request, year):
+    """Export ročného daňového výkazu úrokových príjmov do PDF."""
+    import os
+
+    import reportlab
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.units import mm
+    from reportlab.pdfbase import pdfmetrics
+    from reportlab.pdfbase.ttfonts import TTFont
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+    from reportlab.lib.styles import getSampleStyleSheet
+
+    font_path = os.path.join(os.path.dirname(reportlab.__file__), 'fonts', 'Vera.ttf')
+    font_path_bold = os.path.join(os.path.dirname(reportlab.__file__), 'fonts', 'VeraBd.ttf')
+    if 'Vera' not in pdfmetrics.getRegisteredFontNames():
+        pdfmetrics.registerFont(TTFont('Vera', font_path))
+        pdfmetrics.registerFont(TTFont('Vera-Bold', font_path_bold))
+
+    bids_in_year, total_interest = _tax_statement_data(request.user, year)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="danovy_vykaz_{year}.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=A4, topMargin=18 * mm, bottomMargin=18 * mm)
+    styles = getSampleStyleSheet()
+    styles['Title'].fontName = 'Vera-Bold'
+    styles['Normal'].fontName = 'Vera'
+    elements = [
+        Paragraph(f'Pôžičky Predlžníkov – ročný daňový výkaz {year}', styles['Title']),
+        Paragraph(f'Investor: {request.user.display_name} ({request.user.username})', styles['Normal']),
+        Paragraph(
+            'Súhrn úrokových príjmov zo splatených pôžičiek za daný rok - podklad pre daňové priznanie '
+            '(príjem z poskytnutia peňažných prostriedkov).',
+            styles['Normal'],
+        ),
+        Spacer(1, 10 * mm),
+    ]
+
+    data = [['Pôžička', 'Dátum splatnosti', 'Istina (€)', 'Úrok (% p.a.)', 'Realizovaný úrok (€)']]
+    for b in bids_in_year:
+        data.append([
+            f'#{b.auction.pk}',
+            b.auction.computed_due_date.strftime('%d.%m.%Y'),
+            f'{b.amount}',
+            f'{b.interest_rate}',
+            f'{b.interest_amount}',
+        ])
+    data.append(['', '', '', 'Spolu', f'{total_interest} €'])
+
+    table = Table(data, colWidths=[22 * mm, 32 * mm, 28 * mm, 30 * mm, 40 * mm])
     table.setStyle(TableStyle([
         ('FONTNAME', (0, 0), (-1, -1), 'Vera'),
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#2554ea')),

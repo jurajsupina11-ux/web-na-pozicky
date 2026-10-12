@@ -103,6 +103,36 @@ def send_payment_overdue_reminder(user, auction):
     )
 
 
+def send_buyback_notice_lender(user, auction):
+    """Investorovi: pôžička bola automaticky odkúpená platformou (garancia odkúpenia)."""
+    _send(
+        'Pôžička bola automaticky odkúpená - garancia odkúpenia',
+        (
+            f'Dobrý deň,\n\n'
+            f'pôžička #{auction.pk} ({auction.amount_requested} €) nebola splatená do 90 dní po splatnosti. '
+            f'V súlade s garanciou odkúpenia sme vašu investíciu (istina + dohodnutý úrok) automaticky '
+            f'vyplatili na vašu peňaženku. Ďalšie vymáhanie dlhu od dlžníka preberá platforma.\n\n'
+            f'S pozdravom,\nPôžičky Predlžníkov'
+        ),
+        user.email,
+    )
+
+
+def send_buyback_notice_borrower(user, auction):
+    """Dlžníkovi: pôžička bola odkúpená platformou, dlh teraz voči platforme."""
+    _send(
+        'Vaša pôžička bola odkúpená platformou',
+        (
+            f'Dobrý deň,\n\n'
+            f'vaša pôžička #{auction.pk} ({auction.amount_requested} €) nebola splatená do 90 dní po splatnosti '
+            f'a bola odkúpená platformou Pôžičky Predlžníkov. Váš dlh teraz evidujeme priamo voči platforme, '
+            f'prosíme uhraďte dlžnú sumu čo najskôr, inak bude pristúpené k ďalšiemu vymáhaniu.\n\n'
+            f'S pozdravom,\nPôžičky Predlžníkov'
+        ),
+        user.email,
+    )
+
+
 def send_payment_due_soon_reminder(user, auction, days_left):
     """Dlžníkovi: pripomienka, že splatnosť sa blíži."""
     _send(

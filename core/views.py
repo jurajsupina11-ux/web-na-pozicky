@@ -1,6 +1,13 @@
-from django.shortcuts import render
+from decimal import Decimal
+
+from django.contrib.auth.decorators import login_required
+from django.db.models import Avg, Sum
+from django.shortcuts import get_object_or_404, redirect, render
 
 from auctions.models import Auction
+from bids.models import Bid
+
+from .models import Notification
 
 
 def landing(request):
@@ -67,3 +74,56 @@ def terms(request):
 def privacy(request):
     """Zásady ochrany osobných údajov (GDPR)."""
     return render(request, 'core/privacy.html', {'company': COMPANY_DETAILS})
+
+
+def public_stats(request):
+    """Verejný štatistický prehľad platformy - buduje dôveru nových investorov
+    (celkový objem, počet pôžičiek, priemerný výnos, miera defaultu)."""
+    all_bids = Bid.objects.select_related('auction')
+    total_invested = all_bids.aggregate(total=Sum('amount'))['total'] or Decimal('0')
+    total_loans = Auction.objects.filter(status__in=[Auction.Status.FUNDED, Auction.Status.CLOSED]).count()
+    closed_loans = Auction.objects.filter(status=Auction.Status.CLOSED)
+    defaulted_loans = closed_loans.filter(bought_back=True).count()
+    repaid_loans = closed_loans.exclude(bought_back=True).count()
+    default_rate = round((defaulted_loans / closed_loans.count()) * 100, 1) if closed_loans.count() else 0
+
+    avg_interest = all_bids.aggregate(avg=Avg('interest_rate'))['avg']
+
+    context = {
+        'total_invested': round(total_invested, 2),
+        'total_loans': total_loans,
+        'repaid_loans': repaid_loans,
+        'defaulted_loans': defaulted_loans,
+        'default_rate': default_rate,
+        'avg_interest': round(avg_interest, 1) if avg_interest else Decimal('24.0'),
+        'active_investors': Bid.objects.values('lender').distinct().count(),
+    }
+    return render(request, 'core/public_stats.html', context)
+
+
+@login_required
+def notifications_list(request):
+    """Zoznam notifikácií prihláseného používateľa (zvonček v hlavičke) -
+    šablóna sa líši podľa role prihláseného používateľa (investor/dlžník)."""
+    from users.models import User
+    notifications = Notification.objects.filter(user=request.user)
+    template = (
+        'core/notifications_borrower.html'
+        if request.user.role == User.Role.BORROWER
+        else 'core/notifications_investor.html'
+    )
+    return render(request, template, {'notifications': notifications})
+
+
+@login_required
+def notification_mark_read(request, pk):
+    notif = get_object_or_404(Notification, pk=pk, user=request.user)
+    notif.is_read = True
+    notif.save(update_fields=['is_read'])
+    return redirect(notif.url or 'core:notifications')
+
+
+@login_required
+def notifications_mark_all_read(request):
+    Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+    return redirect('core:notifications')
