@@ -1,0 +1,17 @@
+{% extends "borrower_base.html" %}
+{% block nav_loans %}active{% endblock %}
+{% block title %}Overenie e-mailu{% endblock %}
+{% block content %}
+<h1>Over svoju e-mailovú adresu</h1>
+<div class="card">
+  <p>
+    Pred podpisom Zmluvy o pôžičke je potrebné overiť tvoju e-mailovú adresu
+    (<strong>{{ user.email }}</strong>). Klikni na tlačidlo nižšie a pošleme ti
+    overovací odkaz.
+  </p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Poslať overovací odkaz</button>
+  </form>
+</div>
+{% endblock %}

@@ -179,17 +179,21 @@ class SecurityCodePasswordChangeForm(PasswordChangeForm):
         return code
 
 
+def normalize_birth_number(value):
+    """Odstráni lomítko a medzery z rodného čísla (napr. '900101/1234' -> '9001011234')."""
+    return (value or '').replace('/', '').replace(' ', '').strip()
+
+
 class BorrowerApplicationForm(forms.Form):
     """Jediný formulár pre dlžníka: vytvorenie účtu + KYC údaje + parametre žiadosti
-    o pôžičku. Dlžník sa takto nikdy neregistruje klasicky - rovno žiada o úver."""
+    o pôžičku. Dlžník si nevolí vlastné prihlasovacie údaje - používateľské meno je
+    jeho rodné číslo (bez lomítka) a heslo sa vygeneruje automaticky a pošle e-mailom
+    až po schválení žiadosti administrátorom (posúdenie registra dlžníkov/úverov)."""
 
     DEFAULT_INTEREST_RATE = 24.00
 
-    # Prístupové údaje
-    username = forms.CharField(label='Používateľské meno', max_length=150)
-    email = forms.EmailField(label='E-mail', required=False)
-    password1 = forms.CharField(label='Heslo', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Heslo (znova)', widget=forms.PasswordInput)
+    # Prístupové údaje - bez voľby username/hesla, len kontakt.
+    email = forms.EmailField(label='E-mail')
     phone_number = forms.CharField(label='Telefónne číslo', max_length=20)
 
     # Osobné / KYC údaje
@@ -199,7 +203,10 @@ class BorrowerApplicationForm(forms.Form):
         label='Dátum narodenia', widget=forms.DateInput(attrs={'type': 'date'}),
     )
     id_card_number = forms.CharField(label='Číslo občianskeho preukazu', max_length=20)
-    birth_number = forms.CharField(label='Rodné číslo', max_length=15)
+    birth_number = forms.CharField(
+        label='Rodné číslo (bez lomítka)', max_length=15,
+        help_text='Slúži zároveň ako tvoje používateľské meno na prihlásenie.',
+    )
     street_address = forms.CharField(label='Ulica a číslo', max_length=120)
     city = forms.CharField(label='Mesto', max_length=80)
     postal_code = forms.CharField(label='PSČ', max_length=10)
@@ -230,28 +237,29 @@ class BorrowerApplicationForm(forms.Form):
             'placeholder': 'napr. 14', 'min': 1, 'max': 30,
         })
 
-    def clean_username(self):
-        username = self.cleaned_data['username']
-        if User.objects.filter(username=username).exists():
-            raise ValidationError('Toto používateľské meno je už obsadené.')
-        return username
+    def clean_birth_number(self):
+        value = normalize_birth_number(self.cleaned_data['birth_number'])
+        if not value.isdigit() or len(value) not in (9, 10):
+            raise ValidationError('Zadaj rodné číslo bez lomítka (9 alebo 10 číslic).')
+        if User.objects.filter(username=value).exists():
+            raise ValidationError('S týmto rodným číslom je už evidovaná žiadosť/účet.')
+        return value
 
     def clean_bank_account_iban(self):
         value = self.cleaned_data['bank_account_iban']
         validate_sk_iban(value)
         return value.replace(' ', '').upper()
 
-    def clean(self):
-        cleaned = super().clean()
-        p1, p2 = cleaned.get('password1'), cleaned.get('password2')
-        if p1 and p2 and p1 != p2:
-            self.add_error('password2', 'Heslá sa nezhodujú.')
-        return cleaned
-
     def create_user(self):
+        """Vytvorí účet dlžníka - username = rodné číslo, heslo sa vygeneruje
+        náhodne a uloží sa do self.generated_password (treba ho poslať e-mailom
+        až po schválení žiadosti, nie tu)."""
+        from .models import _generate_password
+
+        self.generated_password = _generate_password()
         user = User(
-            username=self.cleaned_data['username'],
-            email=self.cleaned_data.get('email', ''),
+            username=self.cleaned_data['birth_number'],
+            email=self.cleaned_data['email'],
             phone_number=self.cleaned_data['phone_number'],
             role=User.Role.BORROWER,
             first_name=self.cleaned_data['first_name'],
@@ -267,7 +275,7 @@ class BorrowerApplicationForm(forms.Form):
             gdpr_consent_given=True,
             gdpr_consent_at=timezone.now(),
         )
-        user.set_password(self.cleaned_data['password1'])
+        user.set_password(self.generated_password)
         user.save()
         return user
 
@@ -281,7 +289,46 @@ class BorrowerApplicationForm(forms.Form):
             amount_requested=amount,
             max_interest_rate=self.DEFAULT_INTEREST_RATE,
             duration_days=duration,
-            status=Auction.Status.ACTIVE,
+            status=Auction.Status.PENDING_REVIEW,
+            ends_at=timezone.now() + timezone.timedelta(days=duration),
+        )
+
+
+class RepeatLoanApplicationForm(forms.Form):
+    """Zjednodušený formulár na opakovanú žiadosť pre už overeného dlžníka
+    (kyc_completed=True) - osobné údaje sa znova nevypĺňajú, stačia parametre
+    novej pôžičky. Žiadosť znova ide k administrátorovi na posúdenie."""
+
+    amount_requested = forms.DecimalField(
+        label='Požadovaná suma (€)', min_value=50, max_value=500,
+        max_digits=10, decimal_places=2,
+    )
+    duration_days = forms.IntegerField(label='Splatnosť (dni)', min_value=1, max_value=30)
+    purpose = forms.CharField(
+        label='Účel pôžičky', widget=forms.Textarea(attrs={'rows': 3}),
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        _apply_autocomplete_and_classes(self)
+        self.fields['amount_requested'].widget.attrs.update({
+            'placeholder': 'napr. 200', 'min': 50, 'max': 500, 'step': 10,
+        })
+        self.fields['duration_days'].widget.attrs.update({
+            'placeholder': 'napr. 14', 'min': 1, 'max': 30,
+        })
+
+    def create_auction(self, user):
+        amount = self.cleaned_data['amount_requested']
+        duration = self.cleaned_data['duration_days']
+        return Auction.objects.create(
+            borrower=user,
+            title=f'Žiadosť o pôžičku {amount} € na {duration} dní',
+            description=self.cleaned_data['purpose'],
+            amount_requested=amount,
+            max_interest_rate=BorrowerApplicationForm.DEFAULT_INTEREST_RATE,
+            duration_days=duration,
+            status=Auction.Status.PENDING_REVIEW,
             ends_at=timezone.now() + timezone.timedelta(days=duration),
         )
 

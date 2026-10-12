@@ -15,6 +15,9 @@ class Auction(models.Model):
 
     class Status(models.TextChoices):
         DRAFT = 'draft', 'Koncept'
+        PENDING_REVIEW = 'pending_review', 'Čaká na posúdenie'
+        COUNTER_OFFER = 'counter_offer', 'Protiponuka od platformy'
+        REJECTED = 'rejected', 'Zamietnutá'
         ACTIVE = 'active', 'Aktívna'
         CLOSED = 'closed', 'Uzavretá'
         CANCELLED = 'cancelled', 'Zrušená'
@@ -35,7 +38,7 @@ class Auction(models.Model):
         help_text='Maximálny úrok (% p.a.), ktorý je žiadateľ ochotný zaplatiť.',
     )
     duration_days = models.PositiveIntegerField(help_text='Splatnosť pôžičky v dňoch.')
-    status = models.CharField(max_length=10, choices=Status.choices, default=Status.DRAFT)
+    status = models.CharField(max_length=15, choices=Status.choices, default=Status.DRAFT)
     starts_at = models.DateTimeField(default=timezone.now)
     ends_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -57,6 +60,18 @@ class Auction(models.Model):
         null=True, blank=True,
         help_text='Kedy dlžník podpísal Zmluvu o pôžičke - predtým sa peniaze nevyplácajú.',
     )
+
+    # Posúdenie žiadosti administrátorom (register dlžníkov/úverov) - predtým,
+    # než sa žiadosť vôbec zobrazí investorom, musí ju admin schváliť.
+    rejection_reason = models.CharField(
+        max_length=200, blank=True,
+        help_text='Dôvod zamietnutia žiadosti (zobrazí sa dlžníkovi).',
+    )
+    counter_offer_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, null=True, blank=True,
+        help_text='Nižšia suma, ktorú platforma ponúka namiesto pôvodne požadovanej (protiponuka).',
+    )
+    reviewed_at = models.DateTimeField(null=True, blank=True)
 
     # Garancia odkúpenia - ak dlžník nesplatí do BUYBACK_DAYS dní po splatnosti,
     # platforma automaticky odkúpi pohľadávku od investora (investor dostane

@@ -109,10 +109,7 @@ c.logout()
 
 # ========== 4. BORROWER LOAN APPLICATION ==========
 loan_data = {
-    'username': 'e2e_borrower',
     'email': 'e2e_borrower@example.com',
-    'password1': 'SuperSecret123!',
-    'password2': 'SuperSecret123!',
     'phone_number': '+421900000002',
     'first_name': 'Jana',
     'last_name': 'Testovacia',
@@ -130,29 +127,37 @@ loan_data = {
 }
 r = c.post('/accounts/ziadost-o-uver/', loan_data, follow=True)
 check('POST loan application succeeds', r.status_code == 200, f'status={r.status_code}')
-borrower = User.objects.filter(username='e2e_borrower').first()
-check('Borrower user created', borrower is not None)
+borrower = User.objects.filter(username='9001011234').first()
+check('Borrower user created with username = birth number', borrower is not None)
 if borrower:
     check('Borrower role set correctly', borrower.role == User.Role.BORROWER, f'role={borrower.role}')
     check('Borrower auto-logged-in after application', '_auth_user_id' in c.session)
     check('Borrower kyc_completed flag set', borrower.kyc_completed is True)
+    check('Borrower has a usable auto-generated password', borrower.has_usable_password())
 
 auction = Auction.objects.filter(borrower=borrower).first() if borrower else None
 check('Auction (loan request) created for borrower', auction is not None)
 if auction:
     check('Auction amount matches request', auction.amount_requested == Decimal('200.00'), f'amount={auction.amount_requested}')
-    check('Auction status is ACTIVE (awaiting funding)', auction.status == Auction.Status.ACTIVE, f'status={auction.status}')
+    check('Auction status is PENDING_REVIEW (awaiting admin approval)', auction.status == Auction.Status.PENDING_REVIEW, f'status={auction.status}')
 
-# Borrower should NOT have access to /moje-pozicky/ yet (no funded loan)
+# Borrower should NOT have access to /moje-pozicky/ or /moje-ziadosti/ yet (not approved)
 r = c.get('/accounts/moje-pozicky/', follow=True)
-check('Borrower blocked from Moje pozicky before funding (redirected)', 'moje-ziadosti' in r.redirect_chain[-1][0] if r.redirect_chain else False, str(r.redirect_chain))
+check('Borrower blocked from Moje pozicky before approval (redirected)', 'stav-ziadosti' in r.redirect_chain[-1][0] if r.redirect_chain else False, str(r.redirect_chain))
 
-# Borrower dashboard (Moje ziadosti) should show pending application
-r = c.get('/accounts/moje-ziadosti/')
-check('Borrower dashboard accessible', r.status_code == 200)
-check('Borrower dashboard shows pending application hint', b'ekajet' in r.content or b'iadosti' in r.content)
+r = c.get('/accounts/moje-ziadosti/', follow=True)
+check('Borrower blocked from Moje ziadosti before approval (redirected)', 'stav-ziadosti' in r.redirect_chain[-1][0] if r.redirect_chain else False, str(r.redirect_chain))
+
+# Application status page should show pending state
+r = c.get('/accounts/stav-ziadosti/')
+check('Application status page accessible', r.status_code == 200)
+check('Application status page shows pending hint', b'os\xc3\xbadenie' in r.content or b'aka' in r.content)
 
 c.logout()
+
+# ========== 4b. ADMIN APPROVES THE APPLICATION ==========
+auction.status = Auction.Status.ACTIVE
+auction.save(update_fields=['status'])
 
 # ========== 5. INVESTOR FUNDS THE LOAN ==========
 c.force_login(investor)
@@ -178,6 +183,20 @@ c.force_login(borrower)
 r = c.get('/accounts/moje-pozicky/')
 check('Borrower can access Moje pozicky while awaiting signature', r.status_code == 200)
 check('Moje pozicky shows signing hint', b'podpis' in r.content.lower())
+
+# Signing requires a verified e-mail first
+r = c.get(f'/accounts/moje-pozicky/{auction.pk}/podpisat-zmluvu/', follow=True)
+check('Signing redirects to e-mail verification when not verified', 'overit-email' in r.redirect_chain[-1][0] if r.redirect_chain else False, str(r.redirect_chain))
+
+r = c.post('/accounts/overit-email/', follow=True)
+check('Verification e-mail request succeeds', r.status_code == 200)
+borrower.refresh_from_db()
+check('Verification token generated', bool(borrower.email_verification_token))
+
+r = c.get(f'/accounts/overit-email/{borrower.email_verification_token}/', follow=True)
+check('Clicking verification link succeeds', r.status_code == 200)
+borrower.refresh_from_db()
+check('Borrower e-mail marked as verified', borrower.email_verified is True)
 
 # Borrower signs the loan contract -> loan becomes FUNDED
 r = c.post(f'/accounts/moje-pozicky/{auction.pk}/podpisat-zmluvu/', follow=True)

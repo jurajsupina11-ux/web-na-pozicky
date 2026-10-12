@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stav žiadosti – Pôžičky Predlžníkov</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Manrope',Arial,sans-serif;background:#fffdfb;color:#20150d;display:flex;flex-direction:column;min-height:100vh;}
+  header{background:#fff;border-bottom:1px solid #f1e6db;padding:18px 28px;display:flex;justify-content:space-between;align-items:center;}
+  header .logo{font-weight:800;font-size:18px;color:#20150d;text-decoration:none;}
+  .wrap{max-width:560px;margin:0 auto;padding:48px 24px;flex:1;width:100%;}
+  .card{background:#fff;border:1px solid #f1e6db;border-radius:20px;padding:30px;}
+  h1{font-size:26px;font-weight:800;margin:0 0 20px;}
+  h2{font-size:18px;font-weight:700;margin:0 0 12px;}
+  p{line-height:1.6;color:#4a3826;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:14px;text-decoration:none;font-weight:700;font-size:14.5px;border:2px solid transparent;cursor:pointer;}
+  .btn-primary{background:#f05a22;color:#fff;}
+  .btn-outline{background:transparent;color:#6b5a4d;border-color:#f1e6db;}
+  .alert{padding:12px 16px;border-radius:12px;font-size:14px;margin-bottom:16px;background:#fff1ea;color:#b1480f;}
+  form{display:inline;}
+  footer{text-align:center;padding:20px;color:#b08a73;font-size:12px;}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="{% url 'core:landing' %}">Pôžičky Predlžníkov</a>
+  <form method="post" action="{% url 'users:logout' %}">{% csrf_token %}<button type="submit" class="btn btn-outline">Odhlásiť sa</button></form>
+</header>
+<div class="wrap">
+  {% if messages %}
+    {% for message in messages %}<div class="alert">{{ message }}</div>{% endfor %}
+  {% endif %}
+  <h1>Stav žiadosti o pôžičku</h1>
+
+  {% if not application %}
+  <div class="card">
+    <p>Zatiaľ nemáš žiadnu žiadosť.</p>
+    <a class="btn btn-primary" href="{% url 'users:loan_application' %}">Požiadať o pôžičku</a>
+  </div>
+
+  {% elif application.status == 'pending_review' %}
+  <div class="card">
+    <h2>Čaká sa na posúdenie</h2>
+    <p>
+      Tvoja žiadosť o pôžičku <strong>{{ application.amount_requested }} €</strong> na {{ application.duration_days }} dní
+      sa momentálne posudzuje (vrátane overenia v úverovom registri). Môže to trvať niekoľko minút až hodín -
+      o výsledku ťa budeme informovať e-mailom. Táto stránka sa automaticky neobnovuje, skontroluj to znova neskôr.
+    </p>
+  </div>
+
+  {% elif application.status == 'counter_offer' %}
+  <div class="card">
+    <h2>Protiponuka</h2>
+    <p>
+      Pôvodne požadovanú sumu {{ application.amount_requested }} € sme nemohli schváliť v plnej výške.
+      Namiesto toho ti ponúkame pôžičku vo výške <strong>{{ application.counter_offer_amount }} €</strong>.
+    </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+      <form method="post" action="{% url 'users:accept_counter_offer' application.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Prijať protiponuku</button>
+      </form>
+      <form method="post" action="{% url 'users:reject_counter_offer' application.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline">Odmietnuť</button>
+      </form>
+    </div>
+  </div>
+
+  {% elif application.status == 'rejected' %}
+  <div class="card">
+    <h2>Žiadosť bola zamietnutá</h2>
+    {% if application.rejection_reason %}<p>Dôvod: {{ application.rejection_reason }}</p>{% endif %}
+    <a class="btn btn-primary" style="margin-top:10px;" href="{% url 'users:loan_application' %}">Podať žiadosť znova</a>
+  </div>
+  {% endif %}
+</div>
+<footer>&copy; Pôžičky Predlžníkov</footer>
+</body>
+</html>
+

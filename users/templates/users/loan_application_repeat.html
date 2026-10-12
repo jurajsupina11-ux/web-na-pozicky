@@ -1,0 +1,22 @@
+{% extends "borrower_base.html" %}
+{% block title %}Nová žiadosť o pôžičku{% endblock %}
+{% block content %}
+<h1>Požičať si znova</h1>
+<div class="card" style="max-width:480px;">
+  <p style="color:#6b5a4d;">
+    Tvoje osobné údaje už máme overené z predchádzajúcej žiadosti, stačí zadať parametre novej pôžičky.
+    Žiadosť opäť posúdi administrátor pred zobrazením investorom.
+  </p>
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:13px;font-weight:600;color:#5c3a24;margin-bottom:6px;">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<div style="color:#c4342b;font-size:13px;margin-top:4px;">{{ field.errors }}</div>{% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary" style="width:100%;">Odoslať žiadosť o pôžičku</button>
+  </form>
+</div>
+{% endblock %}

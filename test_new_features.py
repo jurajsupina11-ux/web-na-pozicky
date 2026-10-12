@@ -33,7 +33,10 @@ c = Client(raise_request_exception=False)
 investor = User.objects.create_user(username='nf_investor', password='x', role=User.Role.LENDER)
 investor.wallet_balance = Decimal('100')
 investor.save()
-borrower = User.objects.create_user(username='nf_borrower', password='x', role=User.Role.BORROWER, kyc_completed=True)
+borrower = User.objects.create_user(
+    username='nf_borrower', password='x', role=User.Role.BORROWER, kyc_completed=True,
+    email='nf_borrower@example.com', email_verified=True,
+)
 auction = Auction.objects.create(
     borrower=borrower, title='t', description='t', amount_requested=Decimal('200'),
     max_interest_rate=Decimal('24'), duration_days=14, status=Auction.Status.ACTIVE,

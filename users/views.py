@@ -11,13 +11,15 @@ from django.views.generic import CreateView
 
 from auctions.models import Auction
 from core.emails import (
-    send_investor_welcome, send_loan_application_received, send_loan_approved, send_repayment_reported,
+    send_email_verification, send_investor_welcome, send_loan_application_received,
+    send_loan_approved, send_repayment_reported,
 )
 
 from .forms import (
-    BankAccountForm, BorrowerApplicationForm, KYCForm, SecurityCodePasswordChangeForm, SignUpForm,
+    BankAccountForm, BorrowerApplicationForm, KYCForm, RepeatLoanApplicationForm,
+    SecurityCodePasswordChangeForm, SignUpForm,
 )
-from .models import User
+from .models import User, _generate_email_verification_token
 
 
 class SignUpView(CreateView):
@@ -112,11 +114,28 @@ def kyc_form(request):
 
 
 def loan_application(request):
-    """Dlžník sa neregistruje klasicky - jedným formulárom naraz vytvorí účet
-    a požiada o pôžičku (osobné/KYC údaje + parametre úveru)."""
+    """Žiadosť o pôžičku. Nový žiadateľ vyplní jeden formulár, ktorý naraz
+    vytvorí účet (username = rodné číslo, heslo sa vygeneruje automaticky
+    a pošle e-mailom) a podá žiadosť (osobné/KYC údaje + parametre úveru).
+    Už overený dlžník (kyc_completed=True) vyplní len zjednodušený formulár
+    s parametrami novej pôžičky - osobné údaje sa znova nepýtajú. Žiadosť
+    v oboch prípadoch ide najprv k administrátorovi na posúdenie (stav
+    PENDING_REVIEW) - do schválenia nemá dlžník prístup do menu, len na
+    stránku so stavom žiadosti."""
+    if request.user.is_authenticated and request.user.role == User.Role.BORROWER:
+        # Už existujúci (overený) dlžník - zjednodušená opakovaná žiadosť.
+        if request.method == 'POST':
+            form = RepeatLoanApplicationForm(request.POST)
+            if form.is_valid():
+                auction = form.create_auction(request.user)
+                send_loan_application_received(request.user, auction)
+                messages.success(request, 'Žiadosť o pôžičku bola odoslaná - čaká sa na posúdenie.')
+                return redirect('users:application_status')
+        else:
+            form = RepeatLoanApplicationForm()
+        return render(request, 'users/loan_application_repeat.html', {'form': form})
+
     if request.user.is_authenticated:
-        if request.user.role == User.Role.BORROWER:
-            return redirect('users:my_applications')
         messages.info(request, 'Si prihlásený ako investor. Odhlás sa, ak chceš žiadať o pôžičku.')
         return redirect('auctions:list')
 
@@ -126,15 +145,58 @@ def loan_application(request):
             user = form.create_user()
             auction = form.create_auction(user)
             login(request, user)
-            send_loan_application_received(user, auction)
+            send_loan_application_received(user, auction, password=form.generated_password)
             messages.success(
                 request,
-                'Žiadosť o pôžičku bola odoslaná. Hneď ako ju investor financuje, dostaneš sa do prostredia pre dlžníkov.',
+                'Žiadosť o pôžičku bola odoslaná. Prihlasovacie údaje sme ti poslali e-mailom.',
             )
-            return redirect('users:my_applications')
+            return redirect('users:application_status')
     else:
         form = BorrowerApplicationForm()
     return render(request, 'users/loan_application.html', {'form': form})
+
+
+@login_required
+def application_status(request):
+    """Stránka, ktorú dlžník vidí, kým jeho žiadosť čaká na posúdenie,
+    bola zamietnutá, alebo dostal protiponuku - do schválenia žiadosti
+    (stav ACTIVE a vyššie) nemá prístup do zvyšku menu pre dlžníkov."""
+    if request.user.role != User.Role.BORROWER:
+        return redirect('auctions:investor_dashboard')
+    latest = Auction.objects.filter(borrower=request.user).order_by('-created_at').first()
+    if latest and latest.status not in (
+        Auction.Status.PENDING_REVIEW, Auction.Status.COUNTER_OFFER, Auction.Status.REJECTED,
+    ):
+        return redirect('users:my_applications')
+    return render(request, 'users/application_status.html', {'application': latest})
+
+
+@login_required
+def accept_counter_offer(request, loan_id):
+    """Dlžník prijme protiponuku platformy (nižšia suma) - žiadosť sa upraví
+    na ponúknutú sumu a vráti sa k administrátorovi na finálne schválenie."""
+    auction = get_object_or_404(
+        Auction, pk=loan_id, borrower=request.user, status=Auction.Status.COUNTER_OFFER,
+    )
+    if request.method == 'POST' and auction.counter_offer_amount:
+        auction.amount_requested = auction.counter_offer_amount
+        auction.status = Auction.Status.PENDING_REVIEW
+        auction.save(update_fields=['amount_requested', 'status'])
+        messages.success(request, 'Protiponuka bola prijatá, žiadosť opäť čaká na finálne posúdenie.')
+    return redirect('users:application_status')
+
+
+@login_required
+def reject_counter_offer(request, loan_id):
+    """Dlžník odmietne protiponuku platformy - žiadosť sa uzavrie ako zamietnutá."""
+    auction = get_object_or_404(
+        Auction, pk=loan_id, borrower=request.user, status=Auction.Status.COUNTER_OFFER,
+    )
+    if request.method == 'POST':
+        auction.status = Auction.Status.REJECTED
+        auction.save(update_fields=['status'])
+        messages.info(request, 'Protiponuka bola odmietnutá.')
+    return redirect('users:application_status')
 
 
 #: Údaje platiteľa, na ktorého účet majú dlžníci zasielať splátky.
@@ -166,6 +228,28 @@ def _annotate_loan(loan):
     return loan
 
 
+#: Stavy žiadosti, ktoré znamenajú, že bola aspoň raz administrátorom schválená
+#: (dlžník teda má prístup do zvyšku menu, nielen na stránku so stavom žiadosti).
+_APPROVED_STATUSES = [
+    Auction.Status.ACTIVE, Auction.Status.SIGNING, Auction.Status.FUNDED, Auction.Status.CLOSED,
+]
+
+
+def _borrower_has_menu_access(user):
+    """True, ak mal dlžník aspoň raz žiadosť schválenú administrátorom - predtým
+    má prístup len na stránku so stavom žiadosti (users:application_status)."""
+    return Auction.objects.filter(borrower=user, status__in=_APPROVED_STATUSES).exists()
+
+
+def _require_borrower_menu_access(request):
+    """Spoločná kontrola pre všetky stránky menu pre dlžníkov - ak žiadosť
+    ešte nebola schválená (čaká sa, zamietnutá, protiponuka), presmeruje na
+    stránku so stavom žiadosti. Vráti None, ak je prístup povolený."""
+    if request.user.role == User.Role.BORROWER and not _borrower_has_menu_access(request.user):
+        return redirect('users:application_status')
+    return None
+
+
 @login_required
 def my_applications(request):
     """Hlavná vstupná stránka prostredia pre dlžníkov - prehľad stavu účtu,
@@ -173,6 +257,9 @@ def my_applications(request):
     Ak má dlžník všetky pôžičky splatené (alebo zatiaľ žiadnu žiadosť),
     "Požičať si znova"/"Požiadať o pôžičku" ho vráti na kalkulačku parametrov
     novej pôžičky (users:loan_application)."""
+    gate = _require_borrower_menu_access(request)
+    if gate:
+        return gate
     applications = Auction.objects.filter(borrower=request.user)
     active_loans = applications.filter(status=Auction.Status.FUNDED)
     closed_loans = applications.filter(status=Auction.Status.CLOSED)
@@ -226,9 +313,13 @@ def my_loans(request):
 @login_required
 def sign_loan_contract(request, loan_id):
     """Dlžník podpíše Zmluvu o pôžičke priamo vo svojom účte - až po podpise
-    sa pôžička považuje za schválenú (FUNDED) a peniaze mu vyplácame."""
+    sa pôžička považuje za schválenú (FUNDED) a peniaze mu vyplácame. Pred
+    podpisom musí mať dlžník overenú e-mailovú adresu - ak nie je, zobrazí
+    sa mu najprv výzva na overenie (odkaz v e-maile)."""
     loan = get_object_or_404(Auction, pk=loan_id, borrower=request.user, status=Auction.Status.SIGNING)
     bid = loan.bids.select_related('lender').first()
+    if not request.user.email_verified:
+        return redirect('users:verify_email_request')
     if request.method == 'POST':
         from django.utils import timezone
         loan.contract_signed_at = timezone.now()
@@ -241,6 +332,37 @@ def sign_loan_contract(request, loan_id):
         )
         return redirect('users:my_loans')
     return render(request, 'users/sign_loan_contract.html', {'loan': loan, 'bid': bid})
+
+
+@login_required
+def verify_email_request(request):
+    """Stránka pred podpisom zmluvy - vyžiada si overenie e-mailu (pošle odkaz)."""
+    if request.user.email_verified:
+        return redirect('users:my_loans')
+    if request.method == 'POST':
+        if not request.user.email_verification_token:
+            request.user.email_verification_token = _generate_email_verification_token()
+            request.user.save(update_fields=['email_verification_token'])
+        verify_url = request.build_absolute_uri(
+            reverse_lazy('users:verify_email_confirm', kwargs={'token': request.user.email_verification_token}),
+        )
+        send_email_verification(request.user, verify_url)
+        messages.success(request, f'Overovací odkaz sme poslali na {request.user.email}.')
+    return render(request, 'users/verify_email_request.html')
+
+
+def verify_email_confirm(request, token):
+    """Potvrdenie e-mailu kliknutím na odkaz z e-mailu."""
+    user = User.objects.filter(email_verification_token=token).exclude(email_verification_token='').first()
+    if user:
+        user.email_verified = True
+        user.save(update_fields=['email_verified'])
+        messages.success(request, 'E-mail bol úspešne overený.')
+        if request.user.is_authenticated and request.user.pk == user.pk:
+            return redirect('users:my_loans')
+    else:
+        messages.error(request, 'Neplatný alebo už použitý overovací odkaz.')
+    return redirect('users:login_borrower')
 
 
 @login_required
@@ -282,6 +404,9 @@ def referral(request):
     """Odporúčací program - vlastný odkaz na pozvanie, prehľad pozvaných a
     (pre investorov) vernostný program podľa celkového investovaného objemu.
     Šablóna sa líši podľa role prihláseného používateľa."""
+    gate = _require_borrower_menu_access(request)
+    if gate:
+        return gate
     referral_url = request.build_absolute_uri(
         f"{reverse_lazy('users:signup')}?ref={request.user.referral_code}",
     )
@@ -312,6 +437,9 @@ def my_offers(request):
     """Ponuky pre dlžníka - po úspešnom splatení pôžičky sem chodia ponuky
     na novú pôžičku, spolu s platobnými údajmi aktuálnej aktívnej pôžičky
     (rovnako ako v časti Moje pôžičky)."""
+    gate = _require_borrower_menu_access(request)
+    if gate:
+        return gate
     loans = Auction.objects.filter(borrower=request.user)
     active_loans = loans.filter(status=Auction.Status.FUNDED)
     closed_loans = loans.filter(status=Auction.Status.CLOSED)
@@ -329,6 +457,9 @@ def my_offers(request):
 @login_required
 def my_profile(request):
     """Moje údaje - osobné a prístupové informácie dlžníka/investora."""
+    gate = _require_borrower_menu_access(request)
+    if gate:
+        return gate
     return render(request, 'users/my_profile.html')
 
 
@@ -390,6 +521,9 @@ def contract_debt_discharge_pdf(request, loan_id):
 def account_settings(request):
     """Nastavenia účtu - vrátane zmeny bankového účtu (IBAN), na ktorý sa
     vyplácajú peniaze (dostupné pre investora aj dlžníka)."""
+    gate = _require_borrower_menu_access(request)
+    if gate:
+        return gate
     if request.method == 'POST':
         form = BankAccountForm(request.POST, instance=request.user)
         if form.is_valid():

@@ -13,6 +13,18 @@ def _generate_security_code():
     return ''.join(random.choices(string.digits, k=8))
 
 
+def _generate_password():
+    """Vygeneruje náhodné 5-miestne číselné heslo pre dlžníka - posiela sa
+    e-mailom spolu s používateľským menom (rodné číslo) po schválení žiadosti."""
+    return ''.join(random.choices(string.digits, k=5))
+
+
+def _generate_email_verification_token():
+    """Vygeneruje náhodný token na overenie e-mailovej adresy (odkaz v e-maile)."""
+    alphabet = string.ascii_letters + string.digits
+    return ''.join(random.choices(alphabet, k=32))
+
+
 def _generate_referral_code():
     """Vygeneruje náhodný unikátny 8-miestny odporúčací kód (písmená+čísla)."""
     alphabet = string.ascii_uppercase + string.digits
@@ -101,6 +113,10 @@ class User(AbstractUser):
     # Bezpečnostný (2FA-like) kód pre investorov - zaslaný e-mailom po úspešnej
     # registrácii, vyžaduje sa pri žiadosti o výber peňazí a pri zmene IBAN.
     security_code = models.CharField(max_length=10, blank=True)
+
+    # Overenie e-mailovej adresy - dlžník ju musí overiť pred podpisom zmluvy.
+    email_verified = models.BooleanField(default=False)
+    email_verification_token = models.CharField(max_length=32, blank=True)
 
     @property
     def masked_birth_number(self):
