@@ -43,7 +43,8 @@
                     </form>
                     {% endif %}
                 {% else %}
-                    <a class="btn btn-outline-light btn-sm" href="{% url 'users:login' %}">Prihlásiť sa</a>
+                    <a class="btn btn-outline-light btn-sm" href="{% url 'users:login_investor' %}">Prihlásenie investora</a>
+                    <a class="btn btn-outline-light btn-sm" href="{% url 'users:login_borrower' %}">Prihlásenie žiadateľa</a>
                     <a class="btn btn-outline-light btn-sm" href="{% url 'users:loan_application' %}">Žiadosť o pôžičku</a>
                     <a class="btn btn-light btn-sm" href="{% url 'users:signup' %}">Registrovať sa (investor)</a>
                 {% endif %}

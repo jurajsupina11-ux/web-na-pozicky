@@ -59,7 +59,7 @@
 <div class="switchbar">Registrácia pre investorov · <a href="{% url 'users:loan_application' %}">Hľadáš pôžičku? Požiadaj o úver</a></div>
 <header>
   <a class="logo" href="{% url 'core:landing' %}">🔥 Pôžičky <span>Predlžníkov</span></a>
-  <nav><a href="{% url 'users:login' %}">Prihlásiť sa</a></nav>
+  <nav><a href="{% url 'users:login_investor' %}">Prihlásiť sa</a></nav>
 </header>
 <div class="wrap">
   <div class="side">
@@ -84,7 +84,7 @@
         {% endfor %}
         <button type="submit" class="btn-submit">Vytvoriť účet</button>
       </form>
-      <div class="alt-link">Už máš účet? <a href="{% url 'users:login' %}">Prihlás sa</a></div>
+      <div class="alt-link">Už máš účet? <a href="{% url 'users:login_investor' %}">Prihlás sa</a></div>
     </div>
   </div>
 </div>

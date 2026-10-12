@@ -149,7 +149,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = 'users:login'
+#: Neutrálna rozlišovacia stránka - investor aj dlžník majú vlastné prihlásenie
+#: (users:login_investor / users:login_borrower), users:login je len pre admina.
+LOGIN_URL = 'core:landing'
 LOGIN_REDIRECT_URL = 'core:landing'
 LOGOUT_REDIRECT_URL = 'core:landing'
 

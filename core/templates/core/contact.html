@@ -29,7 +29,7 @@
   <a class="logo" href="{% url 'core:landing' %}">🔥 Pôžičky Predlžníkov</a>
   <nav>
     <a href="{% url 'core:faq' %}">Časté otázky</a>
-    <a href="{% url 'users:login' %}">Prihlásiť sa</a>
+    <a href="{% url 'core:landing' %}">Prihlásiť sa</a>
   </nav>
 </header>
 
@@ -50,6 +50,9 @@
       <dd><a class="email" href="mailto:{{ company.email }}">{{ company.email }}</a></dd>
     </dl>
   </div>
+  <p style="text-align:center;margin-top:24px;font-size:12px;">
+    <a href="{% url 'users:login' %}" style="color:#b08a73;text-decoration:underline;">Administrátorské prihlásenie</a>
+  </p>
 </div>
 
 <footer>&copy; Pôžičky Predlžníkov · <a href="{% url 'core:landing' %}" style="color:#ff6a2b;">Späť na výber sekcie</a> · <a href="{% url 'core:faq' %}" style="color:#ff6a2b;">Časté otázky</a></footer>

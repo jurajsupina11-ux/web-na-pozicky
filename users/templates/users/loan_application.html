@@ -56,10 +56,10 @@
 </style>
 </head>
 <body>
-<div class="switchbar">Žiadosť o pôžičku · <a href="{% url 'users:login' %}">Už máš účet? Prihlás sa</a> · <a href="{% url 'users:signup' %}">Som investor</a></div>
+<div class="switchbar">Žiadosť o pôžičku · <a href="{% url 'users:login_borrower' %}">Už máš účet? Prihlás sa</a> · <a href="{% url 'users:signup' %}">Som investor</a></div>
 <header>
   <a class="logo" href="{% url 'core:landing' %}">🔥 Pôžičky Predlžníkov</a>
-  <nav><a href="{% url 'users:login' %}">Prihlásiť sa</a></nav>
+  <nav><a href="{% url 'users:login_borrower' %}">Prihlásiť sa</a></nav>
 </header>
 
 <div class="wrap">

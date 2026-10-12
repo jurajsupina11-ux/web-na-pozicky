@@ -41,7 +41,7 @@
 <div class="wrap">
   <div class="card">
     <h2>Prihlásenie</h2>
-    <p class="sub">Prihlás sa do svojho investorského alebo dlžníckeho účtu.</p>
+    <p class="sub">Administrátorské prihlásenie. Investori a žiadatelia o pôžičku majú vlastné prihlasovacie stránky.</p>
     <form method="post" autocomplete="on">
       {% csrf_token %}
       {% for field in form %}
@@ -54,8 +54,8 @@
       <button type="submit" class="btn-submit">Prihlásiť sa</button>
     </form>
     <div class="alt-links">
-      <a href="{% url 'users:signup' %}">Registrácia investora</a>
-      <a href="{% url 'users:loan_application' %}">Žiadosť o pôžičku</a>
+      <a href="{% url 'users:login_investor' %}">Prihlásenie investora</a>
+      <a href="{% url 'users:login_borrower' %}">Prihlásenie žiadateľa</a>
     </div>
   </div>
 </div>

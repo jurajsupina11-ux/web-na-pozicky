@@ -30,6 +30,9 @@ class SignUpView(CreateView):
 
 
 class CustomLoginView(LoginView):
+    """Spoločná prihlasovacia logika - šablóna sa líši podľa toho, z ktorej
+    stránky sa používateľ prihlasuje (investor/dlžník/admin), presmerovanie
+    po prihlásení je vždy podľa reálnej role používateľa."""
     template_name = 'users/login.html'
 
     def get_success_url(self):
@@ -37,6 +40,16 @@ class CustomLoginView(LoginView):
         if user.role == User.Role.BORROWER:
             return reverse_lazy('users:dashboard')
         return reverse_lazy('auctions:investor_dashboard')
+
+
+class InvestorLoginView(CustomLoginView):
+    """Prihlásenie pre investorov - vlastná (modrá) vizuálna šablóna."""
+    template_name = 'users/login_investor.html'
+
+
+class BorrowerLoginView(CustomLoginView):
+    """Prihlásenie pre žiadateľov/dlžníkov - vlastná (oranžová) vizuálna šablóna."""
+    template_name = 'users/login_borrower.html'
 
 
 class CustomLogoutView(LogoutView):
