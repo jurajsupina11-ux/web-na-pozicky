@@ -3,58 +3,151 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pôžičky Predlžníkov</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;}
-  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#0f1115;color:#fff;}
-  .wrap{min-height:100vh;display:flex;flex-direction:column;}
-  header{text-align:center;padding:40px 20px 10px;}
-  header .logo{font-weight:800;font-size:22px;}
-  header p{color:#9099ab;margin-top:8px;}
-  .choice{flex:1;display:grid;grid-template-columns:1fr 1fr;}
-  @media(max-width:760px){.choice{grid-template-columns:1fr;}}
-  .panel{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 30px;text-decoration:none;position:relative;overflow:hidden;transition:transform .35s cubic-bezier(.2,.8,.2,1),filter .3s;}
-  .panel:hover{filter:brightness(1.1);transform:scale(1.015);}
-  .panel::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.18),transparent 60%);opacity:0;transition:opacity .35s;}
-  .panel:hover::before{opacity:1;}
-  .investor{background:linear-gradient(160deg,#1b4fd1,#0d2a80);}
-  .borrower{background:linear-gradient(160deg,#ff7a3d,#c2410c);}
-  .panel .icon{font-size:52px;margin-bottom:14px;position:relative;z-index:1;animation:floatY 3.5s ease-in-out infinite;}
-  .borrower .icon{animation-delay:.4s;}
-  .panel h2{color:#fff;font-size:26px;margin:0 0 10px;position:relative;z-index:1;}
-  .panel p{color:rgba(255,255,255,.85);max-width:360px;text-align:center;margin:0 0 20px;position:relative;z-index:1;}
-  .panel .btn{background:#fff;color:#111;padding:12px 28px;border-radius:30px;font-weight:700;text-decoration:none;font-size:14px;position:relative;z-index:1;display:inline-block;transition:transform .2s ease,box-shadow .2s ease;}
-  .panel:hover .btn{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.25);}
-  footer{text-align:center;padding:18px;color:#5c6478;font-size:12px;}
-  @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
-  .fade-in{opacity:0;transform:translateY(16px);animation:fadeInUp .7s ease forwards;}
-  @keyframes fadeInUp{to{opacity:1;transform:translateY(0);}}
+  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#fffaf5;color:#2a1b10;min-height:100vh;display:flex;flex-direction:column;}
+  a{color:inherit;}
+  nav.top{display:flex;justify-content:space-between;align-items:center;padding:22px 32px;flex-wrap:wrap;gap:10px;}
+  nav.top .logo{font-weight:800;font-size:18px;text-decoration:none;color:#2a1b10;}
+  nav.top .links a{color:#8a6a56;text-decoration:none;font-size:13.5px;margin-left:20px;}
+  .toggle-wrap{display:flex;justify-content:center;margin:6px 0 10px;}
+  .toggle{display:flex;background:#fff;border:1px solid #ffd9bf;border-radius:999px;padding:4px;gap:2px;}
+  .toggle button{border:none;background:transparent;padding:9px 22px;border-radius:999px;font-size:13.5px;font-weight:700;cursor:pointer;color:#8a6a56;font-family:inherit;}
+  .toggle button.active.inv{background:#1b4fd1;color:#fff;}
+  .toggle button.active.bor{background:#ff6a2b;color:#fff;}
+  main{display:flex;align-items:center;justify-content:center;padding:30px 20px 10px;}
+  .stage{max-width:900px;width:100%;}
+  .stage-inner{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
+  @media(max-width:760px){.stage-inner{grid-template-columns:1fr;text-align:center;}}
+  .stage h1{font-size:40px;line-height:1.1;margin:0 0 16px;letter-spacing:-0.03em;}
+  .stage h1 .hl-inv{color:#1b4fd1;}
+  .stage h1 .hl-bor{color:#ff6a2b;}
+  .stage p{color:#8a6a56;font-size:15.5px;max-width:420px;margin:0 0 26px;}
+  @media(max-width:760px){.stage p{margin:0 auto 26px;}}
+  .stage .btn{display:inline-block;padding:16px 36px;border-radius:40px;font-weight:800;font-size:15px;text-decoration:none;color:#fff;transition:transform .2s ease,box-shadow .2s ease;}
+  .stage .btn.inv{background:#1b4fd1;}
+  .stage .btn.inv:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(27,79,209,.35);}
+  .stage .btn.bor{background:#ff6a2b;}
+  .stage .btn.bor:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(255,106,43,.4);}
+  .view{display:none;}
+  .view.active{display:block;}
+  .mini-stats{display:flex;gap:30px;margin-top:34px;flex-wrap:wrap;}
+  @media(max-width:760px){.mini-stats{justify-content:center;}}
+  .mini-stats div{text-align:center;}
+  .mini-stats b{display:block;font-size:20px;}
+  .mini-stats span{font-size:12px;color:#8a6a56;}
+  .illustration{width:100%;max-width:340px;aspect-ratio:1/1;border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:120px;margin:0 auto;position:relative;overflow:hidden;}
+  .illustration.bor{background:linear-gradient(160deg,#ffb37a,#ff6a2b);}
+  .illustration.inv{background:linear-gradient(160deg,#5b8dff,#1b4fd1);}
+  .illustration span{position:relative;z-index:1;animation:floatY 3.5s ease-in-out infinite;}
+  .illustration::after{content:'';position:absolute;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.18);top:-40px;right:-40px;}
+  @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+  .benefits{padding:50px 20px 10px;}
+  .benefits-inner{max-width:900px;margin:0 auto;text-align:center;}
+  .benefits h2{font-size:26px;margin:0 0 36px;}
+  .benefits h2 .hl-bor{color:#ff6a2b;}
+  .benefits h2 .hl-inv{color:#1b4fd1;}
+  .benefit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
+  @media(max-width:760px){.benefit-grid{grid-template-columns:repeat(2,1fr);}}
+  .benefit{display:flex;flex-direction:column;align-items:center;}
+  .benefit .circle{width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:14px;transition:transform .25s ease;}
+  .benefit:hover .circle{transform:translateY(-4px);}
+  .benefit.bor .circle{background:#fff1ea;}
+  .benefit.inv .circle{background:#eaf0ff;}
+  .benefit h3{font-size:14.5px;margin:0 0 6px;}
+  .benefit p{font-size:12.5px;color:#8a6a56;margin:0;line-height:1.4;}
+  footer{text-align:center;padding:30px 20px;color:#b08a73;font-size:12px;margin-top:20px;}
+  footer a{color:#b08a73;text-decoration:underline;}
+  .fade-in{opacity:0;animation:fadeInUp .6s ease forwards;}
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header class="fade-in">
-    <div class="logo">🔥 Pôžičky Predlžníkov</div>
-    <p>Vyberte si, čo vás zaujíma</p>
-  </header>
-  <div class="choice">
-    <a class="panel investor fade-in" style="animation-delay:.1s;" href="{% url 'core:investor' %}">
-      <div class="icon">💰</div>
-      <h2>Som investor</h2>
-      <p>Chcem zarábať na krátkodobých pôžičkách s úrokom 24 % p.a.</p>
-      <span class="btn">Vstúpiť ako investor</span>
-    </a>
-    <a class="panel borrower fade-in" style="animation-delay:.25s;" href="{% url 'core:borrower' %}">
-      <div class="icon">🙋</div>
-      <h2>Potrebujem pôžičku</h2>
-      <p>Požičiam si 50 – 500 € na max. 30 dní, peniaze do 5 minút.</p>
-      <span class="btn">Požiadať o pôžičku</span>
-    </a>
+<nav class="top">
+  <a class="logo" href="{% url 'core:landing' %}">🔥 Pôžičky Predlžníkov</a>
+  <div class="links">
+    <a href="{% url 'core:faq' %}">Časté otázky</a>
+    <a href="{% url 'core:contact' %}">Kontakt</a>
   </div>
-  <footer>&copy; Pôžičky Predlžníkov – licencovaný P2P pôžičkový systém ·
-    <a href="{% url 'core:faq' %}" style="color:#9fc0ff;">Časté otázky</a> ·
-    <a href="{% url 'core:contact' %}" style="color:#9fc0ff;">Kontakt</a>
-  </footer>
+</nav>
+<div class="toggle-wrap fade-in">
+  <div class="toggle">
+    <button id="btnBor" class="active bor" onclick="show('bor')">🙋 Potrebujem pôžičku</button>
+    <button id="btnInv" onclick="show('inv')">💰 Som investor</button>
+  </div>
 </div>
+<main>
+  <div class="stage">
+    <div id="viewBor" class="view active">
+      <div class="stage-inner">
+        <div class="fade-in">
+          <h1>Peniaze do <span class="hl-bor">5 minút</span><br>bez čakania na banku</h1>
+          <p>Požičaj si 50 – 500 € na max. 30 dní. Jeden formulár, žiadne papierovanie.</p>
+          <a class="btn bor" href="{% url 'core:borrower' %}">Požiadať o pôžičku</a>
+          <div class="mini-stats">
+            <div><b>50–500 €</b><span>suma pôžičky</span></div>
+            <div><b>30 dní</b><span>max. splatnosť</span></div>
+            <div><b>5 min</b><span>peniaze na účte</span></div>
+          </div>
+        </div>
+        <div class="illustration bor fade-in"><span>🤑</span></div>
+      </div>
+    </div>
+    <div id="viewInv" class="view">
+      <div class="stage-inner">
+        <div class="fade-in">
+          <h1>Zarábaj <span class="hl-inv">24 % p.a.</span><br>na krátkych pôžičkách</h1>
+          <p>Investuj od 10 € do overených žiadostí a dostaň výnos späť do 30 dní.</p>
+          <a class="btn inv" href="{% url 'core:investor' %}">Vstúpiť ako investor</a>
+          <div class="mini-stats">
+            <div><b>24 %</b><span>úrok p.a.</span></div>
+            <div><b>10 €</b><span>min. investícia</span></div>
+            <div><b>98,4 %</b><span>úspešnosť splácania</span></div>
+          </div>
+        </div>
+        <div class="illustration inv fade-in"><span>💻</span></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="benefits">
+  <div class="benefits-inner">
+    <div id="benefitsBor" class="view active">
+      <h2>Výhody <span class="hl-bor">pôžičky</span></h2>
+      <div class="benefit-grid">
+        <div class="benefit bor"><div class="circle">💻</div><h3>Online žiadosť</h3><p>Vyplníš jeden formulár, bez osobitnej registrácie.</p></div>
+        <div class="benefit bor"><div class="circle">⚡</div><h3>Rýchlosť</h3><p>Peniaze na účte do 5 minút po financovaní.</p></div>
+        <div class="benefit bor"><div class="circle">📋</div><h3>Parametre pôžičky</h3><p>50 € – 500 € so splatnosťou do 30 dní.</p></div>
+        <div class="benefit bor"><div class="circle">🤝</div><h3>Jasné podmienky</h3><p>Úrok aj poplatok vidíš vopred, žiadne skryté náklady.</p></div>
+      </div>
+    </div>
+    <div id="benefitsInv" class="view">
+      <h2>Výhody <span class="hl-inv">investovania</span></h2>
+      <div class="benefit-grid">
+        <div class="benefit inv"><div class="circle">📈</div><h3>Vysoký výnos</h3><p>Úrok až 24 % p.a. na krátkodobých pôžičkách.</p></div>
+        <div class="benefit inv"><div class="circle">🔍</div><h3>Overení žiadatelia</h3><p>Každý žiadateľ prejde overením identity (KYC).</p></div>
+        <div class="benefit inv"><div class="circle">📊</div><h3>Diverzifikácia</h3><p>Rozlož investíciu už od 10 € do viacerých pôžičiek.</p></div>
+        <div class="benefit inv"><div class="circle">🔄</div><h3>Sekundárny trh</h3><p>Investíciu môžeš kedykoľvek predať inému investorovi.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>&copy; Pôžičky Predlžníkov – licencovaný P2P pôžičkový systém ·
+  <a href="{% url 'core:faq' %}">Časté otázky</a> ·
+  <a href="{% url 'core:contact' %}">Kontakt</a>
+</footer>
+<script>
+function show(which){
+  document.getElementById('viewBor').classList.toggle('active', which==='bor');
+  document.getElementById('viewInv').classList.toggle('active', which==='inv');
+  document.getElementById('benefitsBor').classList.toggle('active', which==='bor');
+  document.getElementById('benefitsInv').classList.toggle('active', which==='inv');
+  document.getElementById('btnBor').classList.toggle('active', which==='bor');
+  document.getElementById('btnInv').classList.toggle('active', which==='inv');
+}
+</script>
 </body>
 </html>
