@@ -26,7 +26,7 @@
     <div>Variabilný symbol<b>{{ loan.pk }}</b></div>
     <div>Suma na úhradu<b>{{ loan.repay_amount }} €</b></div>
   </div>
-  <a class="btn btn-outline" href="{% url 'users:my_loans' %}">Zobraziť detail v Moje pôžičky</a>
+  <a class="btn btn-outline" href="{% url 'users:my_applications' %}">Zobraziť detail v Moje pôžičky</a>
 </div>
 {% endfor %}
 {% endif %}

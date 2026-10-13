@@ -1,101 +1,109 @@
 {% extends "borrower_base.html" %}
 {% block nav_applications %}active{% endblock %}
-{% block title %}Moje žiadosti{% endblock %}
-{% block extra_style %}
-<style>
-  .debt-card{background:linear-gradient(135deg,#d84a16,#f05a22);color:#fff;border-radius:20px;padding:28px 30px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
-  .debt-card .label{font-size:13px;color:#ffe2d2;margin-bottom:6px;}
-  .debt-card .amount{font-size:34px;font-weight:800;letter-spacing:-0.02em;}
-  .debt-card .due{font-size:13px;color:#ffe2d2;margin-top:6px;}
-  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px;}
-  @media(max-width:700px){.stats-grid{grid-template-columns:1fr;}}
-  .stat-box{background:#fff;border:1px solid #f1e6db;border-radius:16px;padding:20px;transition:transform .25s ease,box-shadow .25s ease;}
-  .stat-box:hover{transform:translateY(-4px);box-shadow:0 12px 22px rgba(32,21,13,.06);}
-  .stat-box b{font-size:24px;display:block;margin-bottom:4px;}
-  .stat-box span{font-size:13px;color:#8a7363;}
-  .debt-illustration{opacity:.9;flex-shrink:0;animation:floatY 4s ease-in-out infinite;}
-  @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
-  .empty-state{display:flex;align-items:center;gap:22px;padding:30px 26px;}
-  .empty-state svg{flex-shrink:0;animation:floatY 3.5s ease-in-out infinite;}
-  .empty-state h2{margin:0 0 6px;}
-  .empty-state p{color:#6b5a4d;font-size:14px;margin:0;max-width:380px;}
-</style>
-{% endblock %}
+{% block title %}Moje pôžičky{% endblock %}
 {% block content %}
-<h1>Moje žiadosti</h1>
+<div class="dash-top">
+  <div><h1 style="margin-bottom:4px;">Moje pôžičky</h1><a href="{% url 'users:my_profile' %}" style="font-size:13px;font-weight:600;">Moje údaje a nastavenia →</a></div>
+  <a class="btn btn-primary" href="{% url 'users:loan_application' %}">+ Nová žiadosť</a>
+</div>
 
 {% if active_loans %}
-<div class="debt-card">
-  <div>
-    <div class="label">Celkový aktuálny dlh</div>
-    <div class="amount">{{ total_debt }} €</div>
-    {% if next_due_loan %}<div class="due">Najbližšia splatnosť: {{ next_due_loan.due_date|date:"d.m.Y" }} (pôžička #{{ next_due_loan.pk }})</div>{% endif %}
+{% for loan in active_loans %}
+<div class="card loan-card">
+  <div class="loan-head">
+    <div><b class="loan-amount">{{ loan.amount_requested }} €</b><span>Pôžička #{{ loan.pk }} · splatnosť {{ loan.due_date|date:"d.m.Y" }}{% if loan.postponed_days %} (odložené o {{ loan.postponed_days }} dní){% endif %}</span></div>
+    {% if loan.payment_reported %}<span class="status-pill status-due">Čaká na overenie úhrady</span>
+    {% else %}<span class="status-pill status-active">Aktívna</span>{% endif %}
   </div>
-  <a class="btn" style="background:#fff;color:#d84a16;" href="{% url 'users:my_loans' %}">Zobraziť detail a zaplatiť</a>
-  <svg class="debt-illustration" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.35">
-    <rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M7 15h4"/>
-  </svg>
+  <div class="table-scroll">
+  <table>
+    <tr><th>Istina</th><th>Úrok ({{ loan.max_interest_rate }} % p.a.)</th><th>Poplatky za odklad</th><th>Spolu na úhradu</th></tr>
+    <tr>
+      <td>{{ loan.amount_requested }} €</td>
+      <td>{{ loan.interest_amount }} €</td>
+      <td>{{ loan.postpone_fees_amount }} €</td>
+      <td><strong>{{ loan.repay_amount }} €</strong></td>
+    </tr>
+  </table>
+  </div>
+  <div class="loan-actions">
+    <button type="button" class="btn btn-primary js-toggle-payment" data-target="payBox{{ loan.pk }}">Uhradiť pôžičku</button>
+    <form method="post" action="{% url 'users:request_postponement' loan.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline">Požiadať o odklad (+7 dní, {{ postpone_fee }} €)</button>
+    </form>
+  </div>
+  <div class="report-payment-box" id="payBox{{ loan.pk }}">
+    <h3 class="form-subhead" style="margin-top:0;">Platobné údaje na úhradu</h3>
+    <div class="detail-grid">
+      <div>IBAN príjemcu<b>{{ bank_details.iban }}</b></div>
+      <div>Variabilný symbol<b>{{ loan.pk }}</b></div>
+      <div>Suma na úhradu<b>{{ loan.repay_amount }} €</b></div>
+      <div>Splatnosť<b>{{ loan.due_date|date:"d.m.Y" }}</b></div>
+    </div>
+    <p class="form-note">Po prijatí platby na náš účet sa stav pôžičky automaticky zmení na „Splatená“. Platbu môžeš aj manuálne nahlásiť nižšie, ak si platil z iného účtu.</p>
+    <form method="post" action="{% url 'users:report_payment' loan.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline" {% if loan.payment_reported %}disabled{% endif %}>
+        {% if loan.payment_reported %}Úhrada nahlásená{% else %}Nahlásiť vykonanú úhradu{% endif %}
+      </button>
+    </form>
+  </div>
+</div>
+{% endfor %}
+
+{% elif pending_applications %}
+<div class="alert alert-info">
+  Žiadosť čaká na financovanie investorom - hneď ako ju niekto financuje, zobrazí sa tu ako aktívna pôžička.
 </div>
 
-<div class="stats-grid">
-  <div class="stat-box"><b>{{ active_loans|length }}</b><span>Aktívne pôžičky</span></div>
-  <div class="stat-box"><b>{{ closed_loans_count }}</b><span>Splatené pôžičky</span></div>
-  <div class="stat-box"><b>{{ pending_applications|length }}</b><span>Žiadosti čakajúce na investora</span></div>
-</div>
-{% elif has_any_application %}
-<div class="alert alert-warning">
-  Zatiaľ nemáš žiadnu schválenú pôžičku. Hneď ako investor tvoju žiadosť financuje,
-  odomkne sa ti prístup do prostredia pre dlžníkov (Moje pôžičky).
-</div>
-<div class="stats-grid">
-  <div class="stat-box"><b>{{ pending_applications|length }}</b><span>Žiadosti čakajúce na investora</span></div>
-</div>
-{% else %}
+{% elif not has_any_application %}
 <div class="card">
-  <div class="empty-state">
-    <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#f05a22" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6">
-      <path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/>
-    </svg>
+  <div style="display:flex;align-items:center;gap:22px;padding:10px;">
+    <span class="ic" style="width:60px;height:60px;flex-shrink:0;color:var(--borrower);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg></span>
     <div>
-      <h2>Zatiaľ nemáš žiadnu žiadosť</h2>
-      <p>Požiadaj o pôžičku 50 – 500 € na max. 30 dní, peniaze dostaneš do 5 minút po financovaní investorom.</p>
+      <h2 style="margin-bottom:6px;">Zatiaľ nemáš žiadnu žiadosť</h2>
+      <p style="color:var(--muted);margin:0;">Požiadaj o pôžičku 50 – 500 € na max. 30 dní, peniaze dostaneš do 5 minút po financovaní investorom.</p>
       <a class="btn btn-primary" style="margin-top:14px;" href="{% url 'users:loan_application' %}">Požiadať o pôžičku</a>
     </div>
   </div>
 </div>
 {% endif %}
 
-{% if has_approved and not pending_applications %}
-<div class="card" style="background:linear-gradient(135deg,#d84a16,#f05a22);color:#fff;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
-  <div>
-    <h2 style="color:#fff;margin:0 0 4px;">Potrebuješ ďalšiu pôžičku?</h2>
-    <p style="color:#ffe2d2;margin:0;">Požičaj si znova 50 – 500 € na max. 30 dní, peniaze máš na účte do pár minút.</p>
+<div class="card" id="starePozicky">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <h2 style="margin:0;">História pôžičiek a zmlúv</h2>
+    <a href="{% url 'users:my_contracts' %}" style="font-size:13px;font-weight:600;">Zobraziť všetky zmluvy →</a>
   </div>
-  <a class="btn" style="background:#fff;color:#d84a16;" href="{% url 'users:loan_application' %}">Požičať si znova</a>
-</div>
-{% endif %}
-
-<div class="card">
   <div class="table-scroll">
   <table>
-    <thead>
-      <tr><th>ID</th><th>Suma</th><th>Splatnosť</th><th>Stav</th><th>Vyfinancované</th></tr>
-    </thead>
-    <tbody>
-      {% for a in applications %}
-      <tr>
-        <td>#{{ a.pk }}</td>
-        <td>{{ a.amount_requested }} €</td>
-        <td>{{ a.duration_days }} dní</td>
-        <td>{{ a.get_status_display }}</td>
-        <td>{{ a.funding_progress|floatformat:0 }} %</td>
-      </tr>
-      {% empty %}
-      <tr><td colspan="5">Zatiaľ nemáš žiadnu žiadosť.</td></tr>
-      {% endfor %}
-    </tbody>
+    <tr><th>Pôžička</th><th>Suma</th><th>Stav</th><th>Dátum</th><th>Zmluva</th></tr>
+    {% for a in applications %}
+    <tr>
+      <td>#{{ a.pk }}</td>
+      <td>{{ a.amount_requested }} €</td>
+      <td>
+        {% if a.status == 'closed' %}<span class="status-pill status-paid">Splatená</span>
+        {% elif a.status == 'signing' %}<span class="status-pill status-signing">Čaká na podpis</span>
+        {% elif a.status == 'funded' %}<span class="status-pill status-active">Aktívna</span>
+        {% elif a.status == 'active' %}<span class="status-pill status-due">Čaká na investora ({{ a.funding_progress|floatformat:0 }} %)</span>
+        {% else %}<span class="status-pill status-late">{{ a.get_status_display }}</span>{% endif %}
+      </td>
+      <td>{{ a.created_at|date:"d.m.Y" }}</td>
+      <td>{% if a.status == 'closed' %}<a class="btn btn-mini" href="{% url 'users:contract_loan_agreement' a.pk %}">Stiahnuť PDF</a>{% else %}—{% endif %}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">Zatiaľ nemáš žiadnu žiadosť.</td></tr>
+    {% endfor %}
   </table>
   </div>
 </div>
+
+{% if has_approved %}
+<div class="cta-strip">
+  <div><h2>Splatil si včas? Požičaj si znova.</h2><p>Stačí zvoliť sumu a splatnosť, tvoje údaje už máme overené z minulej žiadosti.</p></div>
+  <a class="btn btn-light" href="{% url 'users:loan_application' %}">Požičať si znova</a>
+</div>
+{% endif %}
 {% endblock %}
 
