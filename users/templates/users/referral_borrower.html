@@ -3,16 +3,39 @@
 {% block title %}Pozvi priateľa{% endblock %}
 {% block content %}
 <h1>Pozvi priateľa</h1>
+<p style="color:var(--muted);margin-top:0;">Za každého priateľa, ktorý sa zaregistruje cez tvoj odkaz a urobí prvú investíciu/žiadosť, dostanete obaja {{ referral_bonus }} € bonus na peňaženku.</p>
 <div class="card">
-  <h2>Odporúčací program</h2>
-  <p>Pozvi priateľa, ktorý hľadá pôžičku alebo chce investovať. Hneď ako sa zaregistruje cez tvoj odkaz a urobí svoju prvú investíciu/pôžičku, dostanete obaja bonus {{ referral_bonus }} €.</p>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px;">
-    <input type="text" readonly value="{{ referral_url }}" id="refUrl" style="flex:1;min-width:220px;padding:13px 16px;border:1px solid #f1e6db;border-radius:12px;font-size:13.5px;font-family:inherit;background:#fffaf5;">
-    <button type="button" class="btn btn-primary" onclick="navigator.clipboard.writeText(document.getElementById('refUrl').value);this.textContent='Skopírované ✓';">Kopírovať odkaz</button>
+  <h2>Tvoj odporúčací odkaz</h2>
+  <div class="form-row-2">
+    <label>Odporúčací kód<input type="text" value="{{ referral_code }}" readonly></label>
+    <label>Odkaz na zdieľanie<input type="text" value="{{ referral_url }}" id="refUrl" readonly></label>
   </div>
+  <button type="button" class="btn btn-primary" onclick="navigator.clipboard.writeText(document.getElementById('refUrl').value);this.textContent='Skopírované ✓';">Kopírovať odkaz</button>
 </div>
-<div class="card">
-  <h2>Prehľad</h2>
-  <p>Tvoj kód: <strong>{{ referral_code }}</strong> · Pozvaných: <strong>{{ referrals.count }}</strong> · Odmenených: <strong>{{ rewarded_count }}</strong></p>
+<div class="stat-grid" style="margin-top:16px;">
+  <div class="stat-tile"><b>{{ referrals.count }}</b><span>Pozvaní priatelia</span></div>
+  <div class="stat-tile up"><b>{{ rewarded_count }}</b><span>Odmenených pozvaní</span></div>
+  <div class="stat-tile up"><b>{{ total_referral_bonus }} €</b><span>Celkový bonus získaný</span></div>
+</div>
+<div class="card table-card" style="margin-top:16px;">
+  <h2>Moje pozvania</h2>
+  <div class="table-scroll">
+  <table>
+    <tr><th>Priateľ</th><th>Registrovaný</th><th>Stav</th><th>Bonus</th></tr>
+    {% for r in referrals %}
+    <tr>
+      <td>{{ r.display_name }}</td>
+      <td>{{ r.date_joined|date:"d.m.Y" }}</td>
+      <td>
+        {% if r.referral_reward_granted %}<span class="status-pill status-paid">Odmenené</span>
+        {% else %}<span class="status-pill status-active">Čaká na prvú investíciu</span>{% endif %}
+      </td>
+      <td>{% if r.referral_reward_granted %}+{{ referral_bonus }} €{% else %}—{% endif %}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">Zatiaľ si nepozval žiadneho priateľa.</td></tr>
+    {% endfor %}
+  </table>
+  </div>
 </div>
 {% endblock %}
