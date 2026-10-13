@@ -2,58 +2,38 @@
 {% block nav_history %}active{% endblock %}
 {% block title %}Daňový výkaz{% endblock %}
 {% block content %}
-<div class="toprow">
-  <h1 style="margin:0;">Daňový výkaz</h1>
-  <a class="btn btn-outline" style="margin:0;" href="{% url 'auctions:investor_history' %}">← História investícií</a>
-</div>
-
-<div class="card" style="margin-bottom:16px;">
-  <form method="get" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;">
-    <div class="field" style="margin:0;">
-      <label style="display:block;font-size:12px;font-weight:600;color:#55607a;margin-bottom:5px;">Rok</label>
-      <select name="rok" style="padding:9px 12px;border:1px solid #dbe4f5;border-radius:8px;font-size:14px;font-family:inherit;" onchange="this.form.submit()">
-        {% for y in available_years %}
-        <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <button type="submit" class="btn btn-primary">Zobraziť</button>
-    <a class="btn btn-outline" href="{% url 'auctions:tax_statement_pdf' selected_year %}">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="M6 10l6 5 6-5"/><path d="M4 21h16"/></svg>
-      Stiahnuť ako PDF
-    </a>
+<div class="dash-top">
+  <h1 style="margin:0;">Daňové potvrdenie</h1>
+  <form method="get" style="display:flex;gap:10px;align-items:center;">
+    <select name="rok" onchange="this.form.submit()">
+      {% for y in available_years %}
+      <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+      {% endfor %}
+    </select>
+    <a class="btn btn-primary" href="{% url 'auctions:tax_statement_pdf' selected_year %}">Stiahnuť ako PDF</a>
   </form>
 </div>
-
-<div class="card" style="margin-bottom:16px;">
-  <p style="color:#55607a;">
-    Súhrn úrokových príjmov zo splatených pôžičiek za rok {{ selected_year }} - slúži ako podklad pre daňové
-    priznanie (príjem z poskytnutia peňažných prostriedkov). Nejde o daňové poradenstvo, pre istotu konzultuj
-    s účtovníkom/daňovým poradcom.
-  </p>
-  <div class="bento" style="margin-top:10px;">
-    <div class="card stat"><b>{{ total_interest }} €</b><span>Realizovaný úrokový príjem za {{ selected_year }}</span></div>
-    <div class="card stat"><b>{{ bids_in_year|length }}</b><span>Splatených pôžičiek v tomto roku</span></div>
-  </div>
+<p style="color:var(--muted);margin-top:0;">Súhrn úrokových príjmov zo splatených pôžičiek za rok {{ selected_year }} - slúži ako podklad pre daňové priznanie. Nejde o daňové poradenstvo, pre istotu konzultuj s účtovníkom.</p>
+<div class="stat-grid">
+  <div class="stat-tile up"><b>{{ total_interest }} €</b><span>Realizovaný úrokový príjem za {{ selected_year }}</span></div>
+  <div class="stat-tile"><b>{{ bids_in_year|length }}</b><span>Splatených pôžičiek v tomto roku</span></div>
 </div>
-
-<div class="card">
+<div class="card table-card">
+  <h2>Rozpis úrokov podľa pôžičiek</h2>
   <div class="table-scroll">
   <table>
-    <thead><tr><th>Pôžička</th><th>Dátum splatnosti</th><th>Istina</th><th>Úrok (% p.a.)</th><th>Realizovaný úrok</th></tr></thead>
-    <tbody>
+    <tr><th>Pôžička</th><th>Dátum splatnosti</th><th>Istina</th><th>Úrok (% p.a.)</th><th>Realizovaný úrok</th></tr>
     {% for b in bids_in_year %}
-      <tr>
-        <td>#{{ b.auction.pk }}</td>
-        <td>{{ b.auction.computed_due_date|date:"d.m.Y" }}</td>
-        <td>{{ b.amount }} €</td>
-        <td>{{ b.interest_rate }} %</td>
-        <td>{{ b.interest_amount }} €</td>
-      </tr>
+    <tr>
+      <td>#{{ b.auction.pk }}</td>
+      <td>{{ b.auction.computed_due_date|date:"d.m.Y" }}</td>
+      <td>{{ b.amount }} €</td>
+      <td>{{ b.interest_rate }} %</td>
+      <td>{{ b.interest_amount }} €</td>
+    </tr>
     {% empty %}
-      <tr><td colspan="5">Za rok {{ selected_year }} nemáš žiadne splatené pôžičky.</td></tr>
+    <tr><td colspan="5">Za rok {{ selected_year }} nemáš žiadne splatené pôžičky.</td></tr>
     {% endfor %}
-    </tbody>
   </table>
   </div>
 </div>
