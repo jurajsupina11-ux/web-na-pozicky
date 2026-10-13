@@ -1,93 +1,100 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="sk">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}Admin prostredie{% endblock %} – Pôžičky Predlžníkov</title>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
-<style>
-  *{box-sizing:border-box;}
-  :root{--bg:#f7f5ff;--surface:#ffffff;--ink:#1c1735;--muted:#6b6690;--line:#e7e3fb;--violet:#6c4cff;--violet-dark:#4b2fd6;--pink:#ff5ea8;--radius:20px;--radius-sm:12px;--shadow:0 18px 40px -16px rgba(76,46,214,.22);}
-  body{margin:0;font-family:'Manrope',Arial,sans-serif;background:var(--bg);color:var(--ink);display:flex;min-height:100vh;}
-  a{color:inherit;}
-  .sidebar{width:240px;background:var(--ink);color:#fff;padding:22px 16px;display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;bottom:0;left:0;}
-  .sidebar .logo{font-weight:700;font-size:15px;font-family:'Sora',sans-serif;margin-bottom:24px;padding:0 8px;color:#fff;text-decoration:none;}
-  .sidebar nav{display:flex;flex-direction:column;gap:2px;}
-  .sidebar a{color:#b8b3dd;text-decoration:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-radius:var(--radius-sm);font-size:13.5px;font-weight:600;}
-  .sidebar a:hover{background:rgba(255,255,255,.08);color:#fff;}
-  .sidebar a.active{background:var(--violet);color:#fff;}
-  .sidebar .badge{background:var(--pink);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:1px 7px;}
-  .sidebar .bottom{margin-top:auto;font-size:12px;color:#8882b5;padding-top:14px;border-top:1px solid rgba(255,255,255,.12);}
-  .sidebar .bottom form{margin-top:8px;}
-  .sidebar .bottom button{width:100%;background:none;border:1px solid rgba(255,255,255,.18);border-radius:var(--radius-sm);padding:7px;font-size:12px;color:#b8b3dd;cursor:pointer;}
-  .main{margin-left:240px;flex:1;min-width:0;}
-  .content{padding:28px 32px 60px;max-width:1240px;}
-  h1{font-size:26px;font-weight:800;font-family:'Sora',sans-serif;margin:0 0 20px;color:var(--ink);}
-  h2{font-size:16px;font-weight:700;font-family:'Sora',sans-serif;margin:0 0 14px;color:var(--ink);}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:16px;box-shadow:var(--shadow);}
-  .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:999px;text-decoration:none;font-weight:700;font-size:13px;border:1px solid transparent;cursor:pointer;font-family:inherit;}
-  .btn-primary{background:linear-gradient(135deg,var(--violet),var(--pink));color:#fff;box-shadow:0 10px 24px -8px rgba(108,76,255,.5);}
-  .btn-danger{background:#ef4949;color:#fff;}
-  .btn-outline{background:#fff;color:var(--violet);border-color:var(--violet);}
-  table{width:100%;border-collapse:collapse;}
-  th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);font-size:13px;}
-  th{color:var(--muted);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.03em;}
-  .pill{display:inline-flex;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;}
-  .pill-warn{background:#fff4e5;color:#8a5a00;}
-  .pill-ok{background:#e6fbf6;color:#0d8a70;}
-  .pill-bad{background:#fdeceb;color:#c4342b;}
-  .pill-neutral{background:#f1effc;color:var(--muted);}
-  .alert{padding:10px 14px;border-radius:var(--radius-sm);font-size:13.5px;margin-bottom:14px;}
-  .alert-success{background:#e6fbf6;color:#0d8a70;}
-  .alert-error{background:#fdeceb;color:#c4342b;}
-  .alert-info{background:#f1effc;color:var(--violet-dark);}
-  .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;}
-  @media(max-width:900px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
-  .stat-box{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);}
-  .stat-box b{font-size:24px;font-family:'Sora',sans-serif;display:block;margin-bottom:2px;color:var(--ink);}
-  .stat-box span{font-size:12px;color:var(--muted);}
-  .filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
-  .filter-bar a{padding:7px 14px;border-radius:999px;background:#f1effc;color:var(--muted);text-decoration:none;font-size:12.5px;font-weight:700;}
-  .filter-bar a.active{background:var(--violet);color:#fff;}
-  input,textarea,select{padding:9px 12px;border:1.5px solid var(--line);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;background:#fff;}
-</style>
+<link rel="stylesheet" href="{% static 'theme/style.css' %}">
 {% block extra_style %}{% endblock %}
 </head>
-<body>
-<div class="sidebar">
-  <a class="logo" href="{% url 'adminpanel:dashboard' %}">⚙ Admin prostredie</a>
-  <nav>
-    <a href="{% url 'adminpanel:dashboard' %}" class="{% block nav_dashboard %}{% endblock %}">Dashboard</a>
-    <a href="{% url 'adminpanel:applications_list' %}" class="{% block nav_applications %}{% endblock %}">
-      <span>Žiadosti</span>
-      {% if pending_count %}<span class="badge">{{ pending_count }}</span>{% endif %}
+<body class="role-neutral">
+<div class="bg-dots"></div>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="{% url 'adminpanel:dashboard' %}">
+      <span class="logo-mark">PP</span><span class="logo-text">Pôžičky<br>Predlžníkov</span>
     </a>
-    <a href="{% url 'adminpanel:wallet_list' %}" class="{% block nav_wallet %}{% endblock %}">
-      <span>Peňaženka</span>
-      {% if wallet_count %}<span class="badge">{{ wallet_count }}</span>{% endif %}
-    </a>
-    <a href="{% url 'adminpanel:loans_list' %}" class="{% block nav_loans %}{% endblock %}">Pôžičky</a>
-    <a href="{% url 'adminpanel:users_list' %}" class="{% block nav_users %}{% endblock %}">Používatelia</a>
-    <a href="{% url 'adminpanel:marketplace_list' %}" class="{% block nav_market %}{% endblock %}">Sekundárny trh</a>
-    <a href="{% url 'adminpanel:audit_log' %}" class="{% block nav_audit %}{% endblock %}">Audit log</a>
-    <a href="/admin/">Django admin →</a>
-  </nav>
-  <div class="bottom">
-    Prihlásený ako<br><strong style="color:#fff;">{{ user.username }}</strong>
-    <form method="post" action="{% url 'users:logout' %}">
-      {% csrf_token %}
-      <button type="submit">Odhlásiť sa</button>
-    </form>
+    <button class="burger" id="burgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="mainNav">
+      <a href="{% url 'core:landing' %}">Verejná stránka</a>
+      <div class="nav-cta">
+        <form method="post" action="{% url 'users:logout' %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary" style="border:none;cursor:pointer;">Odhlásiť sa</button>
+        </form>
+      </div>
+    </nav>
   </div>
-</div>
-<div class="main">
-  <div class="content">
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}info{% endif %}">{{ message }}</div>
-      {% endfor %}
-    {% endif %}
-    {% block content %}{% endblock %}
+</header>
+
+<main>
+<section class="section dash-page">
+  <div class="wrap dash-shell">
+    <aside class="dash-sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">AD</div>
+        <div><b>{{ user.username }}</b><span>Správca platformy</span></div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="{% url 'adminpanel:dashboard' %}" class="sidebar-nav-link {% block nav_dashboard %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span>
+          Dashboard
+        </a>
+        <a href="{% url 'adminpanel:applications_list' %}" class="sidebar-nav-link {% block nav_applications %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+          Žiadosti {% if pending_count %}<span class="nav-badge">{{ pending_count }}</span>{% endif %}
+        </a>
+        <a href="{% url 'adminpanel:wallet_list' %}" class="sidebar-nav-link {% block nav_wallet %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg></span>
+          Peňaženka {% if wallet_count %}<span class="nav-badge">{{ wallet_count }}</span>{% endif %}
+        </a>
+        <a href="{% url 'adminpanel:loans_list' %}" class="sidebar-nav-link {% block nav_loans %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h8"/><path d="M6 21V10"/><path d="M3 10l3-6 3 6"/><path d="M3 10h6"/><path d="M14 15l6-6"/></svg></span>
+          Pôžičky
+        </a>
+        <a href="{% url 'adminpanel:users_list' %}" class="sidebar-nav-link {% block nav_users %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5"/><circle cx="17.5" cy="8.5" r="2.8"/><path d="M15.5 13.3c2.6.6 4.5 2.9 4.5 5.7"/></svg></span>
+          Používatelia
+        </a>
+        <a href="{% url 'adminpanel:marketplace_list' %}" class="sidebar-nav-link {% block nav_market %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>
+          Sekundárny trh
+        </a>
+        <a href="{% url 'adminpanel:audit_log' %}" class="sidebar-nav-link {% block nav_audit %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></span>
+          Audit log
+        </a>
+        <div class="sidebar-sep"></div>
+        <a href="{% url 'users:impersonate_list' %}" class="sidebar-nav-link">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></span>
+          Admin náhľad
+        </a>
+        <a href="/admin/" class="sidebar-nav-link">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/></svg></span>
+          Django admin
+        </a>
+        <form method="post" action="{% url 'users:logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="sidebar-nav-link danger" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;font:inherit;">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span>
+            Odhlásiť sa
+          </button>
+        </form>
+      </nav>
+    </aside>
+    <div>
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}info{% endif %}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+      {% block content %}{% endblock %}
+    </div>
   </div>
-</div>
+</section>
+</main>
+<script src="{% static 'theme/script.js' %}"></script>
+{% block extra_script %}{% endblock %}
 </body>
 </html>

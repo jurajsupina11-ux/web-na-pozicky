@@ -43,9 +43,9 @@
       {% csrf_token %}
       <h2>Registrácia investora</h2>
       <input type="hidden" name="ref_code" value="{{ ref_code }}">
-      {% if ref_code %}<p class="form-note" style="background:var(--surface);border-radius:var(--radius-sm);padding:10px 14px;">🎁 Registruješ sa na pozvanie priateľa - po prvej investícii dostanete obaja bonus 10 €.</p>{% endif %}
+      {% if ref_code %}<p class="form-note" style="background:var(--surface);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:8px;"><span class="ic" style="width:18px;height:18px;flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13"/><path d="M19 12v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8"/><path d="M16.5 8a2.5 2.5 0 0 0 0-5C14 3 12 8 12 8"/></svg></span> Registruješ sa na pozvanie priateľa - po prvej investícii dostanete obaja bonus 10 €.</p>{% endif %}
       <p class="form-note" style="background:var(--surface);border-radius:var(--radius-sm);padding:10px 14px;">
-        👋 Vitaj! Keďže aj investorský účet pracuje s reálnymi peniazmi, potrebujeme overiť tvoju totožnosť -
+        Vitaj! Keďže aj investorský účet pracuje s reálnymi peniazmi, potrebujeme overiť tvoju totožnosť -
         preto formulár obsahuje aj osobné údaje, rovnako ako pri žiadosti o pôžičku.
       </p>
       {% for field in form %}

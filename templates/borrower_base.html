@@ -10,7 +10,7 @@
 <div class="bg-dots"></div>
 {% if is_impersonating %}
 <div style="background:#fff4e5;color:#8a5a00;font-size:12.5px;padding:8px 24px;text-align:center;">
-  👁 Pozeráš prostredie používateľa <strong>{{ user.username }}</strong> ako admin {{ real_admin.username }} ·
+  <span class="ic" style="display:inline-flex;vertical-align:middle;width:16px;height:16px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></span> Pozeráš prostredie používateľa <strong>{{ user.username }}</strong> ako admin {{ real_admin.username }} ·
   <a href="{% url 'users:impersonate_stop' %}" style="color:#8a5a00;font-weight:700;">Skončiť náhľad</a>
 </div>
 {% endif %}

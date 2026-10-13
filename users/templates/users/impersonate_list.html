@@ -1,65 +1,60 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="sk">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Admin náhľad – Pôžičky Predlžníkov</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  *{box-sizing:border-box;}
-  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#0f1115;color:#fff;}
-  a{color:inherit;}
-  header{text-align:center;padding:30px 20px 10px;}
-  header a.logo{font-weight:800;font-size:20px;text-decoration:none;color:#fff;}
-  .wrap{max-width:900px;margin:0 auto;padding:20px 20px 60px;}
-  h1{font-size:22px;margin:0 0 6px;}
-  .sub{color:#9099ab;font-size:14px;margin:0 0 20px;}
-  .search{width:100%;max-width:340px;padding:11px 14px;border:1px solid #33343f;border-radius:10px;font-size:14px;font-family:inherit;background:#1a1b22;color:#fff;margin-bottom:18px;}
-  .search:focus{outline:none;border-color:#5b8dff;}
-  table{width:100%;border-collapse:collapse;background:#1a1b22;border:1px solid #2a2b35;border-radius:12px;overflow:hidden;}
-  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid #2a2b35;font-size:13.5px;}
-  th{color:#9099ab;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
-  tr:last-child td{border-bottom:none;}
-  small{color:#9099ab;}
-  .btn-view{background:#5b8dff;color:#0f1115;border:none;padding:7px 14px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;display:inline-block;}
-  .btn-view:hover{background:#7aa3ff;}
-  .table-wrap{overflow-x:auto;}
-  tr.hidden{display:none;}
-</style>
+<link rel="stylesheet" href="{% static 'theme/style.css' %}">
 </head>
-<body>
-<header><a class="logo" href="{% url 'core:landing' %}">🔥 Pôžičky Predlžníkov</a></header>
-<div class="wrap">
-  <h1>Admin náhľad – zobraziť prostredie používateľa</h1>
-  <p class="sub">Vyber si používateľa, do ktorého prostredia sa chceš prepnúť. Jeho heslo nepotrebuješ.</p>
-  <input type="text" class="search" id="userSearch" placeholder="Hľadať podľa mena alebo e-mailu..." onkeyup="filterUsers()">
-  <div class="table-wrap">
-  <table id="userTable">
-    <thead><tr><th>Používateľ</th><th>Rola</th><th>KYC</th><th>Registrovaný</th><th></th></tr></thead>
-    <tbody>
-      {% for u in users %}
-      <tr data-search="{{ u.username|lower }} {{ u.email|lower }}">
-        <td>{{ u.username }} {% if u.email %}<br><small>{{ u.email }}</small>{% endif %}</td>
-        <td>{{ u.get_role_display }}</td>
-        <td>{% if u.kyc_completed %}✅{% else %}—{% endif %}</td>
-        <td>{{ u.date_joined|date:"d.m.Y" }}</td>
-        <td><a class="btn-view" href="{% url 'users:impersonate_start' u.pk %}">Zobraziť ako</a></td>
-      </tr>
-      {% empty %}
-      <tr><td colspan="5">Zatiaľ nie je registrovaný žiadny používateľ.</td></tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<body class="role-neutral">
+<div class="bg-dots"></div>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="{% url 'core:landing' %}">
+      <span class="logo-mark">PP</span><span class="logo-text">Pôžičky<br>Predlžníkov</span>
+    </a>
   </div>
-</div>
+</header>
+
+<main>
+<section class="section dash-page">
+  <div class="wrap">
+    <h1>Admin náhľad - zobraziť prostredie používateľa</h1>
+    <p style="color:var(--muted);margin-top:0;">Vyber si používateľa, do ktorého prostredia sa chceš prepnúť. Jeho heslo nepotrebuješ.</p>
+    <div class="card table-card">
+      <div class="filter-bar">
+        <input type="text" class="search" id="userSearch" placeholder="Hľadať podľa mena alebo e-mailu..." onkeyup="filterUsers()" style="max-width:340px;">
+      </div>
+      <div class="table-scroll">
+      <table id="userTable">
+        <thead><tr><th>Používateľ</th><th>Rola</th><th>KYC</th><th>Registrovaný</th><th></th></tr></thead>
+        <tbody>
+          {% for u in users %}
+          <tr data-search="{{ u.username|lower }} {{ u.email|lower }}">
+            <td>{{ u.username }} {% if u.email %}<br><small style="color:var(--muted);">{{ u.email }}</small>{% endif %}</td>
+            <td>{{ u.get_role_display }}</td>
+            <td>{% if u.kyc_completed %}✓{% else %}—{% endif %}</td>
+            <td>{{ u.date_joined|date:"d.m.Y" }}</td>
+            <td><a class="btn btn-primary" style="padding:7px 14px;font-size:13px;" href="{% url 'users:impersonate_start' u.pk %}">Zobraziť ako</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5">Zatiaľ nie je registrovaný žiadny používateľ.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+<script src="{% static 'theme/script.js' %}"></script>
 <script>
 function filterUsers(){
   var q = document.getElementById('userSearch').value.toLowerCase();
   document.querySelectorAll('#userTable tbody tr').forEach(function(row){
     var hay = row.getAttribute('data-search') || '';
-    row.classList.toggle('hidden', q && hay.indexOf(q) === -1);
+    row.style.display = (q && hay.indexOf(q) === -1) ? 'none' : '';
   });
 }
 </script>
 </body>
 </html>
-
