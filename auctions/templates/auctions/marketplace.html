@@ -2,34 +2,32 @@
 {% block nav_market %}active{% endblock %}
 {% block title %}Sekundárny trh{% endblock %}
 {% block content %}
-<div class="toprow">
-  <h1 style="margin:0;">Sekundárny trh</h1>
-  <a class="btn btn-outline" style="margin:0;" href="{% url 'auctions:investor_dashboard' %}">← Dashboard</a>
+<div class="dash-top">
+  <div><h1 style="margin-bottom:4px;">Sekundárny trh</h1><span style="font-size:13px;color:var(--muted);">Investície, ktoré iní investori ponúkajú na predaj pred splatnosťou.</span></div>
+  <span class="eyebrow">{{ listings|length }} investícií v ponuke na predaj</span>
 </div>
-<p style="color:#55607a;margin-top:-10px;">Odkúp podiely na pôžičkách od iných investorov, ktorí potrebujú peniaze skôr.</p>
 
-<div class="card">
-  <div class="table-scroll">
-  <table>
-    <tr><th>Predávajúci</th><th>Žiadateľ</th><th>Suma</th><th>Úrok</th><th>Splatnosť</th><th></th></tr>
-    {% for listing in listings %}
-    <tr>
-      <td>{{ listing.lender.display_name }}</td>
-      <td>{{ listing.auction.borrower.display_name }}</td>
-      <td>{{ listing.amount }} €</td>
-      <td>{{ listing.interest_rate }} %</td>
-      <td>{{ listing.auction.duration_days }} dní</td>
-      <td>
-        <form method="post" action="{% url 'auctions:marketplace_buy' listing.pk %}">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-primary" style="padding:6px 14px;font-size:13px;">Odkúpiť</button>
-        </form>
-      </td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="6">Momentálne nie je na sekundárnom trhu v ponuke žiadna investícia.</td></tr>
-    {% endfor %}
-  </table>
+{% if listings %}
+<div class="market-grid">
+  {% for listing in listings %}
+  <div class="card market-card">
+    <span class="pill pill-info">{{ listing.interest_rate }} % p.a.</span>
+    <b>{{ listing.amount }} €</b>
+    <span>{{ listing.auction.duration_days }} dní do splatnosti · od investora {{ listing.lender.display_name }}</span>
+    <form method="post" action="{% url 'auctions:marketplace_buy' listing.pk %}" style="width:100%;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary btn-block">Kúpiť</button>
+    </form>
   </div>
+  {% empty %}
+  <p>Momentálne nie je na sekundárnom trhu v ponuke žiadna investícia.</p>
+  {% endfor %}
 </div>
+<p class="form-note">Nákupom na sekundárnom trhu preberáš existujúcu investíciu od iného investora za jej aktuálnu hodnotu vrátane narastených úrokov.</p>
+{% else %}
+<div class="card" style="text-align:center;padding:60px 24px;">
+  <h2 style="margin-bottom:8px;">Žiadne ponuky na predaj</h2>
+  <p style="color:var(--muted);max-width:420px;margin:0 auto;">Momentálne nie je na sekundárnom trhu v ponuke žiadna investícia. Skús to znova neskôr.</p>
+</div>
+{% endif %}
 {% endblock %}
