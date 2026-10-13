@@ -1,22 +1,23 @@
 {% extends "borrower_base.html" %}
 {% block title %}Nová žiadosť o pôžičku{% endblock %}
 {% block content %}
-<h1>Požičať si znova</h1>
-<div class="card" style="max-width:480px;">
-  <p style="color:#6b5a4d;">
-    Tvoje osobné údaje už máme overené z predchádzajúcej žiadosti, stačí zadať parametre novej pôžičky.
-    Žiadosť opäť posúdi administrátor pred zobrazením investorom.
-  </p>
+<div class="dash-top"><h1 style="margin-bottom:4px;">Nová žiadosť</h1><span class="role-badge">Rýchla žiadosť</span></div>
+<p style="color:var(--muted);margin-top:0;">Tvoje osobné údaje, adresu aj zamestnanie už máme overené z predchádzajúcej žiadosti - stačí zvoliť sumu a splatnosť.</p>
+<div class="card" style="max-width:620px;">
   <form method="post">
     {% csrf_token %}
-    {% for field in form %}
-      <div style="margin-bottom:16px;">
-        <label style="display:block;font-size:13px;font-weight:600;color:#5c3a24;margin-bottom:6px;">{{ field.label }}</label>
-        {{ field }}
-        {% if field.errors %}<div style="color:#c4342b;font-size:13px;margin-top:4px;">{{ field.errors }}</div>{% endif %}
-      </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-primary" style="width:100%;">Odoslať žiadosť o pôžičku</button>
+    {% if form.non_field_errors %}<div class="legal-box">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="form-row-2">
+      <label>{{ form.amount_requested.label }}{{ form.amount_requested }}{% if form.amount_requested.errors %}<ul class="errorlist">{% for e in form.amount_requested.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+      <label>{{ form.duration_days.label }}{{ form.duration_days }}{% if form.duration_days.errors %}<ul class="errorlist">{% for e in form.duration_days.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+    </div>
+    <label>{{ form.purpose.label }}{{ form.purpose }}{% if form.purpose.errors %}<ul class="errorlist">{% for e in form.purpose.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+    <div class="detail-grid" style="border-top:1px solid var(--line);padding-top:16px;">
+      <div>Meno a priezvisko<b>{{ user.first_name }} {{ user.last_name }}</b></div>
+      <div>Bankový účet pre výplatu<b>{{ user.masked_bank_account_iban }}</b></div>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block">Odoslať žiadosť</button>
+    <p class="form-note">Keďže si už overený klient, žiadosť sa po odoslaní rovno zobrazí investorom v aukčnej miestnosti - rozhodnutie ti pošleme e-mailom.</p>
   </form>
 </div>
 {% endblock %}
