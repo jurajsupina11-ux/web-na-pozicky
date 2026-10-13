@@ -39,19 +39,8 @@
   .sell-btn:hover:not(.expired){transform:translateY(-2px);box-shadow:0 6px 12px rgba(37,84,234,.18);}
   .countdown{animation:pulse 1.4s ease-in-out infinite;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.55;}}
-  .bento .card.stat{cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;}
-  .bento .card.stat:hover{transform:translateY(-3px);box-shadow:0 10px 18px rgba(15,23,41,.08);}
   .withdraw-code{display:none;width:140px;}
   .withdraw-code.show{display:inline-block;}
-  .status-funded{background:#e9f8ee;color:#19824a;}
-  .status-closed{background:#e9f8ee;color:#19824a;}
-  .status-overdue{background:#fdeceb;color:#c4342b;}
-  .status-due-today{background:#fff8e1;color:#9a7b00;}
-  .status-signing{background:#f1effc;color:var(--violet-dark);}
-  .bid-row{cursor:pointer;}
-  .bid-row:hover{background:#f8faff;}
-  .bid-details{display:none;background:#f6f8fb;}
-  .bid-details.open{display:table-row;}
   .bid-details td{padding:14px 16px;}
   .breakdown-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
   @media(max-width:700px){.breakdown-grid{grid-template-columns:repeat(2,1fr);}}
@@ -67,12 +56,9 @@
   na peňaženku a môžeš začať financovať žiadosti o pôžičku.</span>
 </div>
 {% endif %}
-<div class="toprow">
-  <h1 style="margin:0;">Dashboard investora</h1>
-  <a class="btn btn-primary" href="{% url 'auctions:open_auctions' %}">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    Získať nové pôžičky
-  </a>
+<div class="dash-top">
+  <div><h1 style="margin-bottom:4px;">Dashboard investora</h1><a href="{% url 'users:my_profile' %}" style="font-size:13px;font-weight:600;">Moje údaje a nastavenia →</a></div>
+  <a class="btn btn-primary" href="{% url 'auctions:open_auctions' %}">+ Získať nové pôžičky</a>
 </div>
 
 <div class="wallet-card">
@@ -106,62 +92,57 @@
   Platby (vklady aj výbery) spracúvame v <strong>pracovné dni od 8:00 do 16:00</strong>, peniaze posielame iba na slovenské bankové účty (SK IBAN).
 </div>
 
-<div class="bento">
-  <div class="card stat" onclick="document.getElementById('moje-investicie').scrollIntoView({behavior:'smooth'});">
-    <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2"/></svg></div>
+<div class="stat-grid clickable">
+  <div class="stat-tile" onclick="document.getElementById('moje-investicie').scrollIntoView({behavior:'smooth'});">
     <b>{{ total_invested }} €</b><span>Celkovo investované</span>
   </div>
-  <div class="card stat" onclick="window.location.href='{% url 'auctions:investor_history' %}';">
-    <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+  <div class="stat-tile" onclick="window.location.href='{% url 'auctions:investor_history' %}';">
     <b>{{ active_count }}</b><span>Aktívne pôžičky</span>
   </div>
-  <div class="card stat" onclick="document.getElementById('moje-investicie').scrollIntoView({behavior:'smooth'});">
-    <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></svg></div>
-    <b style="color:#19824a;">+{{ expected_yield }} €</b><span>Očakávaný výnos</span>
+  <div class="stat-tile up" onclick="document.getElementById('moje-investicie').scrollIntoView({behavior:'smooth'});">
+    <b>+{{ expected_yield }} €</b><span>Očakávaný výnos</span>
   </div>
-  <div class="card stat" onclick="window.location.href='{% url 'auctions:open_auctions' %}';">
-    <div class="stat-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+  <div class="stat-tile" onclick="window.location.href='{% url 'auctions:open_auctions' %}';">
     <b>{{ avg_interest_rate }} %</b><span>Priemerný úrok p.a.</span>
   </div>
 </div>
 
-<div class="bento">
-  <div class="card stat" onclick="window.location.href='{% url 'auctions:investor_history' %}';">
-    <div class="stat-icon" style="background:#eafaf0;color:#19824a;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-    <b style="color:#19824a;">+{{ realized_yield }} €</b><span>Zrealizovaný výnos (splatené)</span>
+<div class="stat-grid clickable">
+  <div class="stat-tile up" onclick="window.location.href='{% url 'auctions:investor_history' %}';">
+    <b>+{{ realized_yield }} €</b><span>Zrealizovaný výnos (splatené)</span>
   </div>
-  <div class="card stat" onclick="document.getElementById('moje-investicie').scrollIntoView({behavior:'smooth'});">
+  <div class="stat-tile" onclick="document.getElementById('moje-investicie').scrollIntoView({behavior:'smooth'});">
     <b>{{ bids_count }}</b><span>Všetky moje investície</span>
   </div>
-  <div class="card stat" onclick="window.location.href='{% url 'auctions:marketplace' %}';">
+  <div class="stat-tile" onclick="window.location.href='{% url 'auctions:marketplace' %}';">
     <b>{{ for_sale_count }}</b><span>V ponuke na sekundárnom trhu</span>
   </div>
-  <div class="card stat">
-    <a class="btn btn-outline" style="margin:0;width:100%;justify-content:center;" href="{% url 'auctions:marketplace' %}">Sekundárny trh</a>
+  <div class="stat-tile cta">
+    <a class="btn btn-outline" href="{% url 'auctions:marketplace' %}">Sekundárny trh</a>
   </div>
 </div>
 
-<div class="card" style="margin-bottom:16px;" id="moje-investicie">
+<div class="card table-card" id="moje-investicie">
   <h2>Moje investície</h2>
   {% if my_bids %}
   <div class="table-scroll">
   <table>
     <tr><th>Žiadateľ</th><th>Suma</th><th>Úrok</th><th>Splatnosť</th><th>Stav</th><th>Dokumenty</th><th>Predaj</th></tr>
     {% for bid in my_bids %}
-    <tr class="bid-row" onclick="var d=document.getElementById('bid-details-{{ bid.pk }}'); d.classList.toggle('open');">
+    <tr class="row-expand" onclick="var d=document.getElementById('bid-details-{{ bid.pk }}'); d.classList.toggle('open');">
       <td>{{ bid.auction.borrower.display_name }}</td>
       <td>{{ bid.amount }} €</td>
       <td>{{ bid.interest_rate }} %</td>
       <td>{{ bid.auction.duration_days }} dní</td>
       <td>
-        {% if bid.auction.status == 'active' %}<span class="pill pill-neutral">Čaká sa</span>
-        {% elif bid.auction.status == 'signing' %}<span class="pill status-signing">Čaká na podpis zmluvy</span>
-        {% elif bid.auction.status == 'funded' and bid.auction.is_overdue %}<span class="pill status-overdue">Po splatnosti</span>
-        {% elif bid.auction.status == 'funded' and bid.auction.is_due_today %}<span class="pill status-due-today">Splatnosť dnes</span>
-        {% elif bid.auction.status == 'funded' %}<span class="pill status-funded">Aktívna</span>
-        {% elif bid.auction.status == 'closed' %}<span class="pill status-closed">Splatená</span>
-        {% elif bid.auction.status == 'cancelled' or bid.auction.status == 'rejected' %}<span class="pill status-overdue">{{ bid.auction.get_status_display }}</span>
-        {% else %}<span class="pill pill-down">{{ bid.auction.get_status_display }}</span>{% endif %}
+        {% if bid.auction.status == 'active' %}<span class="status-pill status-due">Čaká sa</span>
+        {% elif bid.auction.status == 'signing' %}<span class="status-pill status-signing">Čaká na podpis zmluvy</span>
+        {% elif bid.auction.status == 'funded' and bid.auction.is_overdue %}<span class="status-pill status-late">Po splatnosti</span>
+        {% elif bid.auction.status == 'funded' and bid.auction.is_due_today %}<span class="status-pill status-due">Splatnosť dnes</span>
+        {% elif bid.auction.status == 'funded' %}<span class="status-pill status-active">Aktívna</span>
+        {% elif bid.auction.status == 'closed' %}<span class="status-pill status-paid">Splatená</span>
+        {% elif bid.auction.status == 'cancelled' or bid.auction.status == 'rejected' %}<span class="status-pill status-late">{{ bid.auction.get_status_display }}</span>
+        {% else %}<span class="status-pill status-late">{{ bid.auction.get_status_display }}</span>{% endif %}
       </td>
       <td style="font-size:12.5px;">
         {% if bid.auction.status == 'funded' or bid.auction.status == 'closed' %}
@@ -192,7 +173,7 @@
         {% else %}—{% endif %}
       </td>
     </tr>
-    <tr class="bid-details" id="bid-details-{{ bid.pk }}">
+    <tr class="row-details" id="bid-details-{{ bid.pk }}">
       <td colspan="7">
         <div class="breakdown-grid">
           <div class="breakdown-item"><b>{{ bid.amount }} €</b><span>Istina (investovaná suma)</span></div>

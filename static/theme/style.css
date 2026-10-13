@@ -103,7 +103,11 @@ a{color:inherit;text-decoration:none;}
 .main-nav{display:flex;align-items:center;gap:26px;}
 .main-nav a{font-weight:600;font-size:14.5px;color:var(--muted);padding:6px 0;border-bottom:2px solid transparent;}
 .main-nav a.active,.main-nav a:hover{color:var(--ink);border-color:var(--violet);}
-.nav-cta{display:flex;gap:10px;margin-left:10px;}
+.nav-cta{display:flex;gap:10px;margin-left:10px;align-items:center;}
+.nav-user{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:600;color:var(--muted);}
+.nav-user form{margin:0;}
+.nav-user button{background:none;border:none;color:var(--muted);font-weight:600;font-size:13.5px;cursor:pointer;font-family:inherit;padding:0;text-decoration:underline;}
+.nav-user button:hover{color:var(--violet-dark);}
 .burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px;}
 .burger span{width:24px;height:2.5px;background:var(--ink);border-radius:2px;transition:.2s;}
 
@@ -270,6 +274,28 @@ td{padding:14px 12px;border-bottom:1px solid var(--line);}
 .status-late{background:#fde6e6;color:#c23030;}
 .status-signing{background:#eceaff;color:var(--violet-dark);}
 .loan-card{margin-bottom:16px;}
+
+/* Kompatibilné aliasy pre staršie šablóny, kým sa postupne prepíšu na nový dizajn */
+.toprow{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
+.bento{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;}
+.bento .card.stat,.card.stat{background:var(--surface);border-radius:var(--radius-sm);padding:20px;box-shadow:var(--shadow);cursor:pointer;transition:transform .15s ease;}
+.bento .card.stat:hover,.card.stat:hover{transform:translateY(-3px);}
+.card.stat b{display:block;font-size:22px;font-family:'Sora',sans-serif;}
+.card.stat span{font-size:12px;color:var(--muted);}
+.stat-icon{width:34px;height:34px;border-radius:var(--radius-sm);background:#f1effc;color:var(--violet);display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;}
+.pill-up{background:#e4f8f1;color:#128a66;}
+.pill-down{background:#fde6e6;color:#c23030;}
+.pill-neutral,.pill.pill-neutral{background:#fff4df;color:#9a6c00;}
+.pill.status-signing{background:#eceaff;color:var(--violet-dark);}
+.pill.status-overdue{background:#fde6e6;color:#c23030;}
+.pill.status-due-today{background:#fff4df;color:#9a6c00;}
+.pill.status-funded{background:#e4f8f1;color:#128a66;}
+.pill.status-closed{background:#e4f8f1;color:#128a66;}
+.bid-row,.row-expand{cursor:pointer;}
+.bid-row:hover,.row-expand:hover{background:#faf9ff;}
+.bid-details,.row-details{display:none;background:#f8f6ff;}
+.bid-details.open,.row-details.open{display:table-row;}
 .loan-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
 .loan-amount{font-size:26px;font-family:'Sora',sans-serif;display:block;}
 .loan-head span{font-size:12.5px;color:var(--muted);}

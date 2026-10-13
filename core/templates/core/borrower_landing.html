@@ -22,8 +22,15 @@
       <a href="{% url 'core:faq' %}">Časté otázky</a>
       <a href="{% url 'core:contact' %}">Kontakt</a>
       <div class="nav-cta">
+        {% if user.is_authenticated %}
+        <div class="nav-user">
+          <span>{{ user.username }}</span>
+          <form method="post" action="{% url 'users:logout' %}">{% csrf_token %}<button type="submit">Odhlásiť sa</button></form>
+        </div>
+        {% else %}
         <a class="btn btn-ghost" href="{% url 'users:login_borrower' %}">Prihlásiť sa</a>
         <a class="btn btn-primary" href="{% url 'users:loan_application' %}">Požiadať o pôžičku</a>
+        {% endif %}
       </div>
     </nav>
   </div>
