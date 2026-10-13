@@ -508,12 +508,15 @@ def my_profile(request):
     gate = _require_borrower_menu_access(request)
     if gate:
         return gate
-    template = (
-        'users/my_profile_borrower.html'
-        if request.user.role == User.Role.BORROWER
-        else 'users/my_profile_investor.html'
-    )
-    return render(request, template)
+    context = {}
+    if request.user.role == User.Role.BORROWER:
+        template = 'users/my_profile_borrower.html'
+        context['active_loans_count'] = Auction.objects.filter(
+            borrower=request.user, status=Auction.Status.FUNDED,
+        ).count()
+    else:
+        template = 'users/my_profile_investor.html'
+    return render(request, template, context)
 
 
 @login_required

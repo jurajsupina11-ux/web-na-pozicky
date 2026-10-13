@@ -23,9 +23,44 @@
     <tr><th>Dátum narodenia</th><td>{{ user.date_of_birth|date:"d.m.Y"|default:"-" }}</td></tr>
     <tr><th>Číslo OP</th><td>{{ user.masked_id_card_number|default:"-" }}</td></tr>
     <tr><th>Rodné číslo</th><td>{{ user.masked_birth_number|default:"-" }}</td></tr>
-    <tr><th>Adresa</th><td>{{ user.street_address }}, {{ user.postal_code }} {{ user.city }}</td></tr>
-    <tr><th>IBAN pre výplatu</th><td>{{ user.masked_bank_account_iban|default:"-" }}</td></tr>
   </table>
   </div>
+</div>
+
+<div class="card">
+  <h2>Adresa trvalého pobytu</h2>
+  <div class="table-scroll">
+  <table>
+    <tr><th>Ulica a popisné číslo</th><td>{{ user.street_address|default:"-" }}</td></tr>
+    <tr><th>Mesto</th><td>{{ user.city|default:"-" }}</td></tr>
+    <tr><th>PSČ</th><td>{{ user.postal_code|default:"-" }}</td></tr>
+  </table>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Bankové údaje</h2>
+  <div class="table-scroll">
+  <table>
+    <tr><th>IBAN pre výplatu peňazí</th><td>{{ user.masked_bank_account_iban|default:"-" }}</td></tr>
+  </table>
+  </div>
+  <a class="btn btn-outline" href="{% url 'users:account_settings' %}" style="margin-top:12px;display:inline-block;">Zmeniť IBAN</a>
+</div>
+
+<div class="card">
+  <h2>Súlad s AML/KYC</h2>
+  <div class="detail-grid">
+    <div>Stav overenia totožnosti<b>{% if user.kyc_completed %}Overený ✓{% else %}Neoverený{% endif %}</b></div>
+    <div>Politicky exponovaná osoba<b>Nie</b></div>
+    <div>Dátum registrácie<b>{{ user.date_joined|date:"d.m.Y" }}</b></div>
+    <div>Stav účtu<b>{% if user.is_blocked %}Zablokovaný{% else %}Aktívny{% endif %}</b></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Zmena hesla</h2>
+  <p style="color:#55607a;">Pravidelná zmena hesla zvyšuje bezpečnosť tvojho účtu. Vyžaduje bezpečnostný kód z e-mailu pri registrácii.</p>
+  <a class="btn btn-primary" href="{% url 'users:password_change' %}">Zmeniť heslo</a>
 </div>
 {% endblock %}

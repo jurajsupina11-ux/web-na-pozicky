@@ -51,49 +51,71 @@
       </ul>
     </div>
 
-    <form class="card form-card" method="post" autocomplete="on">
+    <form class="card form-card wizard-form" id="wizardForm" method="post" autocomplete="on">
       {% csrf_token %}
-      <h2>Žiadosť o pôžičku</h2>
-      <p class="form-note">Nemusíš sa osobitne registrovať - formulár môžeš vyplniť aj automaticky z uloženého Google/Chrome profilu.</p>
 
       {% if form.non_field_errors %}
         <div class="legal-box">{{ form.non_field_errors }}</div>
       {% endif %}
 
-      <h3 class="form-subhead" style="margin-top:0;padding-top:0;border-top:none;">Kontaktné údaje</h3>
-      <p class="form-note">Prihlasovacie meno (tvoje rodné číslo) a heslo ti vygenerujeme automaticky a pošleme e-mailom.</p>
-      <div class="form-row-2">
-        <label>{{ form.email.label }}{{ form.email }}{% if form.email.errors %}<ul class="errorlist">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
-        <label>{{ form.phone_number.label }}{{ form.phone_number }}{% if form.phone_number.errors %}<ul class="errorlist">{% for e in form.phone_number.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+      <div class="stepper">
+        <div class="stepper-step active"><div class="stepper-dot">1</div><span>Osobné údaje</span></div>
+        <div class="stepper-step"><div class="stepper-dot">2</div><span>Kontakt a adresa</span></div>
+        <div class="stepper-step"><div class="stepper-dot">3</div><span>Suma a účel pôžičky</span></div>
       </div>
-      <h3 class="form-subhead">Osobné údaje (overenie identity)</h3>
-      <div class="form-row-2">
-        <label>{{ form.first_name.label }}{{ form.first_name }}{% if form.first_name.errors %}<ul class="errorlist">{% for e in form.first_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
-        <label>{{ form.last_name.label }}{{ form.last_name }}{% if form.last_name.errors %}<ul class="errorlist">{% for e in form.last_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
-      </div>
-      <label>{{ form.date_of_birth.label }}{{ form.date_of_birth }}{% if form.date_of_birth.errors %}<ul class="errorlist">{% for e in form.date_of_birth.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
-      <div class="form-row-2">
-        <label>{{ form.id_card_number.label }}{{ form.id_card_number }}{% if form.id_card_number.errors %}<ul class="errorlist">{% for e in form.id_card_number.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+
+      <div class="wizard-step" data-step="1">
+        <h2>Osobné údaje</h2>
+        <div class="form-row-2">
+          <label>{{ form.first_name.label }}{{ form.first_name }}{% if form.first_name.errors %}<ul class="errorlist">{% for e in form.first_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+          <label>{{ form.last_name.label }}{{ form.last_name }}{% if form.last_name.errors %}<ul class="errorlist">{% for e in form.last_name.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+        </div>
+        <div class="form-row-2">
+          <label>{{ form.date_of_birth.label }}{{ form.date_of_birth }}{% if form.date_of_birth.errors %}<ul class="errorlist">{% for e in form.date_of_birth.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+          <label>{{ form.id_card_number.label }}{{ form.id_card_number }}{% if form.id_card_number.errors %}<ul class="errorlist">{% for e in form.id_card_number.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+        </div>
         <label>{{ form.birth_number.label }}{{ form.birth_number }}{% if form.birth_number.errors %}<ul class="errorlist">{% for e in form.birth_number.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+        <button type="button" class="btn btn-primary btn-block wizard-next">Pokračovať →</button>
       </div>
-      <label>{{ form.street_address.label }}{{ form.street_address }}{% if form.street_address.errors %}<ul class="errorlist">{% for e in form.street_address.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
-      <div class="form-row-2">
-        <label>{{ form.city.label }}{{ form.city }}{% if form.city.errors %}<ul class="errorlist">{% for e in form.city.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
-        <label>{{ form.postal_code.label }}{{ form.postal_code }}{% if form.postal_code.errors %}<ul class="errorlist">{% for e in form.postal_code.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+
+      <div class="wizard-step" data-step="2" hidden>
+        <h2>Kontakt a adresa</h2>
+        <p class="form-note">Prihlasovacie meno (tvoje rodné číslo) a heslo ti vygenerujeme automaticky a pošleme e-mailom.</p>
+        <div class="form-row-2">
+          <label>{{ form.email.label }}{{ form.email }}{% if form.email.errors %}<ul class="errorlist">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+          <label>{{ form.phone_number.label }}{{ form.phone_number }}{% if form.phone_number.errors %}<ul class="errorlist">{% for e in form.phone_number.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+        </div>
+        <h3 class="form-subhead" style="margin-top:0;padding-top:0;border-top:none;">Adresa trvalého pobytu</h3>
+        <label>{{ form.street_address.label }}{{ form.street_address }}{% if form.street_address.errors %}<ul class="errorlist">{% for e in form.street_address.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+        <div class="form-row-2">
+          <label>{{ form.city.label }}{{ form.city }}{% if form.city.errors %}<ul class="errorlist">{% for e in form.city.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+          <label>{{ form.postal_code.label }}{{ form.postal_code }}{% if form.postal_code.errors %}<ul class="errorlist">{% for e in form.postal_code.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+        </div>
+        <h3 class="form-subhead">Bankové údaje</h3>
+        <label>{{ form.bank_account_iban.label }}{{ form.bank_account_iban }}{% if form.bank_account_iban.errors %}<ul class="errorlist">{% for e in form.bank_account_iban.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+        <div class="wizard-actions">
+          <button type="button" class="btn btn-outline wizard-back">← Späť</button>
+          <button type="button" class="btn btn-primary wizard-next">Pokračovať →</button>
+        </div>
       </div>
-      <label>{{ form.bank_account_iban.label }}{{ form.bank_account_iban }}{% if form.bank_account_iban.errors %}<ul class="errorlist">{% for e in form.bank_account_iban.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
-      <h3 class="form-subhead">Parametre pôžičky</h3>
-      <div class="form-row-2">
-        <label>{{ form.amount_requested.label }}{{ form.amount_requested }}{% if form.amount_requested.errors %}<ul class="errorlist">{% for e in form.amount_requested.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
-        <label>{{ form.duration_days.label }}{{ form.duration_days }}{% if form.duration_days.errors %}<ul class="errorlist">{% for e in form.duration_days.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+
+      <div class="wizard-step" data-step="3" hidden>
+        <h2>Suma a účel pôžičky</h2>
+        <div class="form-row-2">
+          <label>{{ form.amount_requested.label }}{{ form.amount_requested }}{% if form.amount_requested.errors %}<ul class="errorlist">{% for e in form.amount_requested.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+          <label>{{ form.duration_days.label }}{{ form.duration_days }}{% if form.duration_days.errors %}<ul class="errorlist">{% for e in form.duration_days.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+        </div>
+        <label>{{ form.purpose.label }}{{ form.purpose }}{% if form.purpose.errors %}<ul class="errorlist">{% for e in form.purpose.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
+        <label class="checkbox-row">{{ form.gdpr_consent }} {{ form.gdpr_consent.label }}
+          {% if form.gdpr_consent.errors %}<ul class="errorlist">{% for e in form.gdpr_consent.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </label>
+        <p class="form-note">Viac v <a href="{% url 'core:terms' %}">obchodných podmienkach</a> a <a href="{% url 'core:privacy' %}">ochrane osobných údajov</a>.</p>
+        <div class="wizard-actions">
+          <button type="button" class="btn btn-outline wizard-back">← Späť</button>
+          <button type="submit" class="btn btn-primary">Odoslať žiadosť o pôžičku</button>
+        </div>
+        <p class="form-note">Odoslaním žiadosti súhlasíš s podmienkami úroku 19 – 24 % p.a. (podľa dĺžky splácania, 15 – 30 dní) a jednorazového aukčného poplatku platforme (mení sa podľa dĺžky splácania, minimálne však 20 €).</p>
       </div>
-      <label>{{ form.purpose.label }}{{ form.purpose }}{% if form.purpose.errors %}<ul class="errorlist">{% for e in form.purpose.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
-      <label class="checkbox-row">{{ form.gdpr_consent }} {{ form.gdpr_consent.label }}
-        {% if form.gdpr_consent.errors %}<ul class="errorlist">{% for e in form.gdpr_consent.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
-      </label>
-      <p class="form-note">Viac v <a href="{% url 'core:terms' %}">obchodných podmienkach</a> a <a href="{% url 'core:privacy' %}">ochrane osobných údajov</a>.</p>
-      <button type="submit" class="btn btn-primary btn-block">Odoslať žiadosť o pôžičku</button>
-      <p class="form-note" style="text-align:center;">Odoslaním žiadosti súhlasíš s podmienkami úroku 19 – 24 % p.a. (podľa dĺžky splácania, 15 – 30 dní) a jednorazového aukčného poplatku platforme (mení sa podľa dĺžky splácania, minimálne však 20 €).</p>
     </form>
   </div>
 </section>
