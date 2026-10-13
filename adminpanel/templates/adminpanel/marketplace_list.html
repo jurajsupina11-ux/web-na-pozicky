@@ -3,7 +3,8 @@
 {% block title %}Sekundárny trh{% endblock %}
 {% block content %}
 <h1>Sekundárny trh - aktuálne ponuky</h1>
-<div class="card">
+<div class="card table-card">
+  <div class="table-scroll">
   <table>
     <tr><th>Predávajúci</th><th>Žiadateľ</th><th>Suma</th><th>Úrok</th><th>V ponuke od</th></tr>
     {% for b in listings %}
@@ -18,5 +19,6 @@
     <tr><td colspan="5">Momentálne nič v ponuke.</td></tr>
     {% endfor %}
   </table>
+  </div>
 </div>
 {% endblock %}

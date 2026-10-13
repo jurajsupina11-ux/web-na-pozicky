@@ -303,6 +303,11 @@ td{padding:14px 12px;border-bottom:1px solid var(--line);}
 .stat-box span{font-size:12px;color:var(--muted);}
 .pill-ok{background:#e4f8f1;color:#128a66;}
 .pill-bad{background:#fde6e6;color:#c23030;}
+.pill-warn{background:#fff4df;color:#9a6c00;}
+.btn-danger{background:linear-gradient(135deg,var(--red),#ff7a7a);color:#fff;box-shadow:0 10px 24px -8px rgba(239,73,73,.5);border:2px solid transparent;}
+.filter-bar a{display:inline-flex;align-items:center;padding:8px 16px;border-radius:999px;background:var(--surface);box-shadow:var(--shadow);font-size:13px;font-weight:700;color:var(--muted);transition:transform .15s ease,color .15s ease,background .15s ease;}
+.filter-bar a:hover{color:var(--violet);}
+.filter-bar a.active{background:linear-gradient(135deg,var(--violet),var(--pink));color:#fff;}
 .loan-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
 .loan-amount{font-size:26px;font-family:'Sora',sans-serif;display:block;}
 .loan-head span{font-size:12.5px;color:var(--muted);}

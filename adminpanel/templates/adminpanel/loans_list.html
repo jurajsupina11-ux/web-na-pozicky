@@ -3,24 +3,26 @@
 {% block title %}Pôžičky{% endblock %}
 {% block content %}
 <h1>Aktívne pôžičky</h1>
-<div class="card">
+<div class="card table-card">
+  <div class="table-scroll">
   <table>
     <tr><th>ID</th><th>Dlžník</th><th>Suma</th><th>Splatnosť</th><th>Stav</th><th>Kontakt</th></tr>
     {% for loan in loans %}
-    <tr style="{% if loan.is_overdue %}background:#fff6f5;{% endif %}">
+    <tr>
       <td>#{{ loan.pk }}</td>
       <td>{{ loan.borrower.username }} ({{ loan.borrower.display_id }})</td>
       <td>{{ loan.amount_requested }} €</td>
       <td>
         {{ loan.computed_due_date|date:"d.m.Y" }}
-        {% if loan.is_overdue %}<span class="pill pill-bad">Po splatnosti</span>{% endif %}
+        {% if loan.is_overdue %}<span class="status-pill status-late">Po splatnosti</span>{% endif %}
       </td>
-      <td>{% if loan.payment_reported %}<span class="pill pill-warn">Čaká na overenie</span>{% else %}<span class="pill pill-neutral">Aktívna</span>{% endif %}</td>
+      <td>{% if loan.payment_reported %}<span class="pill pill-warn">Čaká na overenie</span>{% else %}<span class="status-pill status-active">Aktívna</span>{% endif %}</td>
       <td>{{ loan.borrower.phone_number }} · {{ loan.borrower.email }}</td>
     </tr>
     {% empty %}
     <tr><td colspan="6">Žiadne aktívne pôžičky.</td></tr>
     {% endfor %}
   </table>
+  </div>
 </div>
 {% endblock %}

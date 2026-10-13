@@ -4,8 +4,9 @@
 {% block content %}
 <h1>Žiadosť #{{ application.pk }} - {{ application.amount_requested }} €</h1>
 
-<div class="card">
+<div class="card table-card">
   <h2>Parametre žiadosti</h2>
+  <div class="table-scroll">
   <table>
     <tr><th>Suma</th><td>{{ application.amount_requested }} €</td></tr>
     <tr><th>Splatnosť</th><td>{{ application.duration_days }} dní</td></tr>
@@ -15,10 +16,12 @@
     {% if application.counter_offer_amount %}<tr><th>Protiponuka</th><td>{{ application.counter_offer_amount }} €</td></tr>{% endif %}
     {% if application.rejection_reason %}<tr><th>Dôvod zamietnutia</th><td>{{ application.rejection_reason }}</td></tr>{% endif %}
   </table>
+  </div>
 </div>
 
-<div class="card">
+<div class="card table-card">
   <h2>Údaje dlžníka (KYC)</h2>
+  <div class="table-scroll">
   <table>
     <tr><th>Meno</th><td>{{ borrower.first_name }} {{ borrower.last_name }}</td></tr>
     <tr><th>Rodné číslo</th><td>{{ borrower.birth_number }}</td></tr>
@@ -29,6 +32,7 @@
     <tr><th>E-mail</th><td>{{ borrower.email }} {% if borrower.email_verified %}<span class="pill pill-ok">overený</span>{% else %}<span class="pill pill-warn">neoverený</span>{% endif %}</td></tr>
     <tr><th>IBAN</th><td>{{ borrower.bank_account_iban }}</td></tr>
   </table>
+  </div>
   <a class="btn btn-outline" style="margin-top:10px;" href="{% url 'adminpanel:user_detail' borrower.pk %}">Zobraziť celý profil</a>
 </div>
 
@@ -60,8 +64,9 @@
 </div>
 {% endif %}
 
-<div class="card">
+<div class="card table-card">
   <h2>História žiadostí tohto dlžníka</h2>
+  <div class="table-scroll">
   <table>
     <tr><th>ID</th><th>Suma</th><th>Stav</th><th>Podané</th></tr>
     {% for h in borrower_history %}
@@ -70,5 +75,6 @@
     <tr><td colspan="4">Žiadna ďalšia žiadosť.</td></tr>
     {% endfor %}
   </table>
+  </div>
 </div>
 {% endblock %}

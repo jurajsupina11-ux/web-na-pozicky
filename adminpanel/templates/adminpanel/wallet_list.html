@@ -11,7 +11,8 @@
   <a href="?status=all" class="{% if status_filter == 'all' %}active{% endif %}">Všetky</a>
 </div>
 
-<div class="card">
+<div class="card table-card">
+  <div class="table-scroll">
   <table>
     <tr><th>Používateľ</th><th>Typ</th><th>Suma</th><th>IBAN</th><th>Stav</th><th>Vytvorené</th><th></th></tr>
     {% for tx in transactions %}
@@ -29,10 +30,10 @@
       <td>
         {% if tx.status == 'pending' %}
         <form method="post" action="{% url 'adminpanel:wallet_confirm' tx.pk %}" style="display:inline;">
-          {% csrf_token %}<button type="submit" class="btn btn-primary">Potvrdiť</button>
+          {% csrf_token %}<button type="submit" class="btn btn-mini btn-approve">Potvrdiť</button>
         </form>
         <form method="post" action="{% url 'adminpanel:wallet_reject' tx.pk %}" style="display:inline;">
-          {% csrf_token %}<button type="submit" class="btn btn-danger">Zamietnuť</button>
+          {% csrf_token %}<button type="submit" class="btn btn-mini btn-reject">Zamietnuť</button>
         </form>
         {% else %}—{% endif %}
       </td>
@@ -41,5 +42,6 @@
     <tr><td colspan="7">Žiadne transakcie v tomto stave.</td></tr>
     {% endfor %}
   </table>
+  </div>
 </div>
 {% endblock %}

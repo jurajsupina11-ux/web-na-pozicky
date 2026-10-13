@@ -14,7 +14,8 @@
   <button type="submit" class="btn btn-primary">Hľadať</button>
 </form>
 
-<div class="card">
+<div class="card table-card">
+  <div class="table-scroll">
   <table>
     <tr><th>Username</th><th>Meno</th><th>Rola</th><th>Display ID</th><th>Registrácia</th><th>Stav</th><th></th></tr>
     {% for u in users %}
@@ -31,5 +32,6 @@
     <tr><td colspan="7">Žiadni používatelia nezodpovedajú hľadaniu.</td></tr>
     {% endfor %}
   </table>
+  </div>
 </div>
 {% endblock %}

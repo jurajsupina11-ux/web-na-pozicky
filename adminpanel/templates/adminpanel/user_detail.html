@@ -4,8 +4,9 @@
 {% block content %}
 <h1>{{ target.username }} ({{ target.get_role_display }})</h1>
 
-<div class="card">
+<div class="card table-card">
   <h2>Osobné údaje</h2>
+  <div class="table-scroll">
   <table>
     <tr><th>Meno</th><td>{{ target.first_name }} {{ target.last_name }}</td></tr>
     <tr><th>Rodné číslo</th><td>{{ target.birth_number|default:"—" }}</td></tr>
@@ -17,6 +18,7 @@
     <tr><th>Peňaženka</th><td>{{ target.wallet_balance }} €</td></tr>
     <tr><th>Registrovaný</th><td>{{ target.date_joined|date:"d.m.Y H:i" }}</td></tr>
   </table>
+  </div>
   <form method="post" action="{% url 'adminpanel:user_toggle_block' target.pk %}" style="margin-top:14px;">
     {% csrf_token %}
     {% if target.is_blocked %}
@@ -28,24 +30,28 @@
 </div>
 
 {% if target.role == 'borrower' %}
-<div class="card">
+<div class="card table-card">
   <h2>Žiadosti o pôžičku</h2>
+  <div class="table-scroll">
   <table>
     <tr><th>ID</th><th>Suma</th><th>Stav</th><th>Podané</th></tr>
     {% for a in applications %}
     <tr><td>#{{ a.pk }}</td><td>{{ a.amount_requested }} €</td><td>{{ a.get_status_display }}</td><td>{{ a.created_at|date:"d.m.Y" }}</td></tr>
     {% empty %}<tr><td colspan="4">Žiadne žiadosti.</td></tr>{% endfor %}
   </table>
+  </div>
 </div>
 {% else %}
-<div class="card">
+<div class="card table-card">
   <h2>Investície</h2>
+  <div class="table-scroll">
   <table>
     <tr><th>Žiadateľ</th><th>Suma</th><th>Úrok</th><th>Stav aukcie</th><th>Investované</th></tr>
     {% for b in investments %}
     <tr><td>{{ b.auction.borrower.display_id }}</td><td>{{ b.amount }} €</td><td>{{ b.interest_rate }} %</td><td>{{ b.auction.get_status_display }}</td><td>{{ b.created_at|date:"d.m.Y" }}</td></tr>
     {% empty %}<tr><td colspan="5">Žiadne investície.</td></tr>{% endfor %}
   </table>
+  </div>
 </div>
 {% endif %}
 {% endblock %}
