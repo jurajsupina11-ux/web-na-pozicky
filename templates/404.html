@@ -1,22 +1,29 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="sk">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stránka nenájdená – Pôžičky Predlžníkov</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-  *{box-sizing:border-box;}
-  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#fffaf5;color:#2a1b10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;}
-  .code{font-size:90px;font-weight:800;color:#ff6a2b;line-height:1;margin-bottom:6px;}
-  h1{font-size:22px;margin:0 0 10px;}
-  p{color:#8a6a56;font-size:15px;max-width:400px;margin:0 0 26px;}
-  a.btn{display:inline-block;background:#ff6a2b;color:#fff;padding:13px 28px;border-radius:30px;text-decoration:none;font-weight:700;font-size:14px;}
-</style>
+<link rel="stylesheet" href="{% static 'theme/style.css' %}">
 </head>
-<body>
-<div class="code">404</div>
-<h1>Stránka nenájdená</h1>
-<p>Stránka, ktorú hľadáš, neexistuje alebo bola presunutá.</p>
-<a class="btn" href="/">Späť na domovskú stránku</a>
+<body class="role-neutral">
+<div class="bg-dots"></div>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="/">
+      <span class="logo-mark">PP</span><span class="logo-text">Pôžičky<br>Predlžníkov</span>
+    </a>
+  </div>
+</header>
+
+<main>
+<section class="section" style="text-align:center;padding:100px 0;">
+  <div class="wrap">
+    <h1 style="font-size:80px;">404</h1>
+    <h2>Stránka sa nenašla</h2>
+    <p>Odkaz, ktorý si použil, už neplatí alebo stránka neexistuje.</p>
+    <a class="btn btn-primary btn-lg" href="/">Späť na domovskú stránku</a>
+  </div>
+</section>
+</main>
 </body>
 </html>
