@@ -49,6 +49,22 @@ def dashboard(request):
     week_ago = timezone.now() - timezone.timedelta(days=7)
     new_users_week = User.objects.filter(date_joined__gte=week_ago, is_superuser=False).count()
 
+    investor_count = User.objects.filter(role=User.Role.LENDER).count()
+    borrower_count = User.objects.filter(role=User.Role.BORROWER).count()
+
+    month_ago = timezone.now() - timezone.timedelta(days=30)
+    two_months_ago = timezone.now() - timezone.timedelta(days=60)
+    invested_this_month = Bid.objects.filter(created_at__gte=month_ago).aggregate(
+        total=Sum('amount'),
+    )['total'] or Decimal('0')
+    invested_prev_month = Bid.objects.filter(
+        created_at__gte=two_months_ago, created_at__lt=month_ago,
+    ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+    if invested_prev_month:
+        volume_growth = ((invested_this_month - invested_prev_month) / invested_prev_month * 100).quantize(Decimal('0.1'))
+    else:
+        volume_growth = None
+
     context = {
         'pending_applications': pending_applications,
         'counter_offers': counter_offers,
@@ -59,6 +75,9 @@ def dashboard(request):
         'total_invested': total_invested,
         'total_wallet_balance': total_wallet_balance,
         'new_users_week': new_users_week,
+        'investor_count': investor_count,
+        'borrower_count': borrower_count,
+        'volume_growth': volume_growth,
         'recent_audit': AuditLog.objects.all()[:8],
     }
     return render(request, 'adminpanel/dashboard.html', context)
@@ -273,3 +292,36 @@ def marketplace_list(request):
 def audit_log(request):
     entries = AuditLog.objects.select_related('admin').all()[:300]
     return render(request, 'adminpanel/audit_log.html', {'entries': entries})
+
+
+@admin_required
+def contracts_list(request):
+    """Prehľad podpísaných zmlúv o pôžičke - pôžičky, ktoré už majú investora
+    a dlžník ich podpísal (SIGNING a vyššie stavy)."""
+    loans = Auction.objects.select_related('borrower').filter(
+        status__in=[
+            Auction.Status.SIGNING, Auction.Status.FUNDED, Auction.Status.CLOSED,
+        ],
+    ).prefetch_related('bids')
+    return render(request, 'adminpanel/contracts_list.html', {'loans': loans})
+
+
+@admin_required
+def settings_view(request):
+    """Prehľad aktuálne nastavených úrokových sadzieb a poplatkov - hodnoty sú
+    definované priamo v kóde (users.forms/users.views), táto stránka slúži len
+    na prehľad pre administrátora, nie na ich úpravu."""
+    from users.forms import (
+        LOAN_MAX_DURATION_DAYS, LOAN_MAX_INTEREST_RATE,
+        LOAN_MIN_DURATION_DAYS, LOAN_MIN_INTEREST_RATE,
+    )
+    from users.views import POSTPONE_DAYS, POSTPONE_FEE
+
+    return render(request, 'adminpanel/settings.html', {
+        'min_rate': LOAN_MIN_INTEREST_RATE,
+        'max_rate': LOAN_MAX_INTEREST_RATE,
+        'min_duration': LOAN_MIN_DURATION_DAYS,
+        'max_duration': LOAN_MAX_DURATION_DAYS,
+        'postpone_days': POSTPONE_DAYS,
+        'postpone_fee': POSTPONE_FEE,
+    })

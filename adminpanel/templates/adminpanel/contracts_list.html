@@ -1,0 +1,28 @@
+{% extends "adminpanel/_base.html" %}
+{% block nav_contracts %}active{% endblock %}
+{% block title %}Zmluvy a dokumenty{% endblock %}
+{% block content %}
+<h1>Zmluvy a dokumenty</h1>
+<div class="card table-card">
+  <div class="table-scroll">
+  <table>
+    <tr><th>ID</th><th>Dlžník</th><th>Suma</th><th>Stav</th><th>Podpísaná</th></tr>
+    {% for loan in loans %}
+    <tr>
+      <td>#{{ loan.pk }}</td>
+      <td>{{ loan.borrower.username }} ({{ loan.borrower.display_id }})</td>
+      <td>{{ loan.amount_requested }} €</td>
+      <td>
+        {% if loan.status == 'signing' %}<span class="status-pill status-signing">Čaká na podpis</span>
+        {% elif loan.status == 'funded' %}<span class="status-pill status-active">Aktívna</span>
+        {% else %}<span class="status-pill status-paid">Splatená</span>{% endif %}
+      </td>
+      <td>{{ loan.contract_signed_at|date:"d.m.Y H:i"|default:"—" }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5">Zatiaľ žiadne zmluvy.</td></tr>
+    {% endfor %}
+  </table>
+  </div>
+</div>
+{% endblock %}

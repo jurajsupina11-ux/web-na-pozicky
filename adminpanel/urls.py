@@ -25,4 +25,6 @@ urlpatterns = [
 
     path('trh/', views.marketplace_list, name='marketplace_list'),
     path('audit/', views.audit_log, name='audit_log'),
+    path('zmluvy/', views.contracts_list, name='contracts_list'),
+    path('nastavenia/', views.settings_view, name='settings'),
 ]

@@ -1,0 +1,23 @@
+{% extends "adminpanel/_base.html" %}
+{% block nav_settings %}active{% endblock %}
+{% block title %}Nastavenia{% endblock %}
+{% block content %}
+<h1>Nastavenia úrokových sadzieb a poplatkov</h1>
+<p class="form-note">Tieto hodnoty sú definované v kóde platformy - stránka slúži pre administrátora len na prehľad, nie na úpravu za behu.</p>
+<div class="card">
+  <h2>Úrokové sadzby</h2>
+  <div class="detail-grid">
+    <div>Minimálny úrok p.a.<b>{{ min_rate }} %</b></div>
+    <div>Maximálny úrok p.a.<b>{{ max_rate }} %</b></div>
+    <div>Minimálna splatnosť<b>{{ min_duration }} dní</b></div>
+    <div>Maximálna splatnosť<b>{{ max_duration }} dní</b></div>
+  </div>
+</div>
+<div class="card">
+  <h2>Odklad splátky</h2>
+  <div class="detail-grid">
+    <div>Dĺžka odkladu<b>{{ postpone_days }} dní</b></div>
+    <div>Poplatok za odklad<b>{{ postpone_fee }} €</b></div>
+  </div>
+</div>
+{% endblock %}

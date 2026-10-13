@@ -2,23 +2,30 @@
 {% block nav_dashboard %}active{% endblock %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
-<h1>Dashboard</h1>
-
-<div class="stat-grid">
-  <div class="stat-tile"><b>{{ pending_applications }}</b><span>Žiadosti čakajúce na posúdenie</span></div>
-  <div class="stat-tile"><b>{{ counter_offers }}</b><span>Čakajúce protiponuky</span></div>
-  <div class="stat-tile"><b>{{ pending_deposits }}</b><span>Čakajúce vklady</span></div>
-  <div class="stat-tile"><b>{{ pending_withdrawals }}</b><span>Čakajúce výbery</span></div>
+<div class="dash-top">
+  <h1>Administrácia</h1>
+  <div style="display:flex;gap:10px;">
+    <a class="btn btn-outline" href="{% url 'adminpanel:audit_log' %}">Exportovať report</a>
+    <a class="btn btn-primary" href="{% url 'users:signup' %}">+ Nový administrátor</a>
+  </div>
 </div>
-<div class="stat-grid">
+
+<div class="stat-grid clickable">
+  <div class="stat-tile"><b>{{ pending_applications }}</b><span>Žiadosti na posúdenie</span></div>
+  <div class="stat-tile"><b>{{ pending_deposits|add:pending_withdrawals }}</b><span>Platby na overenie</span></div>
   <div class="stat-tile"><b>{{ active_loans_count }}</b><span>Aktívne pôžičky</span></div>
-  <div class="stat-tile{% if overdue_loans_count %} up{% endif %}"><b>{{ overdue_loans_count }}</b><span>Pôžičky po splatnosti</span></div>
-  <div class="stat-tile"><b>{{ total_invested }} €</b><span>Celkový investovaný objem</span></div>
-  <div class="stat-tile"><b>{{ total_wallet_balance }} €</b><span>Súčet zostatkov na peňaženkách</span></div>
+  <div class="stat-tile{% if overdue_loans_count %} up{% endif %}"><b>{{ overdue_loans_count }}</b><span>Po splatnosti</span></div>
+</div>
+<div class="stat-grid clickable">
+  <div class="stat-tile"><b>{{ investor_count }}</b><span>Registrovaní investori</span></div>
+  <div class="stat-tile"><b>{{ borrower_count }}</b><span>Registrovaní dlžníci</span></div>
+  <div class="stat-tile"><b>{{ total_wallet_balance }} €</b><span>Objem v peňaženkách</span></div>
+  <div class="stat-tile up"><b>{% if volume_growth is not None %}{{ volume_growth }} %{% else %}—{% endif %}</b><span>Rast objemu medzimesačne</span></div>
 </div>
 
 <div class="card">
   <h2>Noví používatelia za posledných 7 dní: {{ new_users_week }}</h2>
+  <p class="form-note" style="margin-top:4px;">Čakajúce protiponuky: {{ counter_offers }} · Celkový investovaný objem: {{ total_invested }} €</p>
 </div>
 
 <div class="card table-card">
