@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Avg
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
@@ -129,24 +130,39 @@ def place_bid(request, pk):
     return redirect(auction.get_absolute_url())
 
 
+def _annotate_bid_breakdown(bid):
+    """Doplní na Bid rozpis pre investora: úrok, počet dní predĺženia splatnosti
+    a celkovú sumu, ktorú od dlžníka dostane (bez akéhokoľvek poplatku platforme -
+    investorovi sa poplatok za sprostredkovanie nikdy neukazuje, ten platí len dlžník)."""
+    auction = bid.auction
+    total_days = auction.duration_days + auction.postponed_days
+    bid.interest_amount = round(
+        bid.amount * (bid.interest_rate / Decimal('100')) * (Decimal(total_days) / Decimal('365')), 2,
+    )
+    bid.postponed_days = auction.postponed_days
+    bid.total_payout = round(bid.amount + bid.interest_amount, 2)
+    return bid
+
+
 @login_required
 def investor_dashboard(request):
     """Prostredie pre investora - stav účtu, prehľad portfólia, štatistiky
     a prístup k ďalším funkciám (vyplatenie, predaj pôžičky, nové príležitosti)."""
-    my_bids = Bid.objects.filter(lender=request.user).select_related('auction')
+    bids_qs = Bid.objects.filter(lender=request.user).select_related('auction')
+    avg_interest_rate = bids_qs.aggregate(avg=Avg('interest_rate'))['avg']
+    bids_count = bids_qs.count()
+    for_sale_count = bids_qs.filter(for_sale=True).count()
+
+    my_bids = list(bids_qs)
+    for bid in my_bids:
+        _annotate_bid_breakdown(bid)
+
     total_invested = sum((b.amount for b in my_bids), Decimal('0'))
-    active_bids = my_bids.filter(auction__status=Auction.Status.ACTIVE)
-    funded_bids = my_bids.filter(auction__status=Auction.Status.FUNDED)
-    closed_bids = my_bids.filter(auction__status=Auction.Status.CLOSED)
-    expected_yield = sum(
-        (b.amount * (b.interest_rate / Decimal('100')) * (b.auction.duration_days / Decimal('365')) for b in funded_bids),
-        Decimal('0'),
-    )
-    realized_yield = sum(
-        (b.amount * (b.interest_rate / Decimal('100')) * (b.auction.duration_days / Decimal('365')) for b in closed_bids),
-        Decimal('0'),
-    )
-    for_sale_count = my_bids.filter(for_sale=True).count()
+    active_bids = [b for b in my_bids if b.auction.status == Auction.Status.ACTIVE]
+    funded_bids = [b for b in my_bids if b.auction.status == Auction.Status.FUNDED]
+    closed_bids = [b for b in my_bids if b.auction.status == Auction.Status.CLOSED]
+    expected_yield = sum((b.interest_amount for b in funded_bids), Decimal('0'))
+    realized_yield = sum((b.interest_amount for b in closed_bids), Decimal('0'))
 
     show_welcome = not request.user.welcome_message_seen
     if show_welcome:
@@ -160,12 +176,13 @@ def investor_dashboard(request):
         'closed_bids': closed_bids,
         'wallet_balance': request.user.wallet_balance,
         'total_invested': total_invested,
-        'active_count': funded_bids.count(),
+        'active_count': len(funded_bids),
         'expected_yield': round(expected_yield, 2),
         'realized_yield': round(realized_yield, 2),
         'for_sale_count': for_sale_count,
-        'bids_count': my_bids.count(),
+        'bids_count': bids_count,
         'show_welcome': show_welcome,
+        'avg_interest_rate': round(avg_interest_rate, 2) if avg_interest_rate else Decimal('0'),
     }
     return render(request, 'auctions/investor_dashboard.html', context)
 

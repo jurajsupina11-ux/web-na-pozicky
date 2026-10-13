@@ -1,157 +1,122 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="sk">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pôžičky Predlžníkov</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-  *{box-sizing:border-box;}
-  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#fffaf5;color:#2a1b10;min-height:100vh;display:flex;flex-direction:column;}
-  a{color:inherit;}
-  nav.top{display:flex;justify-content:space-between;align-items:center;padding:22px 32px;flex-wrap:wrap;gap:10px;}
-  nav.top .logo{font-weight:800;font-size:18px;text-decoration:none;color:#2a1b10;}
-  nav.top .links a{color:#8a6a56;text-decoration:none;font-size:13.5px;margin-left:20px;}
-  .toggle-wrap{display:flex;justify-content:center;margin:6px 0 10px;}
-  .toggle{display:flex;background:#fff;border:1px solid #ffd9bf;border-radius:999px;padding:4px;gap:2px;}
-  .toggle button{border:none;background:transparent;padding:9px 22px;border-radius:999px;font-size:13.5px;font-weight:700;cursor:pointer;color:#8a6a56;font-family:inherit;}
-  .toggle button.active.inv{background:#1b4fd1;color:#fff;}
-  .toggle button.active.bor{background:#ff6a2b;color:#fff;}
-  main{display:flex;align-items:center;justify-content:center;padding:30px 20px 10px;}
-  .stage{max-width:900px;width:100%;}
-  .stage-inner{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
-  @media(max-width:760px){.stage-inner{grid-template-columns:1fr;text-align:center;}}
-  .stage h1{font-size:40px;line-height:1.1;margin:0 0 16px;letter-spacing:-0.03em;}
-  .stage h1 .hl-inv{color:#1b4fd1;}
-  .stage h1 .hl-bor{color:#ff6a2b;}
-  .stage p{color:#8a6a56;font-size:15.5px;max-width:420px;margin:0 0 26px;}
-  @media(max-width:760px){.stage p{margin:0 auto 26px;}}
-  .stage .btn{display:inline-block;padding:16px 36px;border-radius:40px;font-weight:800;font-size:15px;text-decoration:none;color:#fff;transition:transform .2s ease,box-shadow .2s ease;}
-  .stage .btn.inv{background:#1b4fd1;}
-  .stage .btn.inv:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(27,79,209,.35);}
-  .stage .btn.bor{background:#ff6a2b;}
-  .stage .btn.bor:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(255,106,43,.4);}
-  .view{display:none;}
-  .view.active{display:block;}
-  .mini-stats{display:flex;gap:30px;margin-top:34px;flex-wrap:wrap;}
-  @media(max-width:760px){.mini-stats{justify-content:center;}}
-  .mini-stats div{text-align:center;}
-  .mini-stats b{display:block;font-size:20px;}
-  .mini-stats span{font-size:12px;color:#8a6a56;}
-  .illustration{width:100%;max-width:340px;aspect-ratio:1/1;border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:120px;margin:0 auto;position:relative;overflow:hidden;}
-  .illustration.bor{background:linear-gradient(160deg,#ffb37a,#ff6a2b);}
-  .illustration.inv{background:linear-gradient(160deg,#5b8dff,#1b4fd1);}
-  .illustration span{position:relative;z-index:1;animation:floatY 3.5s ease-in-out infinite;}
-  .illustration::after{content:'';position:absolute;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.18);top:-40px;right:-40px;}
-  @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
-  .benefits{padding:50px 20px 10px;}
-  .benefits-inner{max-width:900px;margin:0 auto;text-align:center;}
-  .benefits h2{font-size:26px;margin:0 0 36px;}
-  .benefits h2 .hl-bor{color:#ff6a2b;}
-  .benefits h2 .hl-inv{color:#1b4fd1;}
-  .benefit-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
-  @media(max-width:760px){.benefit-grid{grid-template-columns:repeat(2,1fr);}}
-  .benefit{display:flex;flex-direction:column;align-items:center;}
-  .benefit .circle{width:84px;height:84px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:14px;transition:transform .25s ease;}
-  .benefit:hover .circle{transform:translateY(-4px);}
-  .benefit.bor .circle{background:#fff1ea;}
-  .benefit.inv .circle{background:#eaf0ff;}
-  .benefit h3{font-size:14.5px;margin:0 0 6px;}
-  .benefit p{font-size:12.5px;color:#8a6a56;margin:0;line-height:1.4;}
-  footer{text-align:center;padding:30px 20px;color:#b08a73;font-size:12px;margin-top:20px;}
-  footer a{color:#b08a73;text-decoration:underline;}
-  .fade-in{opacity:0;animation:fadeInUp .6s ease forwards;}
-  @keyframes fadeInUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-</style>
+<link rel="stylesheet" href="{% static 'theme/style.css' %}">
 </head>
-<body>
-<nav class="top">
-  <a class="logo" href="{% url 'core:landing' %}">🔥 Pôžičky Predlžníkov</a>
-  <div class="links">
-    <a href="{% url 'core:faq' %}">Časté otázky</a>
-    <a href="{% url 'core:contact' %}">Kontakt</a>
-    <a href="{% url 'users:login_borrower' %}">Prihlásiť sa ako žiadateľ</a>
-    <a href="{% url 'users:login_investor' %}">Prihlásiť sa ako investor</a>
+<body class="role-neutral">
+<div class="bg-dots"></div>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="{% url 'core:landing' %}">
+      <span class="logo-mark">PP</span><span class="logo-text">Pôžičky<br>Predlžníkov</span>
+    </a>
+    <button class="burger" id="burgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="mainNav">
+      <a href="{% url 'core:landing' %}" class="active">Domov</a>
+      <a href="{% url 'core:investor' %}">Pre investorov</a>
+      <a href="{% url 'core:borrower' %}">Pre žiadateľov</a>
+      <a href="{% url 'core:faq' %}">Časté otázky</a>
+      <a href="{% url 'core:contact' %}">Kontakt</a>
+      <div class="nav-cta">
+        <a class="btn btn-ghost" href="{% url 'users:login_borrower' %}">Prihlásiť sa ako žiadateľ</a>
+        <a class="btn btn-primary" href="{% url 'users:login_investor' %}">Prihlásiť sa ako investor</a>
+      </div>
+    </nav>
   </div>
-</nav>
-<div class="toggle-wrap fade-in">
-  <div class="toggle">
-    <button id="btnBor" class="active bor" onclick="show('bor')">🙋 Potrebujem pôžičku</button>
-    <button id="btnInv" onclick="show('inv')">💰 Som investor</button>
-  </div>
-</div>
+</header>
+
 <main>
-  <div class="stage">
-    <div id="viewBor" class="view active">
-      <div class="stage-inner">
-        <div class="fade-in">
-          <h1>Peniaze do <span class="hl-bor">5 minút</span><br>bez čakania na banku</h1>
-          <p>Požičaj si 50 – 500 € na max. 30 dní. Jeden formulár, žiadne papierovanie.</p>
-          <a class="btn bor" href="{% url 'core:borrower' %}">Požiadať o pôžičku</a>
-          <div class="mini-stats">
-            <div><b>50–500 €</b><span>suma pôžičky</span></div>
-            <div><b>30 dní</b><span>max. splatnosť</span></div>
-            <div><b>5 min</b><span>peniaze na účte</span></div>
-          </div>
-        </div>
-        <div class="illustration bor fade-in"><span>🤑</span></div>
-      </div>
+<section class="picker-hero">
+  <div class="wrap">
+    <div class="picker-head">
+      <span class="eyebrow">Pôžičky Predlžníkov</span>
+      <h1>Čo ťa dnes privádza?</h1>
+      <p class="lead">Vyber si jednu z dvoch ciest - obe vybavíš online za pár minút.</p>
     </div>
-    <div id="viewInv" class="view">
-      <div class="stage-inner">
-        <div class="fade-in">
-          <h1>Zarábaj <span class="hl-inv">24 % p.a.</span><br>na krátkych pôžičkách</h1>
-          <p>Investuj od 50 € do overených žiadostí a dostaň výnos späť do 30 dní.</p>
-          <a class="btn inv" href="{% url 'core:investor' %}">Vstúpiť ako investor</a>
-          <div class="mini-stats">
-            <div><b>24 %</b><span>úrok p.a.</span></div>
-            <div><b>Celá naraz</b><span>financovanie pôžičky</span></div>
-            <div><b>98,4 %</b><span>úspešnosť splácania</span></div>
-          </div>
-        </div>
-        <div class="illustration inv fade-in"><span>💻</span></div>
-      </div>
+    <div class="picker-grid">
+      <a class="picker-card role-card-borrower" href="{% url 'core:borrower' %}">
+        <div class="picker-icon">💶</div>
+        <h2>Chcem si požičať</h2>
+        <p>50 – 500 € na 15 – 30 dní. Jeden formulár, peniaze na účte do 5 minút po financovaní.</p>
+        <span class="picker-cta">Požiadať o pôžičku →</span>
+        <div class="picker-stat"><b>19 – 24 %</b><span>úrok p.a.</span></div>
+      </a>
+      <a class="picker-card role-card-investor" href="{% url 'core:investor' %}">
+        <div class="picker-icon">📈</div>
+        <h2>Chcem investovať</h2>
+        <p>Investuj od 50 € do overených žiadostí, diverzifikuj portfólio, sleduj výnos v reálnom čase.</p>
+        <span class="picker-cta">Začať investovať →</span>
+        <div class="picker-stat"><b>19 – 24 %</b><span>výnos p.a.</span></div>
+      </a>
+    </div>
+    <div class="picker-links">
+      <a href="{% url 'users:login_investor' %}">Už mám účet, prihlásiť sa →</a>
     </div>
   </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Ako to funguje</span>
+      <h2>Tri kroky k výsledku</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card"><div class="step-num">1</div><h3>Vytvor žiadosť alebo účet</h3><p>Dlžník vyplní jeden formulár, investor sa zaregistruje za 2 minúty.</p></div>
+      <div class="step-card"><div class="step-num">2</div><h3>Žiadosť sa zobrazí v aukcii</h3><p>Investori vidia overené žiadosti a financujú tie, ktoré ich zaujmú.</p></div>
+      <div class="step-card"><div class="step-num">3</div><h3>Peniaze a výnos</h3><p>Dlžník dostane peniaze na účet, investor po splatení dostane istinu + úrok.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section stats-band">
+  <div class="wrap stats-grid">
+    <div><b>5 000+</b><span>Financovaných pôžičiek</span></div>
+    <div><b>1,2 M €</b><span>Celkový objem investícií</span></div>
+    <div><b>98,4 %</b><span>Úspešnosť splácania</span></div>
+    <div><b>4,8/5</b><span>Hodnotenie klientov</span></div>
+  </div>
+</section>
+
+<section class="section cta-band">
+  <div class="wrap cta-inner">
+    <h2>Pripravený začať?</h2>
+    <p>Registrácia investora trvá 2 minúty, žiadosť o pôžičku vyplníš jedným formulárom.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary btn-lg" href="{% url 'users:signup' %}">Vytvoriť investorský účet</a>
+      <a class="btn btn-outline btn-lg" href="{% url 'users:loan_application' %}">Požiadať o pôžičku</a>
+    </div>
+  </div>
+</section>
 </main>
 
-<div class="benefits">
-  <div class="benefits-inner">
-    <div id="benefitsBor" class="view active">
-      <h2>Výhody <span class="hl-bor">pôžičky</span></h2>
-      <div class="benefit-grid">
-        <div class="benefit bor"><div class="circle">💻</div><h3>Online žiadosť</h3><p>Vyplníš jeden formulár, bez osobitnej registrácie.</p></div>
-        <div class="benefit bor"><div class="circle">⚡</div><h3>Rýchlosť</h3><p>Peniaze na účte do 5 minút po financovaní.</p></div>
-        <div class="benefit bor"><div class="circle">📋</div><h3>Parametre pôžičky</h3><p>50 € – 500 € so splatnosťou do 30 dní.</p></div>
-        <div class="benefit bor"><div class="circle">🤝</div><h3>Jasné podmienky</h3><p>Úrok aj poplatok vidíš vopred, žiadne skryté náklady.</p></div>
-      </div>
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <div class="logo-mark">PP</div>
+      <p>Pôžičky Predlžníkov, s.r.o.<br>P2P platforma pre krátkodobé pôžičky medzi investormi a žiadateľmi.</p>
     </div>
-    <div id="benefitsInv" class="view">
-      <h2>Výhody <span class="hl-inv">investovania</span></h2>
-      <div class="benefit-grid">
-        <div class="benefit inv"><div class="circle">📈</div><h3>Vysoký výnos</h3><p>Úrok až 24 % p.a. na krátkodobých pôžičkách.</p></div>
-        <div class="benefit inv"><div class="circle">🔍</div><h3>Overení žiadatelia</h3><p>Každý žiadateľ prejde overením identity (KYC).</p></div>
-        <div class="benefit inv"><div class="circle">📊</div><h3>Diverzifikácia</h3><p>Rozlož investíciu už od 50 € do viacerých pôžičiek.</p></div>
-        <div class="benefit inv"><div class="circle">🔄</div><h3>Sekundárny trh</h3><p>Investíciu môžeš kedykoľvek predať inému investorovi.</p></div>
-      </div>
+    <div>
+      <h4>Platforma</h4>
+      <a href="{% url 'core:investor' %}">Pre investorov</a>
+      <a href="{% url 'core:borrower' %}">Pre žiadateľov</a>
+    </div>
+    <div>
+      <h4>Podpora</h4>
+      <a href="{% url 'core:faq' %}">Časté otázky</a>
+      <a href="{% url 'core:contact' %}">Kontakt</a>
+      <a href="{% url 'core:terms' %}">Obchodné podmienky</a>
+      <a href="{% url 'core:privacy' %}">Ochrana osobných údajov</a>
     </div>
   </div>
-</div>
-
-<footer>&copy; Pôžičky Predlžníkov – licencovaný P2P pôžičkový systém ·
-  <a href="{% url 'core:faq' %}">Časté otázky</a> ·
-  <a href="{% url 'core:contact' %}">Kontakt</a> ·
-  <a href="{% url 'core:terms' %}">Obchodné podmienky</a> ·
-  <a href="{% url 'core:privacy' %}">Ochrana osobných údajov</a>
+  <div class="wrap footer-bottom">
+    © 2026 Pôžičky Predlžníkov, s.r.o. Všetky práva vyhradené.
+  </div>
 </footer>
-<script>
-function show(which){
-  document.getElementById('viewBor').classList.toggle('active', which==='bor');
-  document.getElementById('viewInv').classList.toggle('active', which==='inv');
-  document.getElementById('benefitsBor').classList.toggle('active', which==='bor');
-  document.getElementById('benefitsInv').classList.toggle('active', which==='inv');
-  document.getElementById('btnBor').classList.toggle('active', which==='bor');
-  document.getElementById('btnInv').classList.toggle('active', which==='inv');
-}
-</script>
+<script src="{% static 'theme/script.js' %}"></script>
 </body>
 </html>

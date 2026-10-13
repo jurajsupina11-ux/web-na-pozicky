@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django import forms
 from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
 from django.core.exceptions import ValidationError
@@ -6,6 +8,28 @@ from django.utils import timezone
 from auctions.models import Auction
 
 from .models import User
+
+
+#: Úrok (% p.a.) sa mení podľa dĺžky splácania pôžičky (15-30 dní) - čím kratšia
+#: doba splácania, tým nižší úrok. Lineárna škála: 15 dní = MIN_RATE %,
+#: 30 dní = MAX_RATE %, hodnoty medzi tým sa dopočítajú lineárne a zaokrúhlia
+#: na 2 desatinné miesta. Toto je jediné miesto, kde sa táto škála definuje -
+#: zdieľané žiadosťou o pôžičku aj zmluvnou dokumentáciou (core.contracts).
+LOAN_MIN_DURATION_DAYS = 15
+LOAN_MAX_DURATION_DAYS = 30
+LOAN_MIN_INTEREST_RATE = Decimal('19')
+LOAN_MAX_INTEREST_RATE = Decimal('24')
+
+
+def interest_rate_for_duration(duration_days):
+    """Vypočíta úrokovú sadzbu (% p.a.) pre danú dĺžku splácania (v dňoch)
+    lineárnou interpoláciou medzi LOAN_MIN_INTEREST_RATE (pri LOAN_MIN_DURATION_DAYS)
+    a LOAN_MAX_INTEREST_RATE (pri LOAN_MAX_DURATION_DAYS)."""
+    days = max(LOAN_MIN_DURATION_DAYS, min(LOAN_MAX_DURATION_DAYS, int(duration_days)))
+    span_days = LOAN_MAX_DURATION_DAYS - LOAN_MIN_DURATION_DAYS
+    span_rate = LOAN_MAX_INTEREST_RATE - LOAN_MIN_INTEREST_RATE
+    rate = LOAN_MIN_INTEREST_RATE + span_rate * (Decimal(days - LOAN_MIN_DURATION_DAYS) / Decimal(span_days))
+    return rate.quantize(Decimal('0.01'))
 
 
 #: mapovanie meno poľa -> HTML autocomplete hodnota, aby prehliadač (vrátane
@@ -258,8 +282,6 @@ class BorrowerApplicationForm(forms.Form):
     jeho rodné číslo (bez lomítka) a heslo sa vygeneruje automaticky a pošle e-mailom
     až po schválení žiadosti administrátorom (posúdenie registra dlžníkov/úverov)."""
 
-    DEFAULT_INTEREST_RATE = 24.00
-
     # Prístupové údaje - bez voľby username/hesla, len kontakt.
     email = forms.EmailField(label='E-mail')
     phone_number = forms.CharField(label='Telefónne číslo', max_length=20)
@@ -285,7 +307,9 @@ class BorrowerApplicationForm(forms.Form):
         label='Požadovaná suma (€)', min_value=50, max_value=500,
         max_digits=10, decimal_places=2,
     )
-    duration_days = forms.IntegerField(label='Splatnosť (dni)', min_value=1, max_value=30)
+    duration_days = forms.IntegerField(
+        label='Splatnosť (dni)', min_value=LOAN_MIN_DURATION_DAYS, max_value=LOAN_MAX_DURATION_DAYS,
+    )
     purpose = forms.CharField(
         label='Účel pôžičky', widget=forms.Textarea(attrs={'rows': 3}),
     )
@@ -302,7 +326,7 @@ class BorrowerApplicationForm(forms.Form):
             'placeholder': 'napr. 200', 'min': 50, 'max': 500, 'step': 10,
         })
         self.fields['duration_days'].widget.attrs.update({
-            'placeholder': 'napr. 14', 'min': 1, 'max': 30,
+            'placeholder': 'napr. 15', 'min': LOAN_MIN_DURATION_DAYS, 'max': LOAN_MAX_DURATION_DAYS,
         })
 
     def clean_birth_number(self):
@@ -355,7 +379,7 @@ class BorrowerApplicationForm(forms.Form):
             title=f'Žiadosť o pôžičku {amount} € na {duration} dní',
             description=self.cleaned_data['purpose'],
             amount_requested=amount,
-            max_interest_rate=self.DEFAULT_INTEREST_RATE,
+            max_interest_rate=interest_rate_for_duration(duration),
             duration_days=duration,
             status=Auction.Status.PENDING_REVIEW,
             ends_at=timezone.now() + timezone.timedelta(days=duration),
@@ -371,7 +395,9 @@ class RepeatLoanApplicationForm(forms.Form):
         label='Požadovaná suma (€)', min_value=50, max_value=500,
         max_digits=10, decimal_places=2,
     )
-    duration_days = forms.IntegerField(label='Splatnosť (dni)', min_value=1, max_value=30)
+    duration_days = forms.IntegerField(
+        label='Splatnosť (dni)', min_value=LOAN_MIN_DURATION_DAYS, max_value=LOAN_MAX_DURATION_DAYS,
+    )
     purpose = forms.CharField(
         label='Účel pôžičky', widget=forms.Textarea(attrs={'rows': 3}),
     )
@@ -383,7 +409,7 @@ class RepeatLoanApplicationForm(forms.Form):
             'placeholder': 'napr. 200', 'min': 50, 'max': 500, 'step': 10,
         })
         self.fields['duration_days'].widget.attrs.update({
-            'placeholder': 'napr. 14', 'min': 1, 'max': 30,
+            'placeholder': 'napr. 15', 'min': LOAN_MIN_DURATION_DAYS, 'max': LOAN_MAX_DURATION_DAYS,
         })
 
     def create_auction(self, user):
@@ -394,7 +420,7 @@ class RepeatLoanApplicationForm(forms.Form):
             title=f'Žiadosť o pôžičku {amount} € na {duration} dní',
             description=self.cleaned_data['purpose'],
             amount_requested=amount,
-            max_interest_rate=BorrowerApplicationForm.DEFAULT_INTEREST_RATE,
+            max_interest_rate=interest_rate_for_duration(duration),
             duration_days=duration,
             status=Auction.Status.PENDING_REVIEW,
             ends_at=timezone.now() + timezone.timedelta(days=duration),

@@ -28,10 +28,11 @@
   {% else %}
   <div class="table-scroll">
   <table style="margin-top:18px;">
-    <tr><th>Istina</th><th>Úrok + poplatky</th><th>Spolu na úhradu</th></tr>
+    <tr><th>Istina</th><th>Úrok ({{ loan.max_interest_rate }} % p.a.)</th><th>Poplatky za odklad</th><th>Spolu na úhradu</th></tr>
     <tr>
       <td>{{ loan.amount_requested }} €</td>
       <td>{{ loan.interest_amount }} €</td>
+      <td>{{ loan.postpone_fees_amount }} €</td>
       <td><strong>{{ loan.repay_amount }} €</strong></td>
     </tr>
   </table>

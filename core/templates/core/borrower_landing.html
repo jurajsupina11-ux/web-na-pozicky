@@ -1,228 +1,130 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="sk">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pôžičky Predlžníkov – Potrebujem pôžičku</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  *{box-sizing:border-box;}
-  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#fffaf5;color:#2a1b10;}
-  a{color:inherit;}
-  header{background:#fff;border-bottom:1px solid #ffd9bf;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
-  header .logo{font-weight:800;font-size:19px;color:#ff6a2b;}
-  nav a{text-decoration:none;margin-left:14px;font-size:14px;}
-  nav .btn-ghost{border:1px solid #ffd9bf;color:#ff6a2b;padding:8px 16px;border-radius:8px;}
-  nav .btn-fill{background:#ff6a2b;color:#fff;padding:8px 18px;border-radius:8px;font-weight:700;}
-  .switchbar{background:#fff3ea;color:#8a6a56;text-align:center;font-size:12px;padding:5px;}
-  .switchbar a{color:#ff6a2b;text-decoration:none;}
-  .hero{background:linear-gradient(160deg,#ff7a3d,#c2410c);color:#fff;padding:60px 28px;}
-  .hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
-  @media(max-width:800px){.hero-inner{grid-template-columns:1fr;}}
-  .hero h1{font-size:36px;line-height:1.2;margin:0 0 16px;}
-  .hero p{color:#ffe4d4;font-size:16px;max-width:460px;margin:0 0 26px;}
-  .btn{display:inline-block;padding:13px 28px;border-radius:30px;text-decoration:none;font-weight:700;font-size:14px;cursor:pointer;border:none;}
-  .btn-primary{background:#fff;color:#c2410c;}
-  .btn-outline{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.6);margin-left:10px;}
-  .calc-card{background:#fff;border-radius:22px;padding:30px;box-shadow:0 24px 60px rgba(90,30,0,.28);}
-  .calc-card .calc-label{font-size:14px;font-weight:700;color:#2a1b10;margin-bottom:14px;}
-  .calc-row{display:flex;align-items:center;gap:14px;margin-bottom:8px;}
-  .calc-btn{width:40px;height:40px;flex-shrink:0;border-radius:12px;border:none;background:#fff1ea;color:#c2410c;font-size:20px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-  .calc-btn:hover{background:#ffd9bf;}
-  .calc-track-wrap{flex:1;position:relative;padding-top:30px;}
-  .calc-card input[type=range]{width:100%;margin:0;accent-color:#c2410c;height:6px;}
-  .calc-bubble{position:absolute;top:0;left:50%;transform:translateX(-50%);background:#8a1538;color:#fff;font-weight:800;font-size:15px;padding:6px 16px;border-radius:10px;white-space:nowrap;}
-  .calc-bubble:after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%) rotate(45deg);width:10px;height:10px;background:#8a1538;}
-  .calc-minmax{display:flex;justify-content:space-between;font-size:12px;color:#b08a73;margin:2px 2px 22px;}
-  .calc-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;border-top:1px solid #ffd9bf;padding-top:18px;margin-top:6px;}
-  .calc-summary .row{font-size:13.5px;color:#5c3a24;}
-  .calc-summary .row strong{display:block;font-size:15px;color:#2a1b10;margin-top:2px;}
-  .calc-summary .row.highlight strong{color:#c2410c;}
-  .calc-cta{display:block;width:100%;text-align:center;margin-top:24px;background:#8a1538;color:#fff;border:none;padding:16px;border-radius:30px;font-weight:800;font-size:15px;letter-spacing:.03em;text-decoration:none;text-transform:uppercase;}
-  .calc-cta:hover{background:#6f1029;}
-  .wrap{max-width:1100px;margin:0 auto;padding:60px 28px;}
-  .section-title{text-align:center;margin-bottom:36px;}
-  .section-title h2{font-size:28px;margin:0 0 8px;}
-  .section-title p{color:#8a6a56;}
-  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-  @media(max-width:760px){.grid3{grid-template-columns:1fr;}}
-  .card{background:#fff;border:1px solid #ffd9bf;border-radius:16px;padding:26px;}
-  .card .icon{font-size:30px;margin-bottom:12px;}
-  .card h3{margin:0 0 8px;font-size:17px;}
-  .card p{color:#8a6a56;font-size:14px;margin:0;}
-  .steps{display:flex;flex-direction:column;gap:18px;}
-  .step{display:flex;gap:16px;align-items:flex-start;}
-  .step .num{width:40px;height:40px;flex-shrink:0;border-radius:50%;background:#ff6a2b;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;}
-  .step h3{margin:0 0 6px;font-size:16px;}
-  .step p{margin:0;color:#8a6a56;font-size:14px;}
-  .faq{background:#fff;border:1px solid #ffd9bf;border-radius:14px;padding:18px 22px;margin-bottom:12px;}
-  .faq h3{margin:0 0 6px;font-size:15px;}
-  .faq p{margin:0;color:#8a6a56;font-size:14px;}
-  .cta{background:linear-gradient(160deg,#ff7a3d,#c2410c);color:#fff;text-align:center;padding:60px 28px;border-radius:20px;margin-top:20px;}
-  .cta h2{font-size:26px;margin:0 0 12px;}
-  .cta p{color:#ffe4d4;margin:0 0 22px;}
-  footer{text-align:center;padding:30px;color:#b08a73;font-size:12px;background:#fff3ea;}
-  @media(max-width:600px){
-    header{padding:14px 18px;}
-    nav a{margin-left:8px;font-size:13px;}
-    .hero{padding:40px 18px;}
-    .hero h1{font-size:24px;}
-    .btn{padding:11px 20px;font-size:13px;}
-    .btn-outline{margin-left:0;margin-top:10px;display:inline-block;}
-    .wrap{padding:40px 18px;}
-    .section-title h2{font-size:22px;}
-    .cta{padding:40px 18px;}
-    .calc-card{padding:20px;}
-    .calc-summary{grid-template-columns:1fr;}
-  }
-
-  /* === Animácie === */
-  .btn, nav .btn-ghost, nav .btn-fill{transition:transform .2s ease,box-shadow .2s ease;}
-  .btn:hover{transform:translateY(-3px);box-shadow:0 10px 22px rgba(194,65,12,.2);}
-  nav .btn-ghost:hover{background:rgba(255,106,43,.08);}
-  nav .btn-fill:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(255,106,43,.4);}
-  .card{transition:transform .3s ease,box-shadow .3s ease;}
-  .card:hover{transform:translateY(-6px);box-shadow:0 16px 30px rgba(194,65,12,.1);}
-  .card .icon{display:inline-block;animation:floatY 3.2s ease-in-out infinite;}
-  .faq{transition:transform .25s ease,box-shadow .25s ease;}
-  .faq:hover{transform:translateX(4px);box-shadow:0 8px 18px rgba(194,65,12,.08);}
-  .calc-card{animation:floatY 5s ease-in-out infinite;}
-  @keyframes floatY{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
-  .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
-  .reveal.visible{opacity:1;transform:translateY(0);}
-  .hero h1,.hero p,.hero .btn{opacity:0;animation:fadeInUp .7s ease forwards;}
-  .hero h1{animation-delay:.05s;}
-  .hero p{animation-delay:.2s;}
-  .hero .btn{animation-delay:.35s;}
-  @keyframes fadeInUp{to{opacity:1;transform:translateY(0);}}
-</style>
+<title>Pôžičky Predlžníkov – Pre žiadateľov o pôžičku</title>
+<link rel="stylesheet" href="{% static 'theme/style.css' %}">
 </head>
-<body>
-<div class="switchbar">Zobrazuješ sekciu pre žiadateľov · <a href="{% url 'core:landing' %}">Prepnúť na investora / späť na výber</a></div>
-<header>
-  <div class="logo">🔥 Pôžičky Predlžníkov</div>
-  <nav>
-    <a href="{% url 'users:login_borrower' %}" class="btn-ghost">Prihlásiť sa</a>
-    <a href="{% url 'users:loan_application' %}" class="btn-fill">Požiadať o pôžičku</a>
-  </nav>
+<body class="role-borrower">
+<div class="bg-dots"></div>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="{% url 'core:landing' %}">
+      <span class="logo-mark">PP</span><span class="logo-text">Pôžičky<br>Predlžníkov</span>
+    </a>
+    <button class="burger" id="burgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="mainNav">
+      <a href="{% url 'core:landing' %}">Domov</a>
+      <a href="{% url 'core:investor' %}">Pre investorov</a>
+      <a href="{% url 'core:borrower' %}" class="active">Pre žiadateľov</a>
+      <a href="{% url 'core:faq' %}">Časté otázky</a>
+      <a href="{% url 'core:contact' %}">Kontakt</a>
+      <div class="nav-cta">
+        <a class="btn btn-ghost" href="{% url 'users:login_borrower' %}">Prihlásiť sa</a>
+        <a class="btn btn-primary" href="{% url 'users:loan_application' %}">Požiadať o pôžičku</a>
+      </div>
+    </nav>
+  </div>
 </header>
 
-<section class="hero">
-  <div class="hero-inner">
-    <div>
-      <h1>Peniaze do 5 minút, bez čakania na banku</h1>
-      <p>Požičiaš si 50 € – 500 € na max. 30 dní. Jedným formulárom zadáš žiadosť aj vytvoríš účet, investor ju financuje a peniaze sú na tvojom účte do pár minút.</p>
-      <a class="btn btn-primary" href="{% url 'users:loan_application' %}">Požiadať o pôžičku</a>
-      <a class="btn btn-outline" href="#ako-funguje">Ako to funguje</a>
+<main>
+<section class="hero hero-sm">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Pre žiadateľov o pôžičku</span>
+      <h1>Peniaze do <em>5 minút,</em><br>bez čakania na banku</h1>
+      <p class="lead">Požičiaš si 50 € – 500 € na 15 až 30 dní. Jedným formulárom zadáš žiadosť aj vytvoríš účet.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="{% url 'users:loan_application' %}">Požiadať o pôžičku</a>
+        <a class="btn btn-outline btn-lg" href="#ako-funguje">Ako to funguje</a>
+      </div>
     </div>
-    <div class="calc-card">
-      <div class="calc-label">Chcem si požičať:</div>
-      <div class="calc-row">
-        <button type="button" class="calc-btn" id="amountMinus">−</button>
-        <div class="calc-track-wrap">
-          <div class="calc-bubble" id="amountBubble">{{ amount }} €</div>
-          <input type="range" id="amount" min="50" max="500" step="10" value="{{ amount }}">
-        </div>
-        <button type="button" class="calc-btn" id="amountPlus">+</button>
-      </div>
-      <div class="calc-minmax"><span>50 €</span><span>500 €</span></div>
-
-      <div class="calc-label">Počet dní:</div>
-      <div class="calc-row">
-        <button type="button" class="calc-btn" id="daysMinus">−</button>
-        <div class="calc-track-wrap">
-          <div class="calc-bubble" id="daysBubble">{{ days }} dní</div>
-          <input type="range" id="days" min="1" max="30" step="1" value="{{ days }}">
-        </div>
-        <button type="button" class="calc-btn" id="daysPlus">+</button>
-      </div>
-      <div class="calc-minmax"><span>1 deň</span><span>30 dní</span></div>
-
-      <div class="calc-summary">
-        <div class="row">Chcem si požičať<strong id="amountVal">{{ amount }},00 €</strong></div>
-        <div class="row">Aukčný poplatok<strong id="feeVal">{{ fee }} €</strong></div>
-        <div class="row">Počet dní<strong id="daysVal">{{ days }} dní</strong></div>
-        <div class="row highlight">Na účet dostanete<strong id="netVal">{{ net_to_borrower }} €</strong></div>
-        <div class="row">Úrok<strong id="interestVal">{{ interest }} €</strong></div>
-        <div class="row highlight">Spolu vrátiť<strong id="totalVal">{{ total_to_repay }} €</strong></div>
-      </div>
-
-      <a href="{% url 'users:loan_application' %}" class="calc-cta">Pokračovať</a>
+    <div class="hero-visual">
+      <div class="float-card card-b"><span class="pill pill-info">Schválené</span><b>200 €</b><span>Úrok 20,3 % p.a. · 18 dní</span></div>
+      <div class="float-card card-a"><span class="pill pill-info">Schválené</span><b>350 €</b><span>Úrok 22,1 % p.a. · 25 dní</span></div>
+      <div class="float-card card-c"><span class="pill pill-up">Vyplatené na účet</span><b>150 €</b><span>Do 5 minút od schválenia</span></div>
     </div>
   </div>
 </section>
-<script>
-const amount=document.getElementById('amount'),days=document.getElementById('days');
-const amountBubble=document.getElementById('amountBubble'),daysBubble=document.getElementById('daysBubble');
-function positionBubble(input,bubble){
-  const min=parseFloat(input.min),max=parseFloat(input.max),val=parseFloat(input.value);
-  const pct=(val-min)/(max-min);
-  const offset=(pct-0.5)*(input.offsetWidth-20);
-  bubble.style.left='calc(50% + '+offset+'px)';
-}
-function recalc(){const a=parseFloat(amount.value),d=parseFloat(days.value);
-const interest=Math.round(a*0.24*(d/365)*100)/100;
-let fee=Math.round(a*0.20*(d/30)*100)/100; if(fee<20){fee=20;}
-const total=Math.round((a+interest)*100)/100,net=Math.round((a-fee)*100)/100;
-amountBubble.textContent=a.toFixed(0)+' €';daysBubble.textContent=d.toFixed(0)+' dní';
-amountVal.textContent=a.toFixed(2)+' €';daysVal.textContent=d.toFixed(0)+' dní';
-interestVal.textContent=interest.toFixed(2)+' €';feeVal.textContent=fee.toFixed(2)+' €';
-totalVal.textContent=total.toFixed(2)+' €';netVal.textContent=net.toFixed(2)+' €';
-positionBubble(amount,amountBubble);positionBubble(days,daysBubble);}
-amount.addEventListener('input',recalc);days.addEventListener('input',recalc);
-window.addEventListener('resize',recalc);
-document.getElementById('amountMinus').addEventListener('click',function(){amount.value=Math.max(+amount.min,+amount.value-10);recalc();});
-document.getElementById('amountPlus').addEventListener('click',function(){amount.value=Math.min(+amount.max,+amount.value+10);recalc();});
-document.getElementById('daysMinus').addEventListener('click',function(){days.value=Math.max(+days.min,+days.value-1);recalc();});
-document.getElementById('daysPlus').addEventListener('click',function(){days.value=Math.min(+days.max,+days.value+1);recalc();});
-setTimeout(recalc,50);
-</script>
 
-<div class="wrap">
-  <div class="section-title">
-    <h2>Prečo si požičať u nás</h2>
-    <p>Transparentný proces bez skrytých poplatkov a bez čakania na vybavenie v banke.</p>
+<section class="section" style="padding-top:0;">
+  <div class="wrap" style="max-width:640px;">
+    <div class="slider-calc">
+      <h3>Kalkulačka pôžičky</h3>
+      <div class="slider-row">
+        <div class="slider-row-head"><span>Suma pôžičky</span><b id="loanAmountVal">50 €</b></div>
+        <input type="range" id="loanAmount" min="50" max="500" step="10" value="50">
+        <div class="slider-minmax"><span>50 €</span><span>500 €</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-row-head"><span>Splatnosť</span><b id="loanDaysVal">15 dní</b></div>
+        <input type="range" id="loanDays" min="15" max="30" step="1" value="15">
+        <div class="slider-minmax"><span>15 dní</span><span>30 dní</span></div>
+      </div>
+      <div class="slider-result">
+        <div><span>Úrok p.a.</span><b id="loanRateVal" class="accent">19,0 %</b></div>
+        <div><span>Aukčný poplatok</span><b id="loanFeeVal">20,00 €</b></div>
+        <div><span>Spolu na splatenie</span><b id="loanTotalVal" class="accent">70,39 €</b></div>
+      </div>
+      <p class="form-note">Reprezentatívny príklad: pri pôžičke 50 € na 15 dní s úrokom 19 % p.a. a aukčným poplatkom 20 € zaplatíš spolu 70,39 €. Ročná percentuálna miera nákladov (RPMN) sa líši podľa zvolenej sumy a splatnosti.</p>
+    </div>
   </div>
-  <div class="grid3">
-    <div class="card reveal"><div class="icon">⚡</div><h3>Peniaze do 5 minút</h3><p>Hneď ako investor žiadosť financuje, peniaze odchádzajú na tvoj bankový účet.</p></div>
-    <div class="card reveal"><div class="icon">📄</div><h3>Vopred jasné podmienky</h3><p>Pred odoslaním žiadosti presne vidíš úrok, poplatok aj celkovú sumu na splatenie - žiadne prekvapenia.</p></div>
-    <div class="card reveal"><div class="icon">🔒</div><h3>Bezpečné spracovanie údajov</h3><p>Osobné údaje slúžia výhradne na overenie identity a vystavenie zmluvy o pôžičke.</p></div>
-  </div>
-</div>
+</section>
 
-<div class="wrap" id="ako-funguje">
-  <div class="section-title">
-    <h2>Ako to funguje</h2>
-    <p>Od vyplnenia žiadosti po peniaze na účte v troch jednoduchých krokoch.</p>
+<section class="section" id="ako-funguje">
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">Postup</span><h2>Ako to funguje</h2></div>
+    <div class="steps-grid">
+      <div class="step-card"><div class="step-num">1</div><h3>Vyplníš jednu žiadosť</h3><p>Osobné údaje aj parametre pôžičky zadáš v jednom formulári.</p></div>
+      <div class="step-card"><div class="step-num">2</div><h3>Žiadosť sa zobrazí investorom</h3><p>Po administrátorskom schválení sa žiadosť objaví v aukčnej miestnosti.</p></div>
+      <div class="step-card"><div class="step-num">3</div><h3>Investor financuje, máš peniaze</h3><p>Po podpise zmluvy idú peniaze na tvoj bankový účet.</p></div>
+    </div>
   </div>
-  <div class="steps">
-    <div class="step reveal"><div class="num">1</div><div><h3>Vyplníš jednu žiadosť</h3><p>Bez samostatnej registrácie - v jednom formulári zadáš osobné údaje aj parametre pôžičky (50 – 500 €, splatnosť do 30 dní).</p></div></div>
-    <div class="step reveal"><div class="num">2</div><div><h3>Žiadosť sa zobrazí investorom</h3><p>Objaví sa v aukčnej miestnosti, kde si ju môžu overení investori financovať.</p></div></div>
-    <div class="step reveal"><div class="num">3</div><div><h3>Investor financuje, máš peniaze</h3><p>Hneď po financovaní dostaneš prístup do svojho účtu a peniaze idú na tvoj bankový účet.</p></div></div>
+</section>
+
+<section class="section">
+  <div class="wrap faq-wrap">
+    <div class="section-head"><span class="eyebrow">Časté otázky</span><h2>Koľko to bude stáť</h2></div>
+    <div class="accordion">
+      <details open><summary>Koľko ma pôžička bude stáť?</summary><p>Úrok 19 – 24 % p.a. podľa dĺžky splácania (15 – 30 dní) a jednorazový aukčný poplatok platforme, minimálne 20 €.</p></details>
+      <details><summary>Čo ak nestihnem splatiť včas?</summary><p>V účte môžeš jedným kliknutím požiadať o odklad splátky o 7 dní za jednorazový poplatok.</p></details>
+      <details><summary>Aké údaje budem potrebovať?</summary><p>Číslo občianskeho preukazu, rodné číslo, adresu a bankový účet, na ktorý sa pôžička vyplatí.</p></details>
+    </div>
   </div>
-</div>
+</section>
 
-<div class="wrap">
-  <div class="section-title"><h2>Časté otázky</h2></div>
-  <div class="faq reveal"><h3>Koľko ma pôžička bude stáť?</h3><p>Úrok 24 % p.a. prepočítaný podľa dní splatnosti a jednorazový aukčný poplatok platforme, ktorý sa mení podľa dĺžky splácania (do 20 % z istiny pri 30-dňovej splatnosti), minimálne však 20 € - obe sumy vidíš vopred v kalkulačke.</p></div>
-  <div class="faq reveal"><h3>Čo ak nestihnem splatiť včas?</h3><p>V svojom účte môžeš jedným kliknutím požiadať o odklad splátky o 7 dní za jednorazový poplatok.</p></div>
-  <div class="faq reveal"><h3>Aké údaje budem potrebovať?</h3><p>Pri žiadosti zadáš číslo občianskeho preukazu, rodné číslo, adresu a bankový účet, na ktorý sa pôžička vyplatí.</p></div>
-</div>
-
-<div class="wrap" style="padding-top:0;">
-  <div class="cta reveal">
-    <h2>Potrebuješ peniaze ešte dnes?</h2>
-    <p>Vyplnenie žiadosti trvá pár minút, účet sa ti vytvorí automaticky.</p>
-    <a class="btn btn-primary" href="{% url 'users:loan_application' %}">Požiadať o pôžičku</a>
+<section class="section cta-band">
+  <div class="wrap cta-inner">
+    <h2>Potrebuješ peniaze rýchlo?</h2>
+    <p>Vyplň žiadosť a dostaneš odpoveď do pár minút po financovaní investorom.</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'users:loan_application' %}">Požiadať o pôžičku</a>
   </div>
-</div>
+</section>
+</main>
 
-<footer>&copy; Pôžičky Predlžníkov · <a href="{% url 'core:landing' %}" style="color:#ff6a2b;">Späť na výber sekcie</a> · <a href="{% url 'core:faq' %}" style="color:#ff6a2b;">Časté otázky</a> · <a href="{% url 'core:contact' %}" style="color:#ff6a2b;">Kontakt</a></footer>
-<script>
-  var revealEls2 = document.querySelectorAll('.reveal');
-  var observer2 = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); } });
-  }, {threshold: 0.15});
-  revealEls2.forEach(function(el){ observer2.observe(el); });
-</script>
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <div class="logo-mark">PP</div>
+      <p>Pôžičky Predlžníkov, s.r.o.<br>P2P platforma pre krátkodobé pôžičky medzi investormi a žiadateľmi.</p>
+    </div>
+    <div>
+      <h4>Platforma</h4>
+      <a href="{% url 'core:investor' %}">Pre investorov</a>
+      <a href="{% url 'core:borrower' %}">Pre žiadateľov</a>
+    </div>
+    <div>
+      <h4>Podpora</h4>
+      <a href="{% url 'core:faq' %}">Časté otázky</a>
+      <a href="{% url 'core:contact' %}">Kontakt</a>
+      <a href="{% url 'core:terms' %}">Obchodné podmienky</a>
+      <a href="{% url 'core:privacy' %}">Ochrana osobných údajov</a>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">© 2026 Pôžičky Predlžníkov, s.r.o. Všetky práva vyhradené.</div>
+</footer>
+<script src="{% static 'theme/script.js' %}"></script>
 </body>
 </html>

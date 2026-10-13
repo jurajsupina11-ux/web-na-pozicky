@@ -242,17 +242,22 @@ POSTPONE_DAYS = 7
 
 
 def _loan_repayment_amount(loan):
-    """Celková suma na splatenie = istina + úrok (24 % p.a. prepočítaný na dni,
-    vrátane prípadného odkladu) + poplatky za odklady."""
+    """Celková suma na splatenie = istina + úrok (úrok sa mení podľa dohodnutej
+    dĺžky splácania - pozri users.forms.interest_rate_for_duration - prepočítaný
+    na dni, vrátane prípadného odkladu) + poplatky za odklady."""
     total_days = loan.duration_days + loan.postponed_days
-    interest = loan.amount_requested * Decimal('0.24') * (Decimal(total_days) / Decimal('365'))
+    rate = loan.max_interest_rate / Decimal('100')
+    interest = loan.amount_requested * rate * (Decimal(total_days) / Decimal('365'))
     postpone_fees = Decimal(loan.postponed_days // POSTPONE_DAYS) * POSTPONE_FEE
     return round(loan.amount_requested + interest + postpone_fees, 2)
 
 
 def _annotate_loan(loan):
     loan.repay_amount = _loan_repayment_amount(loan)
-    loan.interest_amount = round(loan.repay_amount - loan.amount_requested, 2)
+    loan.interest_amount = round(loan.repay_amount - loan.amount_requested - (
+        Decimal(loan.postponed_days // POSTPONE_DAYS) * POSTPONE_FEE
+    ), 2)
+    loan.postpone_fees_amount = Decimal(loan.postponed_days // POSTPONE_DAYS) * POSTPONE_FEE
     loan.due_date = loan.starts_at + timedelta(days=loan.duration_days + loan.postponed_days)
     return loan
 

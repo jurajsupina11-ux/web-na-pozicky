@@ -154,7 +154,7 @@ loan_data = {
     'postal_code': '81101',
     'bank_account_iban': 'SK8909000000000011117777',
     'amount_requested': '200',
-    'duration_days': '14',
+    'duration_days': '15',
     'purpose': 'Test ucel',
     'gdpr_consent': 'on',
 }

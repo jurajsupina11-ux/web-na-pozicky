@@ -4,8 +4,9 @@ pohľadávky) - štruktúra a princíp prevzaté z reálnych vzorov používaný
 pôžičkovom sektore, upravené na naše obchodné údaje, úrokové sadzby a poplatky.
 
 Všetky sumy/percentá/lehoty sa riadia skutočnými hodnotami použitými v appke
-(24 % p.a. úrok, variabilný aukčný poplatok, 7-dňový odklad za 15 €, zmluvná
-pokuta 8/16/24/32 % podľa dĺžky omeškania v intervaloch po 7 dňoch).
+(19 – 24 % p.a. úrok podľa dĺžky splácania 15 – 30 dní, variabilný aukčný
+poplatok, 7-dňový odklad za 15 €, zmluvná pokuta 8/16/24/32 % podľa dĺžky
+omeškania v intervaloch po 7 dňoch).
 """
 import os
 from decimal import Decimal
@@ -41,8 +42,10 @@ REPAYMENT_BANK = {
     'swift': 'FIOZSKBA',
 }
 
-#: Úroková sadzba pôžičiek (% p.a.) - zhodná s BorrowerApplicationForm.DEFAULT_INTEREST_RATE.
-LOAN_INTEREST_RATE = Decimal('24')
+#: Úroková sadzba pôžičiek (% p.a.) sa už neuvádza ako jedna fixná hodnota -
+#: mení sa podľa dĺžky splácania (15-30 dní), pozri users.forms.interest_rate_for_duration.
+#: Konkrétna sadzba pre danú pôžičku je vždy uložená priamo na Bid.interest_rate/
+#: Auction.max_interest_rate a práve tá sa používa pri generovaní zmlúv.
 
 #: Jednorazový poplatok a dĺžka odkladu splátky (zhodné s users.views.POSTPONE_FEE/POSTPONE_DAYS).
 POSTPONE_FEE = Decimal('15')

@@ -102,6 +102,18 @@ class Auction(models.Model):
         return self.starts_at + timedelta(days=self.duration_days + self.postponed_days)
 
     @property
+    def is_overdue(self):
+        """True, ak je pôžička (FUNDED) po termíne splatnosti a ešte nebola splatená."""
+        return self.status == self.Status.FUNDED and timezone.now() > self.computed_due_date
+
+    @property
+    def is_due_today(self):
+        """True, ak je dnešný deň presne dňom splatnosti pôžičky."""
+        if self.status != self.Status.FUNDED:
+            return False
+        return self.computed_due_date.date() == timezone.now().date()
+
+    @property
     def total_bid_amount(self) -> Decimal:
         return sum((bid.amount for bid in self.bids.all()), Decimal('0'))
 

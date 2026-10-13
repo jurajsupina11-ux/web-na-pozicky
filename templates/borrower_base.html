@@ -3,42 +3,43 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}Pôžičky Predlžníkov{% endblock %}</title>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;}
-  body{margin:0;font-family:'Manrope',Arial,sans-serif;background:#fffdfb;color:#20150d;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100vh;}
+  :root{--bg:#f7f5ff;--surface:#ffffff;--ink:#1c1735;--muted:#6b6690;--line:#e7e3fb;--violet:#6c4cff;--violet-dark:#4b2fd6;--pink:#ff5ea8;--borrower:#ff7a3a;--radius:20px;--radius-sm:12px;--shadow:0 18px 40px -16px rgba(76,46,214,.22);}
+  body{margin:0;font-family:'Manrope',Arial,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;min-height:100vh;}
   a{color:inherit;}
   .impersonate-banner{background:#fff4e5;color:#8a5a00;font-size:12.5px;padding:8px 24px;text-align:center;}
   .impersonate-banner a{color:#8a5a00;font-weight:700;text-decoration:underline;}
-  header{background:#fff;border-bottom:1px solid #f1e6db;padding:18px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
-  header .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px;color:#20150d;text-decoration:none;}
-  header .logo svg{color:#f05a22;}
+  header{background:var(--surface);border-bottom:1px solid var(--line);border-top:4px solid var(--borrower);padding:18px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
+  header .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:18px;font-family:'Sora',sans-serif;color:var(--ink);text-decoration:none;}
+  header .logo svg{color:var(--borrower);}
   .mainnav{display:flex;gap:4px;flex-wrap:wrap;align-items:center;}
-  .mainnav a{text-decoration:none;color:#6b5a4d;font-size:14.5px;font-weight:600;padding:10px 16px;border-radius:10px;}
-  .mainnav a.active{background:#fff1ea;color:#f05a22;}
+  .mainnav a{text-decoration:none;color:var(--muted);font-size:14.5px;font-weight:600;padding:10px 16px;border-radius:999px;}
+  .mainnav a.active{background:#fff1e8;color:var(--borrower);}
   .mainnav form{display:inline;}
-  .mainnav button{background:none;border:none;color:#6b5a4d;font-size:14.5px;font-weight:600;padding:10px 16px;border-radius:10px;cursor:pointer;font-family:inherit;}
+  .mainnav button{background:none;border:none;color:var(--muted);font-size:14.5px;font-weight:600;padding:10px 16px;border-radius:999px;cursor:pointer;font-family:inherit;}
   .wrap{max-width:900px;margin:0 auto;padding:36px 24px 80px;flex:1;width:100%;}
-  .card{background:#fff;border:1px solid #f1e6db;border-radius:20px;padding:26px;margin-bottom:16px;}
-  h1{font-size:28px;font-weight:800;letter-spacing:-0.02em;line-height:1.15;margin:0 0 18px;}
-  h2{font-size:17px;font-weight:700;margin:0 0 14px;}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px;margin-bottom:16px;box-shadow:var(--shadow);}
+  h1{font-size:30px;font-weight:800;font-family:'Sora',sans-serif;letter-spacing:-0.02em;line-height:1.15;margin:0 0 18px;color:var(--ink);}
+  h2{font-size:18px;font-weight:700;font-family:'Sora',sans-serif;margin:0 0 14px;color:var(--ink);}
   p{line-height:1.5;}
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:14px;text-decoration:none;font-weight:700;font-size:15px;border:2px solid transparent;cursor:pointer;}
-  .btn-primary{background:#f05a22;color:#fff;}
-  .btn-primary:hover{background:#d84a16;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 26px;border-radius:999px;text-decoration:none;font-weight:700;font-size:15px;border:2px solid transparent;cursor:pointer;}
+  .btn-primary{background:linear-gradient(135deg,var(--borrower),#ff9a5e);color:#fff;box-shadow:0 10px 24px -8px rgba(255,122,58,.5);}
+  .btn-primary:hover{filter:brightness(1.05);}
   .btn-primary:disabled{background:#f1c3ac;cursor:not-allowed;}
-  .btn-outline{background:transparent;color:#6b5a4d;border-color:#f1e6db;}
-  .alert{padding:12px 16px;border-radius:12px;font-size:14px;margin-bottom:16px;}
-  .alert-info{background:#fff1ea;color:#b1480f;}
-  .alert-success{background:#eaf7ee;color:#1a7a3a;}
+  .btn-outline{background:transparent;color:var(--borrower);border-color:var(--borrower);}
+  .alert{padding:12px 16px;border-radius:var(--radius-sm);font-size:14px;margin-bottom:16px;}
+  .alert-info{background:#fff1e8;color:#b85215;}
+  .alert-success{background:#e6fbf6;color:#0d8a70;}
   .alert-warning{background:#fff4e5;color:#8a5a00;}
   table{width:100%;border-collapse:collapse;}
-  th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #f1e6db;font-size:14px;}
-  th{color:#8a7363;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
+  th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);font-size:14px;}
+  th{color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
   tr:last-child td{border-bottom:none;}
   .status-pill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;}
-  .s-active{background:#fff1ea;color:#f05a22;}
-  .s-paid{background:#eaf7ee;color:#1a7a3a;}
+  .s-active{background:#fff1e8;color:var(--borrower);}
+  .s-paid{background:#e6fbf6;color:#0d8a70;}
   .s-late{background:#fdeceb;color:#c4342b;}
 
   /* === Animácie === */
@@ -98,12 +99,12 @@
     <a href="{% url 'users:my_profile' %}" class="{% block nav_profile %}{% endblock %}">Moje údaje</a>
     <a href="{% url 'users:account_settings' %}" class="{% block nav_settings %}{% endblock %}">Nastavenia</a>
     <a href="{% url 'core:notifications' %}" class="{% block nav_notifications %}{% endblock %}">
-      Notifikácie{% if unread_notifications_count %} <span style="background:#f05a22;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 7px;margin-left:3px;">{{ unread_notifications_count }}</span>{% endif %}
+      Notifikácie{% if unread_notifications_count %} <span style="background:var(--borrower);color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 7px;margin-left:3px;">{{ unread_notifications_count }}</span>{% endif %}
     </a>
     <a href="{% url 'users:referral' %}" class="{% block nav_referral %}{% endblock %}">Pozvi priateľa</a>
-    <a href="{% url 'users:loan_application' %}" style="background:#f05a22;color:#fff;border-radius:10px;padding:10px 18px;text-decoration:none;font-weight:700;font-size:14.5px;">Požičať si znova</a>
+    <a href="{% url 'users:loan_application' %}" style="background:linear-gradient(135deg,var(--borrower),#ff9a5e);color:#fff;border-radius:999px;padding:10px 18px;text-decoration:none;font-weight:700;font-size:14.5px;">Požičať si znova</a>
     {% if user.is_superuser or real_admin.is_superuser %}
-    <a href="{% url 'users:impersonate_list' %}" style="background:#fff4e5;color:#8a5a00;border-radius:10px;padding:10px 16px;text-decoration:none;font-weight:600;font-size:14.5px;">Admin náhľad</a>
+    <a href="{% url 'users:impersonate_list' %}" style="background:#fff4e5;color:#8a5a00;border-radius:999px;padding:10px 16px;text-decoration:none;font-weight:600;font-size:14.5px;">Admin náhľad</a>
     {% endif %}
     {% if not is_impersonating %}
     <form method="post" action="{% url 'users:logout' %}">
@@ -123,7 +124,7 @@
   {% block content %}{% endblock %}
 </div>
 <footer style="text-align:center;padding:24px;color:#b08a73;font-size:12px;">
-  <a href="{% url 'core:faq' %}" style="color:#f05a22;">Časté otázky</a> · <a href="{% url 'core:contact' %}" style="color:#f05a22;">Kontakt</a> · <a href="{% url 'core:terms' %}" style="color:#f05a22;">Obchodné podmienky</a> · <a href="{% url 'core:privacy' %}" style="color:#f05a22;">Ochrana osobných údajov</a>
+  <a href="{% url 'core:faq' %}" style="color:var(--borrower);">Časté otázky</a> · <a href="{% url 'core:contact' %}" style="color:var(--borrower);">Kontakt</a> · <a href="{% url 'core:terms' %}" style="color:var(--borrower);">Obchodné podmienky</a> · <a href="{% url 'core:privacy' %}" style="color:var(--borrower);">Ochrana osobných údajov</a>
 </footer>
 </body>
 </html>

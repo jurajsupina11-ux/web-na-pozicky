@@ -3,21 +3,22 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}Pôžičky Predlžníkov – Investor{% endblock %}</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;}
-  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#f6f8fb;color:#0f1729;display:flex;min-height:100vh;-webkit-font-smoothing:antialiased;}
+  :root{--bg:#f7f5ff;--surface:#ffffff;--ink:#1c1735;--muted:#6b6690;--line:#e7e3fb;--violet:#6c4cff;--violet-dark:#4b2fd6;--pink:#ff5ea8;--investor:#17c3a2;--radius:20px;--radius-sm:12px;--shadow:0 18px 40px -16px rgba(76,46,214,.22);}
+  body{margin:0;font-family:'Manrope',Arial,sans-serif;background:var(--bg);color:var(--ink);display:flex;min-height:100vh;-webkit-font-smoothing:antialiased;}
   a{color:inherit;}
-  .sidebar{width:248px;background:#ffffff;border-right:1px solid #e8ecf3;padding:22px 16px;display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;bottom:0;left:0;}
-  .sidebar .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;color:#0f1729;margin-bottom:28px;padding:0 8px;text-decoration:none;}
-  .sidebar .logo svg{flex-shrink:0;color:#2554ea;}
+  .sidebar{width:248px;background:var(--surface);border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;bottom:0;left:0;}
+  .sidebar .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;font-family:'Sora',sans-serif;color:var(--ink);margin-bottom:28px;padding:0 8px;text-decoration:none;}
+  .sidebar .logo svg{flex-shrink:0;color:var(--investor);}
   .sidebar nav{display:flex;flex-direction:column;gap:2px;}
-  .sidebar a{color:#55607a;text-decoration:none;display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;font-size:14px;font-weight:500;}
-  .sidebar a:hover{background:#f1f4fa;}
-  .sidebar a.active{background:#eaf0ff;color:#2554ea;font-weight:600;}
-  .sidebar .bottom{margin-top:auto;font-size:12px;color:#8a93a8;padding:10px 8px;border-top:1px solid #eef1f6;padding-top:14px;}
+  .sidebar a{color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;}
+  .sidebar a:hover{background:#f3f1ff;}
+  .sidebar a.active{background:#e6fbf6;color:var(--investor);font-weight:700;}
+  .sidebar .bottom{margin-top:auto;font-size:12px;color:var(--muted);padding:10px 8px;border-top:1px solid var(--line);padding-top:14px;}
   .sidebar .bottom form{margin-top:8px;}
-  .sidebar .bottom button{width:100%;background:none;border:1px solid #e8ecf3;border-radius:8px;padding:7px;font-size:12px;color:#55607a;cursor:pointer;}
+  .sidebar .bottom button{width:100%;background:none;border:1px solid var(--line);border-radius:var(--radius-sm);padding:7px;font-size:12px;color:var(--muted);cursor:pointer;}
   .impersonate-banner{background:#fff4e5;color:#8a5a00;font-size:12.5px;padding:8px 24px;position:fixed;top:0;left:248px;right:0;z-index:6;display:flex;justify-content:space-between;align-items:center;}
   .impersonate-banner a{color:#8a5a00;font-weight:700;text-decoration:underline;}
   .main{margin-left:248px;flex:1;min-width:0;display:flex;flex-direction:column;min-height:100vh;}
@@ -25,29 +26,29 @@
   .content{padding:32px 36px 60px;max-width:1180px;flex:1;display:flex;flex-direction:column;width:100%;}
   .content > *:not(footer){flex-shrink:0;}
   .content footer{margin-top:auto;}
-  h1{font-size:24px;font-weight:700;letter-spacing:-0.01em;margin:0 0 22px;}
-  h2{font-size:15px;font-weight:600;margin:0 0 14px;}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px;border:1px solid transparent;cursor:pointer;}
-  .btn-primary{background:#2554ea;color:#fff;}
-  .btn-primary:hover{background:#1d46d1;}
-  .btn-outline{background:#fff;color:#2554ea;border-color:#dbe4f5;margin-left:8px;}
-  .card{background:#fff;border:1px solid #e8ecf3;border-radius:16px;padding:22px;box-shadow:0 1px 2px rgba(15,23,41,0.03);}
+  h1{font-size:28px;font-weight:800;font-family:'Sora',sans-serif;letter-spacing:-0.01em;margin:0 0 22px;color:var(--ink);}
+  h2{font-size:16px;font-weight:700;font-family:'Sora',sans-serif;margin:0 0 14px;color:var(--ink);}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:999px;text-decoration:none;font-weight:700;font-size:14px;border:1px solid transparent;cursor:pointer;}
+  .btn-primary{background:linear-gradient(135deg,var(--investor),#36e0bd);color:#fff;box-shadow:0 10px 24px -8px rgba(23,195,162,.5);}
+  .btn-primary:hover{filter:brightness(1.05);}
+  .btn-outline{background:#fff;color:var(--investor);border-color:var(--investor);margin-left:8px;}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);}
   .bento{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;}
   @media(max-width:900px){.bento{grid-template-columns:repeat(2,1fr);}}
-  .stat-icon{width:38px;height:38px;border-radius:10px;background:#eaf0ff;color:#2554ea;display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
-  .stat b{font-size:26px;display:block;letter-spacing:-0.01em;margin-bottom:4px;}
-  .stat span{font-size:13px;color:#55607a;}
+  .stat-icon{width:38px;height:38px;border-radius:var(--radius-sm);background:#e6fbf6;color:var(--investor);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+  .stat b{font-size:26px;font-family:'Sora',sans-serif;display:block;letter-spacing:-0.01em;margin-bottom:4px;color:var(--ink);}
+  .stat span{font-size:13px;color:var(--muted);}
   table{width:100%;border-collapse:collapse;}
-  th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #eef1f6;font-size:13.5px;}
-  th{color:#8a93a8;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
+  th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);font-size:13.5px;}
+  th{color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
   tr:last-child td{border-bottom:none;}
-  .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;}
-  .pill-up{background:#e9f8ee;color:#19824a;}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;}
+  .pill-up{background:#e6fbf6;color:#0d8a70;}
   .pill-down{background:#fdeceb;color:#c4342b;}
-  .pill-neutral{background:#eef1f6;color:#55607a;}
-  .alert{padding:12px 16px;border-radius:10px;font-size:14px;margin-bottom:16px;}
-  .alert-info{background:#eaf0ff;color:#1d3c91;}
-  .alert-success{background:#e9f8ee;color:#19824a;}
+  .pill-neutral{background:#f1effc;color:var(--muted);}
+  .alert{padding:12px 16px;border-radius:var(--radius-sm);font-size:14px;margin-bottom:16px;}
+  .alert-info{background:#f1effc;color:var(--violet-dark);}
+  .alert-success{background:#e6fbf6;color:#0d8a70;}
   .alert-warning{background:#fff4e5;color:#8a5a00;}
   .toprow{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
 
@@ -73,8 +74,8 @@
     body{display:block;}
     .menu-toggle{display:inline-flex;align-items:center;justify-content:center;}
     .topbar-mobile{display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #e8ecf3;padding:14px 18px;position:sticky;top:0;z-index:20;}
-    .topbar-mobile .logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;color:#0f1729;}
-    .topbar-mobile .logo svg{color:#2554ea;}
+    .topbar-mobile .logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;font-family:'Sora',sans-serif;color:var(--ink);}
+    .topbar-mobile .logo svg{color:var(--investor);}
     .sidebar{position:fixed;top:0;left:0;bottom:0;width:78vw;max-width:300px;transform:translateX(-100%);transition:transform .25s ease;z-index:30;box-shadow:2px 0 18px rgba(0,0,0,.12);}
     .sidebar.open{transform:translateX(0);}
     .sidebar-backdrop{position:fixed;inset:0;background:rgba(15,23,41,.4);z-index:25;display:none;}
@@ -156,7 +157,7 @@
   <div class="bottom">
     Prihlásený ako<br><strong style="color:#0f1729;">{{ user.username }}</strong>
     {% if user.is_superuser or real_admin.is_superuser %}
-    <a href="{% url 'adminpanel:dashboard' %}" style="display:block;text-align:center;margin-top:8px;background:#eaf0ff;color:#2554ea;border:1px solid #dbe4f5;border-radius:8px;padding:7px;font-size:12px;text-decoration:none;font-weight:600;">Admin prostredie</a>
+    <a href="{% url 'adminpanel:dashboard' %}" style="display:block;text-align:center;margin-top:8px;background:#f1effc;color:var(--violet-dark);border:1px solid var(--line);border-radius:8px;padding:7px;font-size:12px;text-decoration:none;font-weight:600;">Admin prostredie</a>
     <a href="{% url 'users:impersonate_list' %}" style="display:block;text-align:center;margin-top:6px;background:#fff4e5;color:#8a5a00;border:1px solid #ffdca0;border-radius:8px;padding:7px;font-size:12px;text-decoration:none;font-weight:600;">Admin náhľad</a>
     {% endif %}
     {% if not is_impersonating %}
@@ -176,7 +177,7 @@
     {% endif %}
     {% block content %}{% endblock %}
     <footer style="text-align:center;padding:24px 0 10px;color:#8a93a8;font-size:12px;">
-      <a href="{% url 'core:faq' %}" style="color:#2554ea;">Časté otázky</a> · <a href="{% url 'core:contact' %}" style="color:#2554ea;">Kontakt</a> · <a href="{% url 'core:public_stats' %}" style="color:#2554ea;">Štatistiky</a> · <a href="{% url 'core:terms' %}" style="color:#2554ea;">Obchodné podmienky</a> · <a href="{% url 'core:privacy' %}" style="color:#2554ea;">Ochrana osobných údajov</a>
+      <a href="{% url 'core:faq' %}" style="color:var(--investor);">Časté otázky</a> · <a href="{% url 'core:contact' %}" style="color:var(--investor);">Kontakt</a> · <a href="{% url 'core:public_stats' %}" style="color:var(--investor);">Štatistiky</a> · <a href="{% url 'core:terms' %}" style="color:var(--investor);">Obchodné podmienky</a> · <a href="{% url 'core:privacy' %}" style="color:var(--investor);">Ochrana osobných údajov</a>
     </footer>
   </div>
 </div>

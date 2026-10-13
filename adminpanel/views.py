@@ -210,9 +210,6 @@ def wallet_reject(request, pk):
 def loans_list(request):
     """Prehľad aktívnych pôžičiek, zvýraznené tie po splatnosti."""
     loans = Auction.objects.filter(status=Auction.Status.FUNDED).select_related('borrower')
-    now = timezone.now()
-    for loan in loans:
-        loan.is_overdue = loan.computed_due_date < now
     loans = sorted(loans, key=lambda loan: loan.computed_due_date)
     return render(request, 'adminpanel/loans_list.html', {'loans': loans})
 

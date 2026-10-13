@@ -35,8 +35,11 @@ def _auction_fee(amount, days):
 
 
 def landing_borrower(request):
-    amount, days = 150, 14
-    interest = round(amount * 0.24 * (days / 365), 2)
+    from users.forms import interest_rate_for_duration
+
+    amount, days = 150, 15
+    rate = interest_rate_for_duration(days) / Decimal('100')
+    interest = round(amount * float(rate) * (days / 365), 2)
     fee = _auction_fee(amount, days)
     context = {
         'amount': amount, 'days': days, 'interest': interest, 'fee': fee,
