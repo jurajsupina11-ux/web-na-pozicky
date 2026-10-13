@@ -24,7 +24,7 @@
       <div class="nav-cta">
         {% if user.is_authenticated %}
         <div class="nav-user">
-          <span>{{ user.username }}</span>
+          {% if user.role == "borrower" %}<a href="{% url 'users:my_applications' %}">{{ user.username }}</a>{% else %}<a href="{% url 'auctions:investor_dashboard' %}">{{ user.username }}</a>{% endif %}
           <form method="post" action="{% url 'users:logout' %}">{% csrf_token %}<button type="submit">Odhlásiť sa</button></form>
         </div>
         {% else %}

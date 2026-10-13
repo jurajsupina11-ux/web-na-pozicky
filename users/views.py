@@ -518,7 +518,11 @@ def my_profile(request):
 
 @login_required
 def my_contracts(request):
-    """Moje zmluvy - prehľad zmluvných dokumentov k pôžičkám dlžníka."""
+    """Moje zmluvy - prehľad zmluvných dokumentov k pôžičkám dlžníka.
+    Investor má vlastný prehľad zmlúv na auctions:investor_history, táto
+    stránka je určená len pre dlžníkov - investora presmeruje tam."""
+    if request.user.role != User.Role.BORROWER:
+        return redirect('auctions:investor_history')
     contracts = Auction.objects.filter(
         borrower=request.user,
         status__in=[Auction.Status.SIGNING, Auction.Status.FUNDED, Auction.Status.CLOSED],

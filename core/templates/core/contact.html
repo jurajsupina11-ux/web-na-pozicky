@@ -24,7 +24,7 @@
       <div class="nav-cta">
         {% if user.is_authenticated %}
         <div class="nav-user">
-          <span>{{ user.username }}</span>
+          {% if user.role == "borrower" %}<a href="{% url 'users:my_applications' %}">{{ user.username }}</a>{% else %}<a href="{% url 'auctions:investor_dashboard' %}">{{ user.username }}</a>{% endif %}
           <form method="post" action="{% url 'users:logout' %}">{% csrf_token %}<button type="submit">Odhlásiť sa</button></form>
         </div>
         {% else %}
@@ -53,10 +53,14 @@
         <div><b>Telefón</b><span><a href="tel:{{ company.phone }}">{{ company.phone }}</a> ({{ company.contact_person }})</span></div>
       </div>
     </div>
-    <div class="card form-card">
-      <h2>Administrátorské prihlásenie</h2>
-      <p class="form-note">Ak ste administrátor platformy, prihláste sa <a href="{% url 'users:login' %}">tu</a>.</p>
-    </div>
+    <form class="card form-card" action="mailto:{{ company.email }}" method="get" enctype="text/plain">
+      <h2>Napíš nám</h2>
+      <label>Meno<input type="text" name="meno" placeholder="Tvoje meno"></label>
+      <label>E-mail<input type="email" name="email" placeholder="tvoj e-mail"></label>
+      <label>Správa<textarea rows="4" name="body" placeholder="Ako ti môžeme pomôcť?"></textarea></label>
+      <button type="submit" class="btn btn-primary btn-block">Odoslať správu</button>
+      <p class="form-note">Administrátor platformy? Prihláste sa <a href="{% url 'users:login' %}">tu</a>.</p>
+    </form>
   </div>
 </section>
 

@@ -105,6 +105,7 @@ a{color:inherit;text-decoration:none;}
 .main-nav a.active,.main-nav a:hover{color:var(--ink);border-color:var(--violet);}
 .nav-cta{display:flex;gap:10px;margin-left:10px;align-items:center;}
 .nav-user{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:600;color:var(--muted);}
+.nav-user a{color:var(--violet-dark);text-decoration:underline;}
 .nav-user form{margin:0;}
 .nav-user button{background:none;border:none;color:var(--muted);font-weight:600;font-size:13.5px;cursor:pointer;font-family:inherit;padding:0;text-decoration:underline;}
 .nav-user button:hover{color:var(--violet-dark);}
@@ -296,6 +297,12 @@ td{padding:14px 12px;border-bottom:1px solid var(--line);}
 .bid-row:hover,.row-expand:hover{background:#faf9ff;}
 .bid-details,.row-details{display:none;background:#f8f6ff;}
 .bid-details.open,.row-details.open{display:table-row;}
+.stat-box{background:var(--surface);border-radius:var(--radius-sm);padding:20px;box-shadow:var(--shadow);transition:transform .15s ease;}
+.stat-box:hover{transform:translateY(-3px);}
+.stat-box b{display:block;font-size:22px;font-family:'Sora',sans-serif;}
+.stat-box span{font-size:12px;color:var(--muted);}
+.pill-ok{background:#e4f8f1;color:#128a66;}
+.pill-bad{background:#fde6e6;color:#c23030;}
 .loan-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
 .loan-amount{font-size:26px;font-family:'Sora',sans-serif;display:block;}
 .loan-head span{font-size:12.5px;color:var(--muted);}
