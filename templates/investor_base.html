@@ -126,6 +126,16 @@
     <a href="{% url 'core:faq' %}">Časté otázky</a> · <a href="{% url 'core:contact' %}">Kontakt</a> · <a href="{% url 'core:public_stats' %}">Štatistiky</a> · <a href="{% url 'core:terms' %}">Obchodné podmienky</a> · <a href="{% url 'core:privacy' %}">Ochrana osobných údajov</a>
   </div>
 </footer>
+
+<a class="sticky-tab" href="{% url 'auctions:investor_dashboard' %}">Klientska zóna</a>
+<div class="chat-widget">
+  <div class="chat-panel" id="chatPanel">
+    <h4>Potrebuješ pomôcť?</h4>
+    <p>Napíš nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
+    <a class="btn btn-primary btn-block" href="{% url 'core:contact' %}">Prejsť na kontakt</a>
+  </div>
+  <button class="chat-btn" id="chatBtn" aria-label="Otvoriť chat"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></button>
+</div>
 <script src="{% static 'theme/script.js' %}"></script>
 {% block extra_script %}{% endblock %}
 </body>

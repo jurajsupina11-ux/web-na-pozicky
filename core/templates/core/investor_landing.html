@@ -133,6 +133,15 @@
   </div>
   <div class="wrap footer-bottom">© 2026 Pôžičky Predlžníkov, s.r.o. Všetky práva vyhradené.</div>
 </footer>
+<a class="sticky-tab" href="{% url 'users:application_status' %}">Klientska zóna</a>
+<div class="chat-widget">
+  <div class="chat-panel" id="chatPanel">
+    <h4>Potrebuješ pomôcť?</h4>
+    <p>Napíš nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
+    <a class="btn btn-primary btn-block" href="{% url 'core:contact' %}">Prejsť na kontakt</a>
+  </div>
+  <button class="chat-btn" id="chatBtn" aria-label="Otvoriť chat"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></button>
+</div>
 <script src="{% static 'theme/script.js' %}"></script>
 </body>
 </html>
