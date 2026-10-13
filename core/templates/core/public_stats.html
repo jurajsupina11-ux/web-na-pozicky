@@ -1,58 +1,82 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="sk">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Štatistiky platformy – Pôžičky Predlžníkov</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  *{box-sizing:border-box;}
-  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#fffaf5;color:#2a1b10;}
-  a{color:inherit;}
-  header{background:#fff;border-bottom:1px solid #ffd9bf;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
-  header .logo{font-weight:800;font-size:19px;color:#ff6a2b;text-decoration:none;}
-  header nav a{text-decoration:none;color:#8a6a56;font-size:14px;margin-left:16px;}
-  .wrap{max-width:900px;margin:0 auto;padding:60px 24px 80px;}
-  h1{font-size:32px;margin:0 0 10px;}
-  .lead{color:#8a6a56;margin:0 0 32px;font-size:15px;max-width:560px;}
-  .bento{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-  @media(max-width:700px){.bento{grid-template-columns:repeat(2,1fr);}}
-  .card{background:#fff;border:1px solid #ffd9bf;border-radius:18px;padding:24px;}
-  .card b{display:block;font-size:30px;letter-spacing:-0.02em;color:#ff6a2b;margin-bottom:6px;}
-  .card span{font-size:13px;color:#8a6a56;}
-  footer{text-align:center;padding:30px;color:#b08a73;font-size:12px;background:#fff3ea;margin-top:40px;}
-  .note{font-size:12.5px;color:#b08a73;margin-top:28px;}
-</style>
+<link rel="stylesheet" href="{% static 'theme/style.css' %}">
 </head>
-<body>
-<header>
-  <a class="logo" href="{% url 'core:landing' %}">🔥 Pôžičky Predlžníkov</a>
-  <nav>
-    <a href="{% url 'core:faq' %}">Časté otázky</a>
-    <a href="{% url 'core:contact' %}">Kontakt</a>
-    <a href="{% url 'core:landing' %}">Prihlásiť sa</a>
-  </nav>
+<body class="role-neutral">
+<div class="bg-dots"></div>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="{% url 'core:landing' %}">
+      <span class="logo-mark">PP</span><span class="logo-text">Pôžičky<br>Predlžníkov</span>
+    </a>
+    <button class="burger" id="burgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="mainNav">
+      <a href="{% url 'core:landing' %}">Domov</a>
+      <a href="{% url 'core:investor' %}">Pre investorov</a>
+      <a href="{% url 'core:borrower' %}">Pre žiadateľov</a>
+      <a href="{% url 'core:faq' %}">Časté otázky</a>
+      <a href="{% url 'core:contact' %}">Kontakt</a>
+      <div class="nav-cta">
+        <a class="btn btn-ghost" href="{% url 'users:login_borrower' %}">Prihlásiť sa ako žiadateľ</a>
+        <a class="btn btn-primary" href="{% url 'users:login_investor' %}">Prihlásiť sa ako investor</a>
+      </div>
+    </nav>
+  </div>
 </header>
 
-<div class="wrap">
-  <h1>Štatistiky platformy</h1>
-  <p class="lead">Transparentnosť je pre nás kľúčová - tu nájdete aktuálny prehľad objemu investícií a výkonnosti pôžičiek na našej platforme.</p>
+<main>
 
-  <div class="bento">
-    <div class="card"><b>{{ total_invested }} €</b><span>Celkovo investovaný objem</span></div>
-    <div class="card"><b>{{ total_loans }}</b><span>Financovaných pôžičiek</span></div>
-    <div class="card"><b>{{ avg_interest }} %</b><span>Priemerný úrok p.a.</span></div>
-    <div class="card"><b>{{ repaid_loans }}</b><span>Riadne splatených pôžičiek</span></div>
-    <div class="card"><b>{{ default_rate }} %</b><span>Miera odkúpenia (nesplatené &gt; 90 dní)</span></div>
-    <div class="card"><b>{{ active_investors }}</b><span>Aktívnych investorov</span></div>
+<section class="section">
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">Transparentnosť</span><h1>Štatistiky platformy</h1></div>
+    <p class="lead">Transparentnosť je pre nás kľúčová - tu nájdete aktuálny prehľad objemu investícií a výkonnosti pôžičiek na našej platforme.</p>
+
+    <div class="bento" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
+      <div class="card"><b style="display:block;font-size:30px;color:var(--violet-dark);margin-bottom:6px;">{{ total_invested }} €</b><span>Celkovo investovaný objem</span></div>
+      <div class="card"><b style="display:block;font-size:30px;color:var(--violet-dark);margin-bottom:6px;">{{ total_loans }}</b><span>Financovaných pôžičiek</span></div>
+      <div class="card"><b style="display:block;font-size:30px;color:var(--violet-dark);margin-bottom:6px;">{{ avg_interest }} %</b><span>Priemerný úrok p.a.</span></div>
+      <div class="card"><b style="display:block;font-size:30px;color:var(--violet-dark);margin-bottom:6px;">{{ repaid_loans }}</b><span>Riadne splatených pôžičiek</span></div>
+      <div class="card"><b style="display:block;font-size:30px;color:var(--violet-dark);margin-bottom:6px;">{{ default_rate }} %</b><span>Miera odkúpenia (nesplatené &gt; 90 dní)</span></div>
+      <div class="card"><b style="display:block;font-size:30px;color:var(--violet-dark);margin-bottom:6px;">{{ active_investors }}</b><span>Aktívnych investorov</span></div>
+    </div>
+
+    <p style="font-size:12.5px;color:var(--muted);margin-top:28px;">
+      Miera odkúpenia vyjadruje podiel uzavretých pôžičiek, ktoré neboli splatené dlžníkom a boli automaticky
+      odkúpené platformou v rámci garancie odkúpenia (po 90 dňoch po splatnosti) - investor tak o svoju investíciu
+      v týchto prípadoch nepríde.
+    </p>
   </div>
+</section>
 
-  <p class="note">
-    Miera odkúpenia vyjadruje podiel uzavretých pôžičiek, ktoré neboli splatené dlžníkom a boli automaticky
-    odkúpené platformou v rámci garancie odkúpenia (po 90 dňoch po splatnosti) - investor tak o svoju investíciu
-    v týchto prípadoch nepríde.
-  </p>
-</div>
-
-<footer>&copy; Pôžičky Predlžníkov · <a href="{% url 'core:landing' %}" style="color:#ff6a2b;">Späť na výber sekcie</a> · <a href="{% url 'core:faq' %}" style="color:#ff6a2b;">Časté otázky</a></footer>
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <div class="logo-mark">PP</div>
+      <p>Pôžičky Predlžníkov, s.r.o.<br>P2P platforma pre krátkodobé pôžičky medzi investormi a žiadateľmi.</p>
+    </div>
+    <div>
+      <h4>Platforma</h4>
+      <a href="{% url 'core:investor' %}">Pre investorov</a>
+      <a href="{% url 'core:borrower' %}">Pre žiadateľov</a>
+    </div>
+    <div>
+      <h4>Podpora</h4>
+      <a href="{% url 'core:faq' %}">Časté otázky</a>
+      <a href="{% url 'core:contact' %}">Kontakt</a>
+      <a href="{% url 'core:terms' %}">Obchodné podmienky</a>
+      <a href="{% url 'core:privacy' %}">Ochrana osobných údajov</a>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    © 2026 Pôžičky Predlžníkov, s.r.o. Všetky práva vyhradené.
+  </div>
+</footer>
+<script src="{% static 'theme/script.js' %}"></script>
 </body>
 </html>

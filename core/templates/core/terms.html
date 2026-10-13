@@ -1,64 +1,89 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="sk">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Obchodné podmienky – Pôžičky Predlžníkov</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  *{box-sizing:border-box;}
-  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#fffaf5;color:#2a1b10;}
-  a{color:inherit;}
-  header{background:#fff;border-bottom:1px solid #ffd9bf;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
-  header .logo{font-weight:800;font-size:19px;color:#ff6a2b;text-decoration:none;}
-  header nav a{text-decoration:none;color:#8a6a56;font-size:14px;margin-left:16px;}
-  .wrap{max-width:760px;margin:0 auto;padding:60px 24px 80px;}
-  h1{font-size:32px;margin:0 0 10px;}
-  .lead{color:#8a6a56;margin:0 0 32px;font-size:15px;}
-  .card{background:#fff;border:1px solid #ffd9bf;border-radius:20px;padding:32px;}
-  .card h2{font-size:17px;margin:26px 0 10px;}
-  .card h2:first-child{margin-top:0;}
-  .card p,.card li{color:#5c3a24;font-size:14.5px;line-height:1.6;}
-  .card ol,.card ul{padding-left:20px;}
-  footer{text-align:center;padding:30px;color:#b08a73;font-size:12px;background:#fff3ea;}
-  @media(max-width:600px){ .wrap{padding:40px 16px 60px;} .card{padding:22px;} h1{font-size:26px;} }
-</style>
+<link rel="stylesheet" href="{% static 'theme/style.css' %}">
 </head>
-<body>
-<header>
-  <a class="logo" href="{% url 'core:landing' %}">🔥 Pôžičky Predlžníkov</a>
-  <nav>
-    <a href="{% url 'core:privacy' %}">Ochrana osobných údajov</a>
-    <a href="{% url 'core:contact' %}">Kontakt</a>
-  </nav>
+<body class="role-neutral">
+<div class="bg-dots"></div>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="{% url 'core:landing' %}">
+      <span class="logo-mark">PP</span><span class="logo-text">Pôžičky<br>Predlžníkov</span>
+    </a>
+    <button class="burger" id="burgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="mainNav">
+      <a href="{% url 'core:landing' %}">Domov</a>
+      <a href="{% url 'core:investor' %}">Pre investorov</a>
+      <a href="{% url 'core:borrower' %}">Pre žiadateľov</a>
+      <a href="{% url 'core:faq' %}">Časté otázky</a>
+      <a href="{% url 'core:contact' %}">Kontakt</a>
+      <div class="nav-cta">
+        <a class="btn btn-ghost" href="{% url 'users:login_borrower' %}">Prihlásiť sa ako žiadateľ</a>
+        <a class="btn btn-primary" href="{% url 'users:login_investor' %}">Prihlásiť sa ako investor</a>
+      </div>
+    </nav>
+  </div>
 </header>
 
-<div class="wrap">
-  <h1>Všeobecné obchodné podmienky</h1>
-  <p class="lead">Podmienky používania platformy {{ company.name }} pre žiadateľov o pôžičku aj investorov.</p>
-  <div class="card">
-    <h2>1. Prevádzkovateľ platformy</h2>
-    <p>Platformu Pôžičky Predlžníkov prevádzkuje spoločnosť {{ company.name }}, so sídlom {{ company.address }}, IČO {{ company.ico }}, DIČ {{ company.dic }} (ďalej len "Prevádzkovateľ"). Prevádzkovateľ sprostredkúva uzatváranie zmlúv o krátkodobých pôžičkách medzi žiadateľmi (dlžníkmi) a investormi (veriteľmi).</p>
+<main>
 
-    <h2>2. Registrácia a žiadosť o pôžičku</h2>
-    <p>Žiadateľ o pôžičku podáva žiadosť jedným formulárom, ktorý zároveň slúži ako registrácia jeho používateľského účtu. Investor sa registruje samostatne a pred investovaním dopĺňa prostriedky na svoju peňaženku v rámci platformy.</p>
+<section class="section">
+  <div class="wrap faq-wrap">
+    <div class="section-head"><span class="eyebrow">Právne</span><h1>Všeobecné obchodné podmienky</h1></div>
+    <p class="lead">Podmienky používania platformy {{ company.name }} pre žiadateľov o pôžičku aj investorov.</p>
+    <div class="card" style="padding:32px;">
+      <h2>1. Prevádzkovateľ platformy</h2>
+      <p>Platformu Pôžičky Predlžníkov prevádzkuje spoločnosť {{ company.name }}, so sídlom {{ company.address }}, IČO {{ company.ico }}, DIČ {{ company.dic }} (ďalej len "Prevádzkovateľ"). Prevádzkovateľ sprostredkúva uzatváranie zmlúv o krátkodobých pôžičkách medzi žiadateľmi (dlžníkmi) a investormi (veriteľmi).</p>
 
-    <h2>3. Parametre pôžičky</h2>
-    <p>Žiadosť o pôžičku môže byť v rozmedzí 50 € – 500 € so splatnosťou do 30 dní. Úrok je 24 % p.a., prepočítaný podľa skutočného počtu dní splatnosti. Jednorazový aukčný poplatok platformy sa mení podľa dĺžky splácania, minimálne však 20 €.</p>
+      <h2>2. Registrácia a žiadosť o pôžičku</h2>
+      <p>Žiadateľ o pôžičku podáva žiadosť jedným formulárom, ktorý zároveň slúži ako registrácia jeho používateľského účtu. Investor sa registruje samostatne a pred investovaním dopĺňa prostriedky na svoju peňaženku v rámci platformy.</p>
 
-    <h2>4. Omeškanie a odklad splátky</h2>
-    <p>V prípade, že žiadateľ nestihne splatiť pôžičku v lehote splatnosti, môže vo svojom účte požiadať o odklad splátky o 7 dní za jednorazový poplatok. Pri omeškaní bez dohodnutého odkladu môžu byť účtované ďalšie poplatky z omeškania v prospech investora.</p>
+      <h2>3. Parametre pôžičky</h2>
+      <p>Žiadosť o pôžičku môže byť v rozmedzí 50 € – 500 € so splatnosťou do 30 dní. Úrok je 19 – 24 % p.a. podľa dĺžky splácania, prepočítaný podľa skutočného počtu dní splatnosti. Jednorazový aukčný poplatok platformy sa mení podľa dĺžky splácania, minimálne však 20 €.</p>
 
-    <h2>5. Investovanie a sekundárny trh</h2>
-    <p>Investor môže financovať ľubovoľnú zverejnenú žiadosť o pôžičku sumou podľa vlastného výberu. Aktívnu investíciu môže kedykoľvek ponúknuť na odkúpenie inému investorovi na sekundárnom trhu.</p>
+      <h2>4. Omeškanie a odklad splátky</h2>
+      <p>V prípade, že žiadateľ nestihne splatiť pôžičku v lehote splatnosti, môže vo svojom účte požiadať o odklad splátky o 7 dní za jednorazový poplatok. Pri omeškaní bez dohodnutého odkladu môžu byť účtované ďalšie poplatky z omeškania v prospech investora.</p>
 
-    <h2>6. Ochrana osobných údajov</h2>
-    <p>Spracovanie osobných údajov sa riadi samostatnými <a href="{% url 'core:privacy' %}" style="color:#ff6a2b;">Zásadami ochrany osobných údajov</a>.</p>
+      <h2>5. Investovanie a sekundárny trh</h2>
+      <p>Investor môže financovať ľubovoľnú zverejnenú žiadosť o pôžičku sumou podľa vlastného výberu. Aktívnu investíciu môže kedykoľvek ponúknuť na odkúpenie inému investorovi na sekundárnom trhu.</p>
 
-    <h2>7. Záverečné ustanovenia</h2>
-    <p>Tieto podmienky môže Prevádzkovateľ kedykoľvek upraviť. O zmenách budú používatelia informovaní prostredníctvom platformy alebo e-mailom.</p>
+      <h2>6. Ochrana osobných údajov</h2>
+      <p>Spracovanie osobných údajov sa riadi samostatnými <a href="{% url 'core:privacy' %}">Zásadami ochrany osobných údajov</a>.</p>
+
+      <h2>7. Záverečné ustanovenia</h2>
+      <p>Tieto podmienky môže Prevádzkovateľ kedykoľvek upraviť. O zmenách budú používatelia informovaní prostredníctvom platformy alebo e-mailom.</p>
+    </div>
   </div>
-</div>
+</section>
 
-<footer>&copy; Pôžičky Predlžníkov · <a href="{% url 'core:landing' %}" style="color:#ff6a2b;">Späť na výber sekcie</a> · <a href="{% url 'core:privacy' %}" style="color:#ff6a2b;">Ochrana osobných údajov</a></footer>
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <div class="logo-mark">PP</div>
+      <p>Pôžičky Predlžníkov, s.r.o.<br>P2P platforma pre krátkodobé pôžičky medzi investormi a žiadateľmi.</p>
+    </div>
+    <div>
+      <h4>Platforma</h4>
+      <a href="{% url 'core:investor' %}">Pre investorov</a>
+      <a href="{% url 'core:borrower' %}">Pre žiadateľov</a>
+    </div>
+    <div>
+      <h4>Podpora</h4>
+      <a href="{% url 'core:faq' %}">Časté otázky</a>
+      <a href="{% url 'core:contact' %}">Kontakt</a>
+      <a href="{% url 'core:terms' %}">Obchodné podmienky</a>
+      <a href="{% url 'core:privacy' %}">Ochrana osobných údajov</a>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    © 2026 Pôžičky Predlžníkov, s.r.o. Všetky práva vyhradené.
+  </div>
+</footer>
+<script src="{% static 'theme/script.js' %}"></script>
 </body>
 </html>

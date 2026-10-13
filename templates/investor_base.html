@@ -1,186 +1,132 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="sk">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{% block title %}Pôžičky Predlžníkov – Investor{% endblock %}</title>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
-<style>
-  *{box-sizing:border-box;}
-  :root{--bg:#f7f5ff;--surface:#ffffff;--ink:#1c1735;--muted:#6b6690;--line:#e7e3fb;--violet:#6c4cff;--violet-dark:#4b2fd6;--pink:#ff5ea8;--investor:#17c3a2;--radius:20px;--radius-sm:12px;--shadow:0 18px 40px -16px rgba(76,46,214,.22);}
-  body{margin:0;font-family:'Manrope',Arial,sans-serif;background:var(--bg);color:var(--ink);display:flex;min-height:100vh;-webkit-font-smoothing:antialiased;}
-  a{color:inherit;}
-  .sidebar{width:248px;background:var(--surface);border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column;flex-shrink:0;position:fixed;top:0;bottom:0;left:0;}
-  .sidebar .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;font-family:'Sora',sans-serif;color:var(--ink);margin-bottom:28px;padding:0 8px;text-decoration:none;}
-  .sidebar .logo svg{flex-shrink:0;color:var(--investor);}
-  .sidebar nav{display:flex;flex-direction:column;gap:2px;}
-  .sidebar a{color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;}
-  .sidebar a:hover{background:#f3f1ff;}
-  .sidebar a.active{background:#e6fbf6;color:var(--investor);font-weight:700;}
-  .sidebar .bottom{margin-top:auto;font-size:12px;color:var(--muted);padding:10px 8px;border-top:1px solid var(--line);padding-top:14px;}
-  .sidebar .bottom form{margin-top:8px;}
-  .sidebar .bottom button{width:100%;background:none;border:1px solid var(--line);border-radius:var(--radius-sm);padding:7px;font-size:12px;color:var(--muted);cursor:pointer;}
-  .impersonate-banner{background:#fff4e5;color:#8a5a00;font-size:12.5px;padding:8px 24px;position:fixed;top:0;left:248px;right:0;z-index:6;display:flex;justify-content:space-between;align-items:center;}
-  .impersonate-banner a{color:#8a5a00;font-weight:700;text-decoration:underline;}
-  .main{margin-left:248px;flex:1;min-width:0;display:flex;flex-direction:column;min-height:100vh;}
-  .main.with-banner{margin-top:38px;}
-  .content{padding:32px 36px 60px;max-width:1180px;flex:1;display:flex;flex-direction:column;width:100%;}
-  .content > *:not(footer){flex-shrink:0;}
-  .content footer{margin-top:auto;}
-  h1{font-size:28px;font-weight:800;font-family:'Sora',sans-serif;letter-spacing:-0.01em;margin:0 0 22px;color:var(--ink);}
-  h2{font-size:16px;font-weight:700;font-family:'Sora',sans-serif;margin:0 0 14px;color:var(--ink);}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:999px;text-decoration:none;font-weight:700;font-size:14px;border:1px solid transparent;cursor:pointer;}
-  .btn-primary{background:linear-gradient(135deg,var(--investor),#36e0bd);color:#fff;box-shadow:0 10px 24px -8px rgba(23,195,162,.5);}
-  .btn-primary:hover{filter:brightness(1.05);}
-  .btn-outline{background:#fff;color:var(--investor);border-color:var(--investor);margin-left:8px;}
-  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);}
-  .bento{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:16px;}
-  @media(max-width:900px){.bento{grid-template-columns:repeat(2,1fr);}}
-  .stat-icon{width:38px;height:38px;border-radius:var(--radius-sm);background:#e6fbf6;color:var(--investor);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
-  .stat b{font-size:26px;font-family:'Sora',sans-serif;display:block;letter-spacing:-0.01em;margin-bottom:4px;color:var(--ink);}
-  .stat span{font-size:13px;color:var(--muted);}
-  table{width:100%;border-collapse:collapse;}
-  th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--line);font-size:13.5px;}
-  th{color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.03em;}
-  tr:last-child td{border-bottom:none;}
-  .pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;}
-  .pill-up{background:#e6fbf6;color:#0d8a70;}
-  .pill-down{background:#fdeceb;color:#c4342b;}
-  .pill-neutral{background:#f1effc;color:var(--muted);}
-  .alert{padding:12px 16px;border-radius:var(--radius-sm);font-size:14px;margin-bottom:16px;}
-  .alert-info{background:#f1effc;color:var(--violet-dark);}
-  .alert-success{background:#e6fbf6;color:#0d8a70;}
-  .alert-warning{background:#fff4e5;color:#8a5a00;}
-  .toprow{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:12px;}
-
-  /* === Animácie === */
-  .btn{transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;}
-  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(37,84,234,.35);}
-  .btn-outline:hover{transform:translateY(-2px);background:#f1f4fa;}
-  .card{transition:transform .25s ease,box-shadow .25s ease;}
-  .card.stat:hover{transform:translateY(-4px);box-shadow:0 12px 24px rgba(15,23,41,.08);}
-  .sidebar a{transition:background .2s ease,padding-left .2s ease;}
-  .sidebar a:hover{padding-left:16px;}
-  .stat-icon{transition:transform .25s ease;}
-  .card.stat:hover .stat-icon{transform:scale(1.1) rotate(-4deg);}
-  tr{transition:background .15s ease;}
-  tbody tr:hover{background:#f8faff;}
-  .fade-in-up{opacity:0;transform:translateY(14px);animation:fadeInUp .5s ease forwards;}
-  @keyframes fadeInUp{to{opacity:1;transform:translateY(0);}}
-  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  .menu-toggle{display:none;background:none;border:1px solid #e8ecf3;border-radius:8px;padding:8px 10px;cursor:pointer;}
-
-  /* === Mobilné zobrazenie === */
-  @media(max-width:860px){
-    body{display:block;}
-    .menu-toggle{display:inline-flex;align-items:center;justify-content:center;}
-    .topbar-mobile{display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #e8ecf3;padding:14px 18px;position:sticky;top:0;z-index:20;}
-    .topbar-mobile .logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;font-family:'Sora',sans-serif;color:var(--ink);}
-    .topbar-mobile .logo svg{color:var(--investor);}
-    .sidebar{position:fixed;top:0;left:0;bottom:0;width:78vw;max-width:300px;transform:translateX(-100%);transition:transform .25s ease;z-index:30;box-shadow:2px 0 18px rgba(0,0,0,.12);}
-    .sidebar.open{transform:translateX(0);}
-    .sidebar-backdrop{position:fixed;inset:0;background:rgba(15,23,41,.4);z-index:25;display:none;}
-    .sidebar-backdrop.open{display:block;}
-    .impersonate-banner{left:0;position:static;}
-    .main{margin-left:0;margin-top:0;}
-    .main.with-banner{margin-top:0;}
-    .content{padding:18px 14px 48px;}
-    h1{font-size:20px;}
-    .bento{grid-template-columns:1fr 1fr;gap:10px;}
-    .card{padding:16px;}
-    table{font-size:12.5px;}
-    th,td{padding:9px 6px;}
-    .toprow{flex-direction:column;align-items:stretch;}
-    .toprow .btn{width:100%;justify-content:center;}
-    .btn-outline{margin-left:0;}
-  }
-  @media(max-width:480px){
-    .bento{grid-template-columns:1fr;}
-  }
-</style>
+<link rel="stylesheet" href="{% static 'theme/style.css' %}">
 {% block extra_style %}{% endblock %}
 </head>
-<body>
+<body class="role-investor">
+<div class="bg-dots"></div>
 {% if is_impersonating %}
-<div class="impersonate-banner">
-  <span>👁 Pozeráš prostredie používateľa <strong>{{ user.username }}</strong> ako admin {{ real_admin.username }}</span>
-  <a href="{% url 'users:impersonate_stop' %}">Skončiť náhľad</a>
+<div style="background:#fff4e5;color:#8a5a00;font-size:12.5px;padding:8px 24px;text-align:center;">
+  👁 Pozeráš prostredie používateľa <strong>{{ user.username }}</strong> ako admin {{ real_admin.username }} ·
+  <a href="{% url 'users:impersonate_stop' %}" style="color:#8a5a00;font-weight:700;">Skončiť náhľad</a>
 </div>
 {% endif %}
-<div class="topbar-mobile">
-  <span class="logo">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>
-    Pôžičky Predlžníkov
-  </span>
-  <button class="menu-toggle" onclick="document.getElementById('sidebar').classList.add('open');document.getElementById('sidebar-backdrop').classList.add('open');" aria-label="Otvoriť menu">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-  </button>
-</div>
-<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="document.getElementById('sidebar').classList.remove('open');this.classList.remove('open');"></div>
-<div class="sidebar" id="sidebar">
-  <a class="logo" href="{% url 'auctions:investor_dashboard' %}">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>
-    Pôžičky Predlžníkov
-  </a>
-  <nav>
-    <a href="{% url 'auctions:investor_dashboard' %}" class="{% block nav_dash %}{% endblock %}">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V3"/><path d="M3 21h18"/><path d="M8 17V11"/><path d="M13 17V7"/><path d="M18 17v-4"/></svg>
-      Dashboard investora
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="{% url 'auctions:investor_dashboard' %}">
+      <span class="logo-mark">PP</span><span class="logo-text">Pôžičky<br>Predlžníkov</span>
     </a>
-    <a href="{% url 'auctions:open_auctions' %}" class="{% block nav_rooms %}{% endblock %}">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg>
-      Získať pôžičky
-    </a>
-    <a href="{% url 'auctions:marketplace' %}" class="{% block nav_market %}{% endblock %}">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18"/><path d="M3 3l2 12a2 2 0 0 0 2 1.6h10a2 2 0 0 0 2-1.6L21 3"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>
-      Sekundárny trh
-    </a>
-    <a href="{% url 'auctions:investor_history' %}" class="{% block nav_history %}{% endblock %}">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-      História investícií
-    </a>
-    <a href="{% url 'core:notifications' %}" class="{% block nav_notifications %}{% endblock %}" style="justify-content:space-between;">
-      <span style="display:flex;align-items:center;gap:11px;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        Notifikácie
-      </span>
-      {% if unread_notifications_count %}<span style="background:#ea4335;color:#fff;font-size:11px;font-weight:700;border-radius:999px;padding:2px 7px;">{{ unread_notifications_count }}</span>{% endif %}
-    </a>
-    <a href="{% url 'users:referral' %}" class="{% block nav_referral %}{% endblock %}">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="18" cy="8" r="2"/><path d="M22 20v-1a3 3 0 0 0-2-2.83"/></svg>
-      Pozvi priateľa
-    </a>
-    <a href="{% url 'users:account_settings' %}" class="{% block nav_settings %}{% endblock %}">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-      Nastavenia
-    </a>
-  </nav>
-  <div class="bottom">
-    Prihlásený ako<br><strong style="color:#0f1729;">{{ user.username }}</strong>
-    {% if user.is_superuser or real_admin.is_superuser %}
-    <a href="{% url 'adminpanel:dashboard' %}" style="display:block;text-align:center;margin-top:8px;background:#f1effc;color:var(--violet-dark);border:1px solid var(--line);border-radius:8px;padding:7px;font-size:12px;text-decoration:none;font-weight:600;">Admin prostredie</a>
-    <a href="{% url 'users:impersonate_list' %}" style="display:block;text-align:center;margin-top:6px;background:#fff4e5;color:#8a5a00;border:1px solid #ffdca0;border-radius:8px;padding:7px;font-size:12px;text-decoration:none;font-weight:600;">Admin náhľad</a>
-    {% endif %}
-    {% if not is_impersonating %}
-    <form method="post" action="{% url 'users:logout' %}">
-      {% csrf_token %}
-      <button type="submit">Odhlásiť sa</button>
-    </form>
-    {% endif %}
+    <button class="burger" id="burgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="mainNav">
+      <a href="{% url 'core:landing' %}">Domov</a>
+      <a href="{% url 'core:investor' %}">Pre investorov</a>
+      <a href="{% url 'core:faq' %}">Časté otázky</a>
+      <a href="{% url 'core:contact' %}">Kontakt</a>
+      <div class="nav-cta">
+        {% if user.is_superuser or real_admin.is_superuser %}
+        <a class="btn btn-ghost" href="{% url 'adminpanel:dashboard' %}">Admin prostredie</a>
+        {% endif %}
+        {% if not is_impersonating %}
+        <form method="post" action="{% url 'users:logout' %}" style="display:inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary" style="border:none;cursor:pointer;">Odhlásiť sa</button>
+        </form>
+        {% endif %}
+      </div>
+    </nav>
   </div>
-</div>
-<div class="main {% if is_impersonating %}with-banner{% endif %}">
-  <div class="content fade-in-up">
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>
-      {% endfor %}
-    {% endif %}
-    {% block content %}{% endblock %}
-    <footer style="text-align:center;padding:24px 0 10px;color:#8a93a8;font-size:12px;">
-      <a href="{% url 'core:faq' %}" style="color:var(--investor);">Časté otázky</a> · <a href="{% url 'core:contact' %}" style="color:var(--investor);">Kontakt</a> · <a href="{% url 'core:public_stats' %}" style="color:var(--investor);">Štatistiky</a> · <a href="{% url 'core:terms' %}" style="color:var(--investor);">Obchodné podmienky</a> · <a href="{% url 'core:privacy' %}" style="color:var(--investor);">Ochrana osobných údajov</a>
-    </footer>
+</header>
+
+<main>
+<section class="section dash-page">
+  <div class="wrap dash-shell">
+    <aside class="dash-sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">{{ user.username|slice:":2"|upper }}</div>
+        <div><b>{{ user.username }}</b><span>Investor · účet</span></div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="{% url 'auctions:investor_dashboard' %}" class="sidebar-nav-link {% block nav_dash %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V3"/><path d="M3 21h18"/><path d="M8 17V11"/><path d="M13 17V7"/><path d="M18 17v-4"/></svg></span>
+          Dashboard
+        </a>
+        <a href="{% url 'auctions:open_auctions' %}" class="sidebar-nav-link {% block nav_rooms %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
+          Aukčná miestnosť
+        </a>
+        <a href="{% url 'auctions:marketplace' %}" class="sidebar-nav-link {% block nav_market %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18"/><path d="M3 3l2 12a2 2 0 0 0 2 1.6h10a2 2 0 0 0 2-1.6L21 3"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg></span>
+          Sekundárny trh
+        </a>
+        <a href="{% url 'auctions:investor_history' %}" class="sidebar-nav-link {% block nav_history %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></span>
+          História investícií
+        </a>
+        <a href="{% url 'users:my_contracts' %}" class="sidebar-nav-link {% block nav_contracts %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+          Moje zmluvy
+        </a>
+        <a href="{% url 'users:my_profile' %}" class="sidebar-nav-link {% block nav_profile %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span>
+          Moje údaje
+        </a>
+        <a href="{% url 'users:account_settings' %}" class="sidebar-nav-link {% block nav_settings %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+          Nastavenia
+        </a>
+        <div class="sidebar-sep"></div>
+        <a href="{% url 'core:notifications' %}" class="sidebar-nav-link {% block nav_notifications %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+          Notifikácie {% if unread_notifications_count %}<span class="nav-badge">{{ unread_notifications_count }}</span>{% endif %}
+        </a>
+        <a href="{% url 'users:referral' %}" class="sidebar-nav-link {% block nav_referral %}{% endblock %}">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="18" cy="8" r="2"/><path d="M22 20v-1a3 3 0 0 0-2-2.83"/></svg></span>
+          Pozvi priateľa
+        </a>
+        <a href="{% url 'core:contact' %}" class="sidebar-nav-link">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+          Podpora
+        </a>
+        {% if user.is_superuser or real_admin.is_superuser %}
+        <a href="{% url 'users:impersonate_list' %}" class="sidebar-nav-link">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></svg></span>
+          Admin náhľad
+        </a>
+        {% endif %}
+        {% if not is_impersonating %}
+        <form method="post" action="{% url 'users:logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="sidebar-nav-link danger" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;font:inherit;">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span>
+            Odhlásiť sa
+          </button>
+        </form>
+        {% endif %}
+      </nav>
+    </aside>
+    <div class="fade-in-up">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+      {% block content %}{% endblock %}
+    </div>
   </div>
-</div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-bottom">
+    <a href="{% url 'core:faq' %}">Časté otázky</a> · <a href="{% url 'core:contact' %}">Kontakt</a> · <a href="{% url 'core:public_stats' %}">Štatistiky</a> · <a href="{% url 'core:terms' %}">Obchodné podmienky</a> · <a href="{% url 'core:privacy' %}">Ochrana osobných údajov</a>
+  </div>
+</footer>
+<script src="{% static 'theme/script.js' %}"></script>
 {% block extra_script %}{% endblock %}
 </body>
 </html>

@@ -1,58 +1,87 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="sk">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Časté otázky – Pôžičky Predlžníkov</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  *{box-sizing:border-box;}
-  body{margin:0;font-family:'Inter',Arial,sans-serif;background:#fffaf5;color:#2a1b10;}
-  a{color:inherit;}
-  header{background:#fff;border-bottom:1px solid #ffd9bf;padding:16px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;}
-  header .logo{font-weight:800;font-size:19px;color:#ff6a2b;text-decoration:none;}
-  header nav a{text-decoration:none;color:#8a6a56;font-size:14px;margin-left:16px;}
-  .wrap{max-width:760px;margin:0 auto;padding:60px 24px 80px;}
-  h1{font-size:32px;margin:0 0 10px;}
-  .lead{color:#8a6a56;margin:0 0 32px;font-size:15px;}
-  .section-label{font-size:13px;font-weight:700;color:#ff6a2b;text-transform:uppercase;letter-spacing:.04em;margin:34px 0 14px;}
-  .section-label:first-of-type{margin-top:0;}
-  .faq{background:#fff;border:1px solid #ffd9bf;border-radius:14px;padding:18px 22px;margin-bottom:12px;}
-  .faq h3{margin:0 0 6px;font-size:15px;}
-  .faq p{margin:0;color:#8a6a56;font-size:14px;}
-  footer{text-align:center;padding:30px;color:#b08a73;font-size:12px;background:#fff3ea;}
-  @media(max-width:600px){ .wrap{padding:40px 16px 60px;} h1{font-size:26px;} }
-</style>
+<link rel="stylesheet" href="{% static 'theme/style.css' %}">
 </head>
-<body>
-<header>
-  <a class="logo" href="{% url 'core:landing' %}">🔥 Pôžičky Predlžníkov</a>
-  <nav>
-    <a href="{% url 'core:contact' %}">Kontakt</a>
-    <a href="{% url 'core:landing' %}">Prihlásiť sa</a>
-  </nav>
+<body class="role-neutral">
+<div class="bg-dots"></div>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="{% url 'core:landing' %}">
+      <span class="logo-mark">PP</span><span class="logo-text">Pôžičky<br>Predlžníkov</span>
+    </a>
+    <button class="burger" id="burgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="mainNav">
+      <a href="{% url 'core:landing' %}">Domov</a>
+      <a href="{% url 'core:investor' %}">Pre investorov</a>
+      <a href="{% url 'core:borrower' %}">Pre žiadateľov</a>
+      <a href="{% url 'core:faq' %}" class="active">Časté otázky</a>
+      <a href="{% url 'core:contact' %}">Kontakt</a>
+      <div class="nav-cta">
+        <a class="btn btn-ghost" href="{% url 'users:login_borrower' %}">Prihlásiť sa ako žiadateľ</a>
+        <a class="btn btn-primary" href="{% url 'users:login_investor' %}">Prihlásiť sa ako investor</a>
+      </div>
+    </nav>
+  </div>
 </header>
 
-<div class="wrap">
-  <h1>Časté otázky</h1>
-  <p class="lead">Odpovede na najčastejšie otázky žiadateľov o pôžičku aj investorov.</p>
+<main>
 
-  <div class="section-label">Pre žiadateľov o pôžičku</div>
-  <div class="faq"><h3>Koľko ma pôžička bude stáť?</h3><p>Úrok 19 – 24 % p.a. podľa dĺžky splácania (15 – 30 dní, pri kratšej dobe nižší úrok) a jednorazový aukčný poplatok platforme, ktorý sa mení podľa dĺžky splácania (do 20 % z istiny pri 30-dňovej splatnosti), minimálne však 20 €.</p></div>
-  <div class="faq"><h3>Čo ak nestihnem splatiť včas?</h3><p>V svojom účte môžeš jedným kliknutím požiadať o odklad splátky o 7 dní za jednorazový poplatok.</p></div>
-  <div class="faq"><h3>Aké údaje budem potrebovať?</h3><p>Pri žiadosti zadáš číslo občianskeho preukazu, rodné číslo, adresu a bankový účet, na ktorý sa pôžička vyplatí.</p></div>
-  <div class="faq"><h3>Ako dlho trvá vybavenie žiadosti?</h3><p>Žiadosť sa okamžite zobrazí investorom v aukčnej miestnosti. Hneď ako ju niekto financuje, peniaze máš na účte do pár minút.</p></div>
-  <div class="faq"><h3>Môžem si požičať znova?</h3><p>Áno, po splatení pôžičky môžeš kedykoľvek podať novú žiadosť priamo zo svojho účtu.</p></div>
+<section class="section">
+  <div class="wrap faq-wrap">
+    <div class="section-head"><span class="eyebrow">Podpora</span><h1>Časté otázky</h1></div>
+    <h3 class="faq-group">Pre žiadateľov o pôžičku</h3>
+    <div class="accordion">
+      <details open><summary>Koľko ma pôžička bude stáť?</summary><p>Úrok 19 – 24 % p.a. podľa dĺžky splácania (15 – 30 dní, pri kratšej dobe nižší úrok) a jednorazový aukčný poplatok platforme, ktorý sa mení podľa dĺžky splácania (do 20 % z istiny pri 30-dňovej splatnosti), minimálne však 20 €.</p></details>
+      <details><summary>Čo ak nestihnem splatiť včas?</summary><p>V svojom účte môžeš jedným kliknutím požiadať o odklad splátky o 7 dní za jednorazový poplatok.</p></details>
+      <details><summary>Aké údaje budem potrebovať?</summary><p>Pri žiadosti zadáš číslo občianskeho preukazu, rodné číslo, adresu a bankový účet, na ktorý sa pôžička vyplatí.</p></details>
+      <details><summary>Ako dlho trvá vybavenie žiadosti?</summary><p>Žiadosť sa okamžite zobrazí investorom v aukčnej miestnosti. Hneď ako ju niekto financuje, peniaze máš na účte do pár minút.</p></details>
+      <details><summary>Môžem si požičať znova?</summary><p>Áno, po splatení pôžičky môžeš kedykoľvek podať novú žiadosť priamo zo svojho účtu.</p></details>
+    </div>
 
-  <div class="section-label">Pre investorov</div>
-  <div class="faq"><h3>Aká je minimálna investícia?</h3><p>Pôžičky sa financujú vždy celé naraz - jeden investor financuje presne celú požadovanú sumu jednej žiadosti (od 50 € do 500 €). Čiastočné spolufinancovanie nie je možné.</p></div>
-  <div class="faq"><h3>Čo ak dlžník nesplatí?</h3><p>Každý žiadateľ prechádza overením identity pred zverejnením žiadosti. Platí garancia odkúpenia - ak pôžička nie je splatená do 90 dní po splatnosti, platforma ju automaticky odkúpi od investora (vyplatí istinu + dohodnutý úrok na peňaženku) a ďalšie vymáhanie dlhu preberá na seba.</p></div>
-  <div class="faq"><h3>Môžem svoju investíciu predať skôr?</h3><p>Áno, aktívnu investíciu môžeš kedykoľvek ponúknuť na sekundárnom trhu inému investorovi.</p></div>
+    <h3 class="faq-group">Pre investorov</h3>
+    <div class="accordion">
+      <details open><summary>Aká je minimálna investícia?</summary><p>Pôžičky sa financujú vždy celé naraz - jeden investor financuje presne celú požadovanú sumu jednej žiadosti (od 50 € do 500 €). Čiastočné spolufinancovanie nie je možné.</p></details>
+      <details><summary>Čo ak dlžník nesplatí?</summary><p>Každý žiadateľ prechádza overením identity pred zverejnením žiadosti. Platí garancia odkúpenia - ak pôžička nie je splatená do 90 dní po splatnosti, platforma ju automaticky odkúpi od investora (vyplatí istinu + dohodnutý úrok na peňaženku) a ďalšie vymáhanie dlhu preberá na seba.</p></details>
+      <details><summary>Môžem svoju investíciu predať skôr?</summary><p>Áno, aktívnu investíciu môžeš kedykoľvek ponúknuť na sekundárnom trhu inému investorovi.</p></details>
+    </div>
 
-  <div class="section-label">Všeobecné</div>
-  <div class="faq"><h3>Sú moje osobné údaje v bezpečí?</h3><p>Osobné údaje slúžia výhradne na overenie identity a vystavenie zmluvy. Iní používatelia ťa vidia len pod anonymným číslom, nikdy pod menom.</p></div>
-  <div class="faq"><h3>Ako vás môžem kontaktovať?</h3><p>Napíš nám na <a href="{% url 'core:contact' %}" style="color:#ff6a2b;">kontaktnú stránku</a>.</p></div>
-</div>
+    <h3 class="faq-group">Všeobecné</h3>
+    <div class="accordion">
+      <details open><summary>Sú moje osobné údaje v bezpečí?</summary><p>Osobné údaje slúžia výhradne na overenie identity a vystavenie zmluvy. Iní používatelia ťa vidia len pod anonymným číslom, nikdy pod menom.</p></details>
+      <details><summary>Ako vás môžem kontaktovať?</summary><p>Napíš nám na <a href="{% url 'core:contact' %}">kontaktnú stránku</a>.</p></details>
+    </div>
+  </div>
+</section>
 
-<footer>&copy; Pôžičky Predlžníkov · <a href="{% url 'core:landing' %}" style="color:#ff6a2b;">Späť na výber sekcie</a> · <a href="{% url 'core:contact' %}" style="color:#ff6a2b;">Kontakt</a></footer>
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <div class="logo-mark">PP</div>
+      <p>Pôžičky Predlžníkov, s.r.o.<br>P2P platforma pre krátkodobé pôžičky medzi investormi a žiadateľmi.</p>
+    </div>
+    <div>
+      <h4>Platforma</h4>
+      <a href="{% url 'core:investor' %}">Pre investorov</a>
+      <a href="{% url 'core:borrower' %}">Pre žiadateľov</a>
+    </div>
+    <div>
+      <h4>Podpora</h4>
+      <a href="{% url 'core:faq' %}">Časté otázky</a>
+      <a href="{% url 'core:contact' %}">Kontakt</a>
+      <a href="{% url 'core:terms' %}">Obchodné podmienky</a>
+      <a href="{% url 'core:privacy' %}">Ochrana osobných údajov</a>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    © 2026 Pôžičky Predlžníkov, s.r.o. Všetky práva vyhradené.
+  </div>
+</footer>
+<script src="{% static 'theme/script.js' %}"></script>
 </body>
 </html>
