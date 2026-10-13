@@ -226,6 +226,18 @@ def investor_history(request):
 
 
 @login_required
+def investor_contracts(request):
+    """Moje zmluvy - prehľad vygenerovaných zmlúv a dokumentov investora
+    (Zmluva o pôžičke za každú financovanú investíciu, prípadne Zmluva
+    o postúpení pohľadávky, ak bola investícia kúpená na sekundárnom trhu)."""
+    bids = Bid.objects.filter(
+        lender=request.user,
+        status=Bid.Status.ACCEPTED,
+    ).select_related('auction', 'auction__borrower').order_by('-created_at')
+    return render(request, 'auctions/investor_contracts.html', {'bids': bids})
+
+
+@login_required
 def investor_history_pdf(request):
     """Export histórie investícií za zvolené obdobie do PDF (napr. pre účtovníctvo)."""
     import os

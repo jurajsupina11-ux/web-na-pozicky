@@ -1,0 +1,37 @@
+{% extends "investor_base.html" %}
+{% block nav_contracts %}active{% endblock %}
+{% block title %}Moje zmluvy{% endblock %}
+{% block content %}
+<h1>Moje zmluvy a dokumenty</h1>
+<div class="card table-card">
+  <div class="table-scroll">
+  <table>
+    <tr><th>Pôžička</th><th>Typ dokumentu</th><th>Dátum</th><th></th></tr>
+    {% for b in bids %}
+    <tr>
+      <td>#{{ b.auction.pk }} · {{ b.auction.borrower.display_id }}</td>
+      <td>Zmluva o pôžičke</td>
+      <td>{{ b.created_at|date:"d.m.Y" }}</td>
+      <td><a class="btn btn-mini" href="{% url 'auctions:contract_loan_agreement' b.pk %}">Stiahnuť PDF</a></td>
+    </tr>
+    {% if b.previous_lender %}
+    <tr>
+      <td>#{{ b.auction.pk }} · {{ b.auction.borrower.display_id }}</td>
+      <td>Zmluva o postúpení pohľadávky</td>
+      <td>{{ b.transferred_at|date:"d.m.Y" }}</td>
+      <td><a class="btn btn-mini" href="{% url 'auctions:contract_assignment_agreement' b.pk %}">Stiahnuť PDF</a></td>
+    </tr>
+    <tr>
+      <td>#{{ b.auction.pk }} · {{ b.auction.borrower.display_id }}</td>
+      <td>Oznámenie o postúpení</td>
+      <td>{{ b.transferred_at|date:"d.m.Y" }}</td>
+      <td><a class="btn btn-mini" href="{% url 'auctions:contract_assignment_notice' b.pk %}">Stiahnuť PDF</a></td>
+    </tr>
+    {% endif %}
+    {% empty %}
+    <tr><td colspan="4">Zatiaľ nemáš žiadnu financovanú investíciu so zmluvou.</td></tr>
+    {% endfor %}
+  </table>
+  </div>
+</div>
+{% endblock %}

@@ -9,6 +9,7 @@ urlpatterns = [
     path('dashboard/', views.investor_dashboard, name='investor_dashboard'),
     path('historia/', views.investor_history, name='investor_history'),
     path('historia/export.pdf', views.investor_history_pdf, name='investor_history_pdf'),
+    path('moje-zmluvy/', views.investor_contracts, name='investor_contracts'),
     path('danovy-vykaz/', views.tax_statement, name='tax_statement'),
     path('danovy-vykaz/<int:year>/export.pdf', views.tax_statement_pdf, name='tax_statement_pdf'),
     path('investicia/<int:bid_id>/zmluva.pdf', views.contract_loan_agreement_pdf, name='contract_loan_agreement'),
