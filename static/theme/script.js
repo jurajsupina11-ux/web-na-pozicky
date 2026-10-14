@@ -152,6 +152,32 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // Mobilné rozbaľovacie menu pre sidebar v dashboardoch (dlžník/investor/admin)
+  var sidebarToggle = document.getElementById('dashSidebarToggle');
+  var sidebar = document.querySelector('.dash-sidebar');
+  var sidebarOverlay = document.getElementById('dashSidebarOverlay');
+  var sidebarClose = document.getElementById('dashSidebarClose');
+  function closeSidebar() {
+    if (sidebar) sidebar.classList.remove('open');
+    if (sidebarOverlay) sidebarOverlay.classList.remove('show');
+  }
+  function openSidebar() {
+    if (sidebar) sidebar.classList.add('open');
+    if (sidebarOverlay) sidebarOverlay.classList.add('show');
+  }
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', openSidebar);
+  }
+  if (sidebarOverlay) {
+    sidebarOverlay.addEventListener('click', closeSidebar);
+  }
+  if (sidebarClose) {
+    sidebarClose.addEventListener('click', closeSidebar);
+  }
+  document.querySelectorAll('.dash-sidebar .sidebar-nav-link').forEach(function (link) {
+    link.addEventListener('click', closeSidebar);
+  });
+
   // Klikateľné dlaždice v dashboarde (napr. "Aktívne pôžičky") rozbalia zoznam nižšie
   document.querySelectorAll('[data-reveal-target]').forEach(function (tile) {
     tile.addEventListener('click', function () {

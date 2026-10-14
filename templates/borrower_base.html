@@ -45,10 +45,18 @@
 <main>
 <section class="section dash-page">
   <div class="wrap dash-shell">
+    <button type="button" class="dash-sidebar-toggle" id="dashSidebarToggle">
+      <svg viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/></svg>
+      Menu
+    </button>
+    <div class="dash-sidebar-overlay" id="dashSidebarOverlay"></div>
     <aside class="dash-sidebar">
       <div class="sidebar-user">
         <div class="sidebar-avatar">{{ user.username|slice:":2"|upper }}</div>
         <div><b>{{ user.username }}</b><span>Dlžník · účet</span></div>
+        <button type="button" class="dash-sidebar-close" id="dashSidebarClose" aria-label="Zatvoriť menu">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+        </button>
       </div>
       <nav class="sidebar-nav">
         <a href="{% url 'users:my_applications' %}" class="sidebar-nav-link {% block nav_applications %}{% endblock %}">
