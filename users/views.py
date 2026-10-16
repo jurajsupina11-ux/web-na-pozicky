@@ -77,11 +77,36 @@ class SignUpView(CreateView):
         return response
 
 
+#: Maximálny počet neúspešných pokusov o prihlásenie z jednej IP adresy za
+#: 15 minút - jednoduchá ochrana pred automatizovaným "brute-force" skúšaním
+#: hesiel (najmä dôležité, keďže dlžníci majú krátke 5-miestne číselné heslo).
+LOGIN_RATE_LIMIT = 10
+LOGIN_RATE_LIMIT_WINDOW = 15 * 60
+
+
 class CustomLoginView(LoginView):
     """Spoločná prihlasovacia logika - šablóna sa líši podľa toho, z ktorej
     stránky sa používateľ prihlasuje (investor/dlžník/admin), presmerovanie
     po prihlásení je vždy podľa reálnej role používateľa."""
     template_name = 'users/login.html'
+
+    def post(self, request, *args, **kwargs):
+        from django.core.cache import cache
+
+        cache_key = f'login_rate_{_client_ip(request)}'
+        attempts = cache.get(cache_key, 0)
+        if attempts >= LOGIN_RATE_LIMIT:
+            messages.error(
+                request,
+                'Príliš veľa neúspešných pokusov o prihlásenie z tejto siete. Skús to prosím o pár minút neskôr.',
+            )
+            return redirect(request.path)
+        response = super().post(request, *args, **kwargs)
+        if not request.user.is_authenticated:
+            cache.set(cache_key, attempts + 1, LOGIN_RATE_LIMIT_WINDOW)
+        else:
+            cache.delete(cache_key)
+        return response
 
     def get_success_url(self):
         user = self.request.user
@@ -128,7 +153,19 @@ class CustomPasswordChangeDoneView(PasswordChangeDoneView):
 @login_required
 def kyc_form(request):
     """Citlivé údaje (OP, rodné číslo, adresa) vyplnené pri žiadosti o prvú pôžičku."""
-    next_url = request.GET.get('next') or reverse_lazy('auctions:create')
+    from django.utils.http import url_has_allowed_host_and_scheme
+
+    requested_next = request.GET.get('next')
+    if requested_next and url_has_allowed_host_and_scheme(
+        requested_next, allowed_hosts={request.get_host()}, require_https=request.is_secure(),
+    ):
+        # Bezpečnostná kontrola proti "open redirect" - next smie viesť len na
+        # stránku v rámci tejto appky, inak by útočník mohol poslať odkaz typu
+        # /accounts/kyc/?next=https://falosna-stranka.sk a presmerovať prihláseného
+        # používateľa na podvodný web (napr. falošné prihlásenie/platba).
+        next_url = requested_next
+    else:
+        next_url = reverse_lazy('auctions:create')
     if request.user.kyc_completed:
         return redirect(next_url)
     if request.method == 'POST':

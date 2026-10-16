@@ -31,12 +31,10 @@
         {% if user.is_superuser or real_admin.is_superuser %}
         <a class="btn btn-ghost" href="{% url 'adminpanel:dashboard' %}">Admin prostredie</a>
         {% endif %}
-        {% if not is_impersonating %}
         <form method="post" action="{% url 'users:logout' %}" style="display:inline;">
           {% csrf_token %}
           <button type="submit" class="btn btn-primary" style="border:none;cursor:pointer;">Odhlásiť sa</button>
         </form>
-        {% endif %}
       </div>
     </nav>
   </div>
@@ -88,7 +86,7 @@
           <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="18" cy="8" r="2"/><path d="M22 20v-1a3 3 0 0 0-2-2.83"/></svg></span>
           Pozvi priateľa
         </a>
-        <a href="{% url 'core:contact' %}" class="sidebar-nav-link">
+        <a href="#" class="sidebar-nav-link js-open-support">
           <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
           Podpora
         </a>
@@ -98,7 +96,6 @@
           Admin náhľad
         </a>
         {% endif %}
-        {% if not is_impersonating %}
         <form method="post" action="{% url 'users:logout' %}">
           {% csrf_token %}
           <button type="submit" class="sidebar-nav-link danger" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;font:inherit;">
@@ -106,7 +103,6 @@
             Odhlásiť sa
           </button>
         </form>
-        {% endif %}
       </nav>
     </aside>
     <div class="fade-in-up">
@@ -122,8 +118,26 @@
 </main>
 
 <footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <div class="logo-mark">PP</div>
+      <p>Pôžičky Predlžníkov, s.r.o.<br>P2P platforma pre krátkodobé pôžičky medzi investormi a žiadateľmi.</p>
+    </div>
+    <div>
+      <h4>Platforma</h4>
+      <a href="{% url 'core:investor' %}">Pre investorov</a>
+      <a href="{% url 'core:borrower' %}">Pre žiadateľov</a>
+    </div>
+    <div>
+      <h4>Podpora</h4>
+      <a href="{% url 'core:faq' %}">Časté otázky</a>
+      <a href="{% url 'core:contact' %}">Kontakt</a>
+      <a href="{% url 'core:terms' %}">Obchodné podmienky</a>
+      <a href="{% url 'core:privacy' %}">Ochrana osobných údajov</a>
+    </div>
+  </div>
   <div class="wrap footer-bottom">
-    <a href="{% url 'core:faq' %}">Časté otázky</a> · <a href="{% url 'core:contact' %}">Kontakt</a> · <a href="{% url 'core:terms' %}">Obchodné podmienky</a> · <a href="{% url 'core:privacy' %}">Ochrana osobných údajov</a>
+    © 2026 Pôžičky Predlžníkov, s.r.o. Všetky práva vyhradené.
   </div>
 </footer>
 

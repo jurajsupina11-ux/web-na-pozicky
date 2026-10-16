@@ -178,6 +178,18 @@ document.addEventListener('DOMContentLoaded', function () {
     link.addEventListener('click', closeSidebar);
   });
 
+  // "Podpora" v sidebar menu dashboardov otvára chat bublinu namiesto toho,
+  // aby odhlásilo/presunulo používateľa mimo dashboardu na samostatnú stránku Kontakt.
+  document.querySelectorAll('.js-open-support').forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      e.preventDefault();
+      if (chatPanel) {
+        chatPanel.classList.add('open');
+        chatPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
+  });
+
   // Klikateľné dlaždice v dashboarde (napr. "Aktívne pôžičky") rozbalia zoznam nižšie
   document.querySelectorAll('[data-reveal-target]').forEach(function (tile) {
     tile.addEventListener('click', function () {

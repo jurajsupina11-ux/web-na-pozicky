@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.db.models import Avg
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -15,6 +16,7 @@ from bids.forms import BidForm
 from bids.models import Bid
 from core.emails import send_investment_confirmation, send_loan_approved
 from core.models import Notification, notify
+from users.models import User
 
 from .models import Auction, WalletTransaction
 from .forms import AuctionForm
@@ -69,31 +71,45 @@ def place_bid(request, pk):
     (celá požadovaná suma, úrok podľa max_interest_rate aukcie)."""
     auction = get_object_or_404(Auction, pk=pk, status=Auction.Status.ACTIVE)
     if request.method == 'POST':
-        amount = auction.amount_requested
-        if amount > request.user.wallet_balance:
-            messages.error(
-                request,
-                'Na peňaženke nemáš dostatok voľných prostriedkov na financovanie celej tejto pôžičky. '
-                'Pôžičky sa financujú vždy celé naraz, nie je možné investovať len časť.',
+        # Bezpečnostná poistka proti "race condition" (dvojklik alebo dva súbežné
+        # požiadavky zo skriptu) - zamkneme riadky aukcie aj investora v DB
+        # transakcii a stav/zostatok si overíme ešte raz AŽ PO zamknutí, aby dvaja
+        # investori nemohli naraz vyfinancovať tú istú žiadosť a aby si investor
+        # nemohol minúť rovnaké peniaze dvakrát.
+        with transaction.atomic():
+            auction = Auction.objects.select_for_update().get(pk=auction.pk)
+            lender = User.objects.select_for_update().get(pk=request.user.pk)
+
+            if auction.status != Auction.Status.ACTIVE:
+                messages.error(request, 'Táto žiadosť už bola medzitým financovaná alebo zrušená.')
+                return redirect(auction.get_absolute_url())
+
+            amount = auction.amount_requested
+            if amount > lender.wallet_balance:
+                messages.error(
+                    request,
+                    'Na peňaženke nemáš dostatok voľných prostriedkov na financovanie celej tejto pôžičky. '
+                    'Pôžičky sa financujú vždy celé naraz, nie je možné investovať len časť.',
+                )
+                return redirect(auction.get_absolute_url())
+
+            bid = Bid.objects.create(
+                auction=auction,
+                lender=lender,
+                amount=amount,
+                interest_rate=auction.max_interest_rate,
             )
-            return redirect(auction.get_absolute_url())
 
-        bid = Bid.objects.create(
-            auction=auction,
-            lender=request.user,
-            amount=amount,
-            interest_rate=auction.max_interest_rate,
-        )
+            # Suma investície sa strháva z peňaženky investora hneď pri financovaní.
+            lender.wallet_balance -= amount
+            lender.save(update_fields=['wallet_balance'])
+            request.user.wallet_balance = lender.wallet_balance
 
-        # Suma investície sa strháva z peňaženky investora hneď pri financovaní.
-        request.user.wallet_balance -= amount
-        request.user.save(update_fields=['wallet_balance'])
+            # Pôžička je vyfinancovaná celá naraz, ale peniaze sa dlžníkovi vyplatia
+            # až po tom, čo si v svojom účte podpíše Zmluvu o pôžičke.
+            auction.status = Auction.Status.SIGNING
+            auction.save(update_fields=['status'])
         send_investment_confirmation(request.user, bid)
-
-        # Pôžička je vyfinancovaná celá naraz, ale peniaze sa dlžníkovi vyplatia
-        # až po tom, čo si v svojom účte podpíše Zmluvu o pôžičke.
-        auction.status = Auction.Status.SIGNING
-        auction.save(update_fields=['status'])
         notify(
             auction.borrower,
             'Tvoja žiadosť bola financovaná - podpíš zmluvu',
@@ -525,11 +541,17 @@ def wallet_withdraw(request):
             )
         elif not code or code != request.user.security_code:
             messages.error(request, 'Nesprávny bezpečnostný kód. Kód nájdeš v e-maile, ktorý si dostal pri registrácii.')
-        elif amount > request.user.wallet_balance:
-            messages.error(request, 'Na účte nemáš dostatok voľných prostriedkov.')
         else:
-            request.user.wallet_balance -= amount
-            request.user.save(update_fields=['wallet_balance'])
+            # Zamkneme riadok investora v DB transakcii a zostatok overíme ešte raz
+            # AŽ PO zamknutí - ochrana proti súbežnému dvojitému výberu tých istých peňazí.
+            with transaction.atomic():
+                lender = User.objects.select_for_update().get(pk=request.user.pk)
+                if amount > lender.wallet_balance:
+                    messages.error(request, 'Na účte nemáš dostatok voľných prostriedkov.')
+                    return redirect('auctions:investor_dashboard')
+                lender.wallet_balance -= amount
+                lender.save(update_fields=['wallet_balance'])
+            request.user.wallet_balance = lender.wallet_balance
             WalletTransaction.objects.create(
                 user=request.user, kind=WalletTransaction.Kind.WITHDRAWAL, amount=amount,
                 iban=request.user.bank_account_iban,
@@ -585,25 +607,36 @@ def marketplace(request):
 def marketplace_buy(request, bid_id):
     """Kúpa podielu na pôžičke od iného investora - jednoduchý prevod vlastníctva
     danej investície (Bid) za jej nominálnu hodnotu, hradené z peňaženky kupujúceho."""
-    listing = get_object_or_404(Bid, pk=bid_id, for_sale=True)
-    if listing.lender_id == request.user.pk:
-        messages.error(request, 'Nemôžeš odkúpiť vlastnú investíciu.')
-        return redirect('auctions:marketplace')
-    if request.user.wallet_balance < listing.amount:
-        messages.error(request, 'Na účte nemáš dostatok voľných prostriedkov na odkúpenie tejto investície.')
-        return redirect('auctions:marketplace')
+    # Rovnaká ochrana ako pri place_bid - zamkneme v DB transakcii riadky investície
+    # aj oboch peňaženiek a všetko overíme ešte raz AŽ PO zamknutí, aby sa tá istá
+    # investícia nedala kúpiť dvakrát súbežne a aby kupujúci nemohol minúť peniaze,
+    # ktoré už medzitým minul v inej súbežnej požiadavke.
+    with transaction.atomic():
+        listing = get_object_or_404(Bid.objects.select_for_update(), pk=bid_id)
+        if not listing.for_sale:
+            messages.error(request, 'Táto investícia už nie je v ponuke (medzitým ju kúpil niekto iný).')
+            return redirect('auctions:marketplace')
+        if listing.lender_id == request.user.pk:
+            messages.error(request, 'Nemôžeš odkúpiť vlastnú investíciu.')
+            return redirect('auctions:marketplace')
 
-    seller = listing.lender
-    request.user.wallet_balance -= listing.amount
-    request.user.save(update_fields=['wallet_balance'])
-    seller.wallet_balance += listing.amount
-    seller.save(update_fields=['wallet_balance'])
+        buyer = User.objects.select_for_update().get(pk=request.user.pk)
+        if buyer.wallet_balance < listing.amount:
+            messages.error(request, 'Na účte nemáš dostatok voľných prostriedkov na odkúpenie tejto investície.')
+            return redirect('auctions:marketplace')
 
-    listing.previous_lender = seller
-    listing.transferred_at = timezone.now()
-    listing.lender = request.user
-    listing.for_sale = False
-    listing.save(update_fields=['previous_lender', 'transferred_at', 'lender', 'for_sale'])
+        seller = User.objects.select_for_update().get(pk=listing.lender_id)
+        buyer.wallet_balance -= listing.amount
+        buyer.save(update_fields=['wallet_balance'])
+        seller.wallet_balance += listing.amount
+        seller.save(update_fields=['wallet_balance'])
+        request.user.wallet_balance = buyer.wallet_balance
+
+        listing.previous_lender = seller
+        listing.transferred_at = timezone.now()
+        listing.lender = buyer
+        listing.for_sale = False
+        listing.save(update_fields=['previous_lender', 'transferred_at', 'lender', 'for_sale'])
 
     messages.success(request, f'Investícia {listing.amount} € bola prevedená na tvoj účet.')
     return redirect('auctions:investor_dashboard')
