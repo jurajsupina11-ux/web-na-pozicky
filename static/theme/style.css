@@ -40,6 +40,15 @@ body.role-borrower .eyebrow{background:var(--borrower-bg);color:#b85215;}
 body.role-investor .eyebrow{background:var(--investor-bg);color:#0d8a70;}
 body.role-borrower .step-num{background:linear-gradient(135deg,var(--borrower),#ff9a5e);}
 body.role-investor .step-num{background:linear-gradient(135deg,var(--investor),#36e0bd);}
+body.role-borrower .auth-tab.active{background:linear-gradient(135deg,var(--borrower),#ff9a5e);color:#fff;}
+body.role-investor .auth-tab.active{background:linear-gradient(135deg,var(--investor),#36e0bd);color:#fff;}
+
+/* Tlačidlá, ktoré musia mať farbu podľa role (investor/dlžník) bez ohľadu na
+   celkovú tému stránky, napr. na neutrálnych stránkach ako domov, kontakt. */
+.btn-investor{background:linear-gradient(135deg,var(--investor),#36e0bd);color:#fff;box-shadow:0 10px 24px -8px rgba(23,195,162,.5);}
+.btn-borrower{background:linear-gradient(135deg,var(--borrower),#ff9a5e);color:#fff;box-shadow:0 10px 24px -8px rgba(255,122,58,.5);}
+.btn-outline-investor{border-color:var(--investor);color:var(--investor);background:#fff;}
+.btn-outline-borrower{border-color:var(--borrower);color:var(--borrower);background:#fff;}
 
 /* Domov — rozcestník */
 .picker-hero{padding:70px 0 50px;}

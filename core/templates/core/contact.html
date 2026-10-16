@@ -29,8 +29,7 @@
           <form method="post" action="{% url 'users:logout' %}">{% csrf_token %}<button type="submit">Odhlásiť sa</button></form>
         </div>
         {% else %}
-        <a class="btn btn-ghost" href="{% url 'users:login_borrower' %}">Prihlásiť sa ako žiadateľ</a>
-        <a class="btn btn-primary" href="{% url 'users:login_investor' %}">Prihlásiť sa ako investor</a>
+        <a class="btn btn-primary" href="{% url 'users:login_investor' %}">Prihlásiť sa</a>
         {% endif %}
       </div>
     </nav>
@@ -69,8 +68,8 @@
 <footer class="site-footer">
   <div class="wrap footer-grid">
     <div class="footer-brand">
-      <img src="{% static 'theme/logo-icon.svg' %}" alt="Insight Partners" style="width:38px;height:38px;border-radius:8px;">
-      <p>Pôžičky Predlžníkov, s.r.o.<br>P2P platforma pre krátkodobé pôžičky medzi investormi a žiadateľmi.</p>
+      <img src="{% static 'theme/logo-full.svg' %}" alt="Insight Partners" class="logo-full-img">
+      <p>Insight Partners s. r. o.<br>P2P platforma pre krátkodobé pôžičky medzi investormi a žiadateľmi.</p>
     </div>
     <div>
       <h4>Platforma</h4>
@@ -86,7 +85,7 @@
     </div>
   </div>
   <div class="wrap footer-bottom">
-    © 2026 Pôžičky Predlžníkov, s.r.o. Všetky práva vyhradené.
+    © 2026 Insight Partners s. r. o. Všetky práva vyhradené.
   </div>
 </footer>
 <a class="sticky-tab" href="{% url 'users:application_status' %}">Klientska zóna</a>
