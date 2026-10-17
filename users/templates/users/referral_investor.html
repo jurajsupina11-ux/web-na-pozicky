@@ -34,7 +34,7 @@
       <td>{% if r.referral_reward_granted %}+{{ referral_bonus }} €{% else %}—{% endif %}</td>
     </tr>
     {% empty %}
-    <tr><td colspan="4">Zatiaľ si nepozval žiadneho priateľa.</td></tr>
+    <tr><td colspan="4">Zatiaľ ste nepozvali žiadneho priateľa.</td></tr>
     {% endfor %}
   </table>
   </div>
@@ -48,9 +48,9 @@
     <span style="color:#55607a;font-size:14px;">Celkovo investované: <strong>{{ total_invested_lifetime }} €</strong></span>
   </div>
   {% if loyalty_next_threshold %}
-  <p style="color:#55607a;font-size:13.5px;">Doinvestuj ešte <strong>{{ loyalty_next_threshold }} €</strong> na posun na ďalší stupeň.</p>
+  <p style="color:#55607a;font-size:13.5px;">Doinvestujte ešte <strong>{{ loyalty_next_threshold }} €</strong> na posun na ďalší stupeň.</p>
   {% else %}
-  <p style="color:#19824a;font-size:13.5px;">Dosiahol/-la si najvyšší vernostný stupeň 🎉</p>
+  <p style="color:#19824a;font-size:13.5px;">Dosiahli ste najvyšší vernostný stupeň 🎉</p>
   {% endif %}
   <div class="table-scroll" style="margin-top:14px;">
   <table>

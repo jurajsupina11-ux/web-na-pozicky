@@ -98,7 +98,7 @@ def place_bid(request, pk):
             if amount > lender.wallet_balance:
                 messages.error(
                     request,
-                    'Na peňaženke nemáš dostatok voľných prostriedkov na financovanie celej tejto pôžičky. '
+                    'Na peňaženke nemáte dostatok voľných prostriedkov na financovanie celej tejto pôžičky. '
                     'Pôžičky sa financujú vždy celé naraz, nie je možné investovať len časť.',
                 )
                 return redirect(auction.get_absolute_url())
@@ -458,7 +458,7 @@ def contract_assignment_agreement_pdf(request, bid_id):
     from core.contracts import generate_assignment_agreement_pdf
     bid = get_object_or_404(Bid, pk=bid_id)
     if request.user.pk not in (bid.lender_id, getattr(bid, 'previous_lender_id', None)):
-        messages.error(request, 'Nemáš prístup k tomuto dokumentu.')
+        messages.error(request, 'Nemáte prístup k tomuto dokumentu.')
         return redirect('auctions:investor_dashboard')
     if not bid.previous_lender_id:
         messages.error(request, 'Táto investícia ešte nebola prevedená na sekundárnom trhu.')
@@ -472,7 +472,7 @@ def contract_assignment_notice_pdf(request, bid_id):
     from core.contracts import generate_assignment_notice_pdf
     bid = get_object_or_404(Bid, pk=bid_id)
     if request.user.pk not in (bid.lender_id, getattr(bid, 'previous_lender_id', None), bid.auction.borrower_id):
-        messages.error(request, 'Nemáš prístup k tomuto dokumentu.')
+        messages.error(request, 'Nemáte prístup k tomuto dokumentu.')
         return redirect('auctions:investor_dashboard')
     if not bid.previous_lender_id:
         messages.error(request, 'Táto investícia ešte nebola prevedená na sekundárnom trhu.')

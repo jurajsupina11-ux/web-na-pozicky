@@ -59,7 +59,7 @@ class SignUpView(CreateView):
         if attempts >= SIGNUP_RATE_LIMIT:
             messages.error(
                 request,
-                'Príliš veľa pokusov o registráciu z tejto siete. Skús to prosím neskôr.',
+                'Príliš veľa pokusov o registráciu z tejto siete. Skúste to prosím neskôr.',
             )
             return redirect('users:signup')
         cache.set(cache_key, attempts + 1, SIGNUP_RATE_LIMIT_WINDOW)
@@ -98,7 +98,7 @@ class CustomLoginView(LoginView):
         if attempts >= LOGIN_RATE_LIMIT:
             messages.error(
                 request,
-                'Príliš veľa neúspešných pokusov o prihlásenie z tejto siete. Skús to prosím o pár minút neskôr.',
+                'Príliš veľa neúspešných pokusov o prihlásenie z tejto siete. Skúste to prosím o pár minút neskôr.',
             )
             return redirect(request.path)
         response = super().post(request, *args, **kwargs)

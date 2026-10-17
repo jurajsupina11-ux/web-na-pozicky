@@ -97,7 +97,7 @@
       <td>{% if a.status == 'closed' %}<a class="btn btn-mini" href="{% url 'users:contract_loan_agreement' a.pk %}">Stiahnuť PDF</a>{% else %}—{% endif %}</td>
     </tr>
     {% empty %}
-    <tr><td colspan="5">Zatiaľ nemáš žiadnu žiadosť.</td></tr>
+    <tr><td colspan="5">Zatiaľ nemáte žiadnu žiadosť.</td></tr>
     {% endfor %}
   </table>
   </div>

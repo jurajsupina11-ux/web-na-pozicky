@@ -43,15 +43,15 @@
   <div class="wrap auth-grid">
     <div class="auth-side">
       <span class="eyebrow">Investorský účet</span>
-      <h1>Zarábaj 19 – 24 % p.a.<br>na krátkodobých pôžičkách</h1>
-      <p>Vytvor si investorský účet a začni financovať overené žiadosti o pôžičku už dnes. Registrácia trvá 2 minúty.</p>
+      <h1>Zarábajte 19 – 24 % p.a.<br>na krátkodobých pôžičkách</h1>
+      <p>Vytvorte si investorský účet a začnite financovať overené žiadosti o pôžičku už dnes. Registrácia trvá 2 minúty.</p>
       <div class="stat-chip"><span>Úrok podľa dĺžky splatnosti</span><b>19 – 24 %</b></div>
     </div>
     <form class="card form-card" method="post" autocomplete="on">
       {% csrf_token %}
       <h2>Registrácia investora</h2>
       <input type="hidden" name="ref_code" value="{{ ref_code }}">
-      {% if ref_code %}<p class="form-note" style="background:var(--surface);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:8px;"><span class="ic" style="width:18px;height:18px;flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13"/><path d="M19 12v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8"/><path d="M16.5 8a2.5 2.5 0 0 0 0-5C14 3 12 8 12 8"/></svg></span> Registruješ sa na pozvanie priateľa - po prvej investícii dostanete obaja bonus 10 €.</p>{% endif %}
+      {% if ref_code %}<p class="form-note" style="background:var(--surface);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:8px;"><span class="ic" style="width:18px;height:18px;flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13"/><path d="M19 12v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8"/><path d="M16.5 8a2.5 2.5 0 0 0 0-5C14 3 12 8 12 8"/></svg></span> Registrujete sa na pozvanie priateľa - po prvej investícii dostanete obaja bonus 10 €.</p>{% endif %}
       <p class="form-note" style="background:var(--surface);border-radius:var(--radius-sm);padding:10px 14px;">
         Vitajte! Keďže aj investorský účet pracuje s reálnymi peniazmi, potrebujeme overiť Vašu totožnosť -
         preto formulár obsahuje aj osobné údaje, rovnako ako pri žiadosti o pôžičku.
@@ -68,7 +68,7 @@
       {% endfor %}
       <p class="form-note">Viac v <a href="{% url 'core:terms' %}">obchodných podmienkach</a> a <a href="{% url 'core:privacy' %}">ochrane osobných údajov</a>.</p>
       <button type="submit" class="btn btn-primary btn-block">Vytvoriť účet</button>
-      <p class="form-note">Už máš účet? <a href="{% url 'users:login_investor' %}">Prihlás sa</a>.</p>
+      <p class="form-note">Už máte účet? <a href="{% url 'users:login_investor' %}">Prihláste sa</a>.</p>
     </form>
   </div>
 </section>

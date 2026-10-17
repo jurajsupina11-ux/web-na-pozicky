@@ -35,7 +35,7 @@
       {% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }}" style="margin-top:14px;">{{ message }}</div>{% endfor %}
     {% endif %}
     {% if not application %}
-    <h1 style="margin-top:14px;">Zatiaľ nemáš žiadnu žiadosť</h1>
+    <h1 style="margin-top:14px;">Zatiaľ nemáte žiadnu žiadosť</h1>
     <div class="card" style="margin-top:20px;">
       <p class="form-note">Vyplňte žiadosť o pôžičku a dostanete prihlasovacie údaje e-mailom hneď po schválení.</p>
       <a class="btn btn-primary" href="{% url 'users:loan_application' %}">Požiadať o pôžičku</a>
