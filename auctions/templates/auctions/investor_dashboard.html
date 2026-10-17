@@ -52,8 +52,8 @@
 {% if show_welcome %}
 <div class="alert alert-info" style="display:flex;align-items:center;gap:12px;">
   <span class="ic" style="width:22px;height:22px;display:inline-flex;flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
-  <span>Vitaj medzi investormi na Pôžičky Predlžníkov! Tvoj účet je pripravený - stačí vložiť peniaze
-  na peňaženku a môžeš začať financovať žiadosti o pôžičku.</span>
+  <span>Vitajte medzi investormi na Pôžičky Predlžníkov! Váš účet je pripravený - stačí vložiť peniaze
+  na peňaženku a môžete začať financovať žiadosti o pôžičku.</span>
 </div>
 {% endif %}
 <div class="dash-top">
@@ -87,9 +87,12 @@
 
 <div class="card" style="margin-bottom:16px;background:#f6f8fb;border:1px dashed #dbe4f5;font-size:13px;color:#55607a;">
   <strong style="color:#33406b;">Ako funguje vklad a výber:</strong>
-  Vklad pošli na účet <strong>SK89 8330 0000 0021 0167 2695</strong> (Fio banka) s variabilným symbolom <strong>{{ request.user.display_id }}</strong> -
-  po prijatí platby ti sumu pripíšeme na peňaženku. Pri výbere zadaj bezpečnostný kód, ktorý si dostal e-mailom pri registrácii.
+  Vklad pošlite na účet <strong>{{ deposit_bank_details.iban }}</strong> ({{ deposit_bank_details.bank_name }}) s variabilným symbolom <strong>{{ deposit_variable_symbol }}</strong> (Vaše rodné číslo) -
+  po prijatí platby Vám sumu pripíšeme na peňaženku. Pri výbere zadajte bezpečnostný kód, ktorý ste dostali e-mailom pri registrácii.
   Platby (vklady aj výbery) spracúvame v <strong>pracovné dni od 8:00 do 16:00</strong>, peniaze posielame iba na slovenské bankové účty (SK IBAN).
+  <div style="margin-top:12px;">
+    <img src="{% url 'auctions:deposit_payment_qr' %}" alt="QR kód na vklad" width="130" height="130" style="border-radius:10px;border:1px solid var(--line);">
+  </div>
 </div>
 
 <div class="stat-grid clickable">
@@ -192,8 +195,8 @@
       <rect x="2" y="7" width="20" height="13" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2"/><circle cx="12" cy="13.5" r="2.5"/>
     </svg>
     <div>
-      <h2>Zatiaľ si nič nefinancoval</h2>
-      <p>Hneď ako vložíš peniaze na peňaženku a financuješ prvú žiadosť, zobrazí sa tu prehľad tvojich investícií.</p>
+      <h2>Zatiaľ ste nič nefinancovali</h2>
+      <p>Hneď ako vložíte peniaze na peňaženku a budete financovať prvú žiadosť, zobrazí sa tu prehľad Vašich investícií.</p>
       <a class="btn btn-primary" style="margin-top:14px;" href="{% url 'auctions:open_auctions' %}">Prezri si dostupné žiadosti</a>
     </div>
   </div>

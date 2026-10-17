@@ -16,7 +16,17 @@ from bids.forms import BidForm
 from bids.models import Bid
 from core.emails import send_investment_confirmation, send_loan_approved
 from core.models import Notification, notify
+from core.payments import PLATFORM_BANK, variable_symbol_for_user
 from users.models import User
+
+#: Bankové údaje, na ktoré majú investori posielať vklady (manuálny proces,
+#: bez platobnej brány - admin po prijatí platby ručne potvrdí vklad). Jediný
+#: bankový účet platformy (zhodný s účtom na splácanie pôžičiek).
+DEPOSIT_BANK_DETAILS = {
+    'bank_name': PLATFORM_BANK['bank_name'],
+    'iban': PLATFORM_BANK['iban'],
+    'swift': PLATFORM_BANK['swift'],
+}
 
 from .models import Auction, WalletTransaction
 from .forms import AuctionForm
@@ -112,11 +122,11 @@ def place_bid(request, pk):
         send_investment_confirmation(request.user, bid)
         notify(
             auction.borrower,
-            'Tvoja žiadosť bola financovaná - podpíš zmluvu',
-            'Investor financoval celú tvoju žiadosť o pôžičku. Prihlás sa do svojho účtu a podpíš '
-            'Zmluvu o pôžičke, aby sme ti mohli peniaze vyplatiť.',
+            'Vaša žiadosť bola financovaná - podpíšte zmluvu',
+            'Investor financoval celú Vašu žiadosť o pôžičku. Prihláste sa do svojho účtu a podpíšte '
+            'Zmluvu o pôžičke, aby sme Vám mohli peniaze vyplatiť.',
             kind=Notification.Kind.SUCCESS,
-            url=reverse_lazy('users:my_loans'),
+            url=reverse_lazy('users:my_applications'),
         )
         messages.success(request, 'Pôžička bola vyfinancovaná celá - čaká sa na podpis zmluvy dlžníkom.')
 
@@ -134,13 +144,13 @@ def place_bid(request, pk):
                 notify(
                     request.user,
                     f'Odmena za registráciu na pozvanie: +{REFERRAL_BONUS} €',
-                    'Vďaka za prvú investíciu - bonus bol pripísaný na tvoju peňaženku.',
+                    'Vďaka za prvú investíciu - bonus bol pripísaný na Vašu peňaženku.',
                     kind=Notification.Kind.SUCCESS,
                 )
                 notify(
                     referrer,
                     f'Odmena za odporúčanie: +{REFERRAL_BONUS} €',
-                    'Tvoj pozvaný priateľ práve urobil prvú investíciu - bonus bol pripísaný na tvoju peňaženku.',
+                    'Váš pozvaný priateľ práve urobil prvú investíciu - bonus bol pripísaný na Vašu peňaženku.',
                     kind=Notification.Kind.SUCCESS,
                 )
     return redirect(auction.get_absolute_url())
@@ -199,6 +209,8 @@ def investor_dashboard(request):
         'bids_count': bids_count,
         'show_welcome': show_welcome,
         'avg_interest_rate': round(avg_interest_rate, 2) if avg_interest_rate else Decimal('0'),
+        'deposit_bank_details': DEPOSIT_BANK_DETAILS,
+        'deposit_variable_symbol': variable_symbol_for_user(request.user),
     }
     return render(request, 'auctions/investor_dashboard.html', context)
 
@@ -478,24 +490,14 @@ def open_auctions_view(request):
     return render(request, 'auctions/open_auctions.html', {'open_auctions': open_auctions})
 
 
-#: Bankové údaje, na ktoré majú investori posielať vklady (manuálny proces,
-#: bez platobnej brány - admin po prijatí platby ručne potvrdí vklad).
-DEPOSIT_BANK_DETAILS = {
-    'bank_name': 'Fio banka, a.s., pobočka zahraničnej banky',
-    'iban': 'SK89 8330 0000 0021 0167 2695',
-    'swift': 'FIOZSKBA',
-}
-
-
 @login_required
 def wallet_deposit(request):
     """Žiadosť o vklad na investorskú peňaženku - platforma nemá platobnú
     bránu, investor peniaze pošle na náš bankový účet a administrátor po
-    prijatí platby ručne potvrdí vklad (pripíše sumu na peňaženku). Vyžaduje
-    overenú e-mailovú adresu (aby sme vedeli, komu peniaze skutočne patria)."""
-    if not request.user.email_verified:
-        messages.warning(request, 'Pred vkladom je potrebné overiť tvoju e-mailovú adresu.')
-        return redirect('users:verify_email_request')
+    prijatí platby ručne potvrdí vklad (pripíše sumu na peňaženku). Na
+    rozdiel od výberu peňazí vklad NEVYŽADUJE overenie e-mailu ani
+    bezpečnostný kód - ide o prijímanie peňazí (nie ich odosielanie), takže
+    tu nehrozí zneužitie cudzieho účtu."""
     if request.method == 'POST':
         try:
             amount = Decimal(request.POST.get('amount', '0'))
@@ -507,13 +509,25 @@ def wallet_deposit(request):
             )
             messages.success(
                 request,
-                f'Žiadosť o vklad {amount} € bola zaznamenaná. Pošli túto sumu na náš bankový účet '
-                f'({DEPOSIT_BANK_DETAILS["iban"]}, VS: {request.user.display_id}) - po prijatí platby '
-                f'ti sumu pripíšeme na peňaženku (zvyčajne do 1 pracovného dňa).',
+                f'Žiadosť o vklad {amount} € bola zaznamenaná. Pošlite túto sumu na náš bankový účet '
+                f'({DEPOSIT_BANK_DETAILS["iban"]}, VS: {variable_symbol_for_user(request.user)} - Vaše rodné číslo) - '
+                f'po prijatí platby Vám sumu pripíšeme na peňaženku (zvyčajne do 1 pracovného dňa).',
             )
         else:
-            messages.error(request, 'Zadaj platnú sumu na vklad.')
+            messages.error(request, 'Zadajte platnú sumu na vklad.')
     return redirect('auctions:investor_dashboard')
+
+
+@login_required
+def deposit_payment_qr(request):
+    """QR kód na vklad na peňaženku investora - IBAN a variabilný symbol
+    (rodné číslo investora) zakódované vo formáte SPD."""
+    from core.payments import payment_qr_response
+
+    return payment_qr_response(
+        DEPOSIT_BANK_DETAILS['iban'], None, variable_symbol_for_user(request.user),
+        message='Vklad na penazenku',
+    )
 
 
 @login_required
@@ -523,7 +537,7 @@ def wallet_withdraw(request):
     registrácii. Suma sa odpíše z peňaženky ihneď, administrátor následne
     ručne zrealizuje bankový prevod na IBAN uložený v profile investora."""
     if not request.user.email_verified:
-        messages.warning(request, 'Pred výberom je potrebné overiť tvoju e-mailovú adresu.')
+        messages.warning(request, 'Pred výberom je potrebné overiť Vašu e-mailovú adresu.')
         return redirect('users:verify_email_request')
     if request.method == 'POST':
         try:
@@ -533,21 +547,21 @@ def wallet_withdraw(request):
         code = (request.POST.get('security_code') or '').strip()
 
         if amount <= 0:
-            messages.error(request, 'Zadaj platnú sumu na výplatu.')
+            messages.error(request, 'Zadajte platnú sumu na výplatu.')
         elif not request.user.bank_account_iban:
             messages.error(
                 request,
-                'Najprv si v Nastaveniach účtu nastav slovenský bankový účet (IBAN), na ktorý sa majú peniaze poslať.',
+                'Najprv si v Nastaveniach účtu nastavte slovenský bankový účet (IBAN), na ktorý sa majú peniaze poslať.',
             )
         elif not code or code != request.user.security_code:
-            messages.error(request, 'Nesprávny bezpečnostný kód. Kód nájdeš v e-maile, ktorý si dostal pri registrácii.')
+            messages.error(request, 'Nesprávny bezpečnostný kód. Kód nájdete v e-maile, ktorý ste dostali pri registrácii.')
         else:
             # Zamkneme riadok investora v DB transakcii a zostatok overíme ešte raz
             # AŽ PO zamknutí - ochrana proti súbežnému dvojitému výberu tých istých peňazí.
             with transaction.atomic():
                 lender = User.objects.select_for_update().get(pk=request.user.pk)
                 if amount > lender.wallet_balance:
-                    messages.error(request, 'Na účte nemáš dostatok voľných prostriedkov.')
+                    messages.error(request, 'Na účte nemáte dostatok voľných prostriedkov.')
                     return redirect('auctions:investor_dashboard')
                 lender.wallet_balance -= amount
                 lender.save(update_fields=['wallet_balance'])
@@ -559,7 +573,7 @@ def wallet_withdraw(request):
             messages.success(
                 request,
                 f'Žiadosť o výplatu {amount} € bola úspešne odoslaná. Platby spracúvame v pracovné dni '
-                f'od 8:00 do 16:00 - peniaze ti v tomto čase pošleme na tvoj bankový účet.',
+                f'od 8:00 do 16:00 - peniaze Vám v tomto čase pošleme na Váš bankový účet.',
             )
     return redirect('auctions:investor_dashboard')
 
@@ -591,7 +605,7 @@ def bid_toggle_sale(request, bid_id):
         bid.save(update_fields=['for_sale', 'for_sale_since'])
         messages.success(
             request,
-            'Tvoja investícia bola ponúknutá na sekundárnom trhu. Na zastavenie predaja máš 5 minút.',
+            'Vaša investícia bola ponúknutá na sekundárnom trhu. Na zastavenie predaja máte 5 minút.',
         )
     return redirect('auctions:investor_dashboard')
 
@@ -617,12 +631,12 @@ def marketplace_buy(request, bid_id):
             messages.error(request, 'Táto investícia už nie je v ponuke (medzitým ju kúpil niekto iný).')
             return redirect('auctions:marketplace')
         if listing.lender_id == request.user.pk:
-            messages.error(request, 'Nemôžeš odkúpiť vlastnú investíciu.')
+            messages.error(request, 'Nemôžete odkúpiť vlastnú investíciu.')
             return redirect('auctions:marketplace')
 
         buyer = User.objects.select_for_update().get(pk=request.user.pk)
         if buyer.wallet_balance < listing.amount:
-            messages.error(request, 'Na účte nemáš dostatok voľných prostriedkov na odkúpenie tejto investície.')
+            messages.error(request, 'Na účte nemáte dostatok voľných prostriedkov na odkúpenie tejto investície.')
             return redirect('auctions:marketplace')
 
         seller = User.objects.select_for_update().get(pk=listing.lender_id)
@@ -638,6 +652,6 @@ def marketplace_buy(request, bid_id):
         listing.for_sale = False
         listing.save(update_fields=['previous_lender', 'transferred_at', 'lender', 'for_sale'])
 
-    messages.success(request, f'Investícia {listing.amount} € bola prevedená na tvoj účet.')
+    messages.success(request, f'Investícia {listing.amount} € bola prevedená na Váš účet.')
     return redirect('auctions:investor_dashboard')
 

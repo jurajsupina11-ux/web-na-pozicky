@@ -81,7 +81,7 @@
 
       <div class="wizard-step" data-step="2" hidden>
         <h2>Kontakt a adresa</h2>
-        <p class="form-note">Prihlasovacie meno (tvoje rodné číslo) a heslo ti vygenerujeme automaticky a pošleme e-mailom.</p>
+        <p class="form-note">Prihlasovacie meno (Vaše rodné číslo) a heslo Vám vygenerujeme automaticky a pošleme e-mailom.</p>
         <div class="form-row-2">
           <label>{{ form.email.label }}{{ form.email }}{% if form.email.errors %}<ul class="errorlist">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
           <label>{{ form.phone_number.label }}{{ form.phone_number }}{% if form.phone_number.errors %}<ul class="errorlist">{% for e in form.phone_number.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}</label>
@@ -148,8 +148,8 @@
 <a class="sticky-tab" href="{% url 'users:application_status' %}">Klientska zóna</a>
 <div class="chat-widget">
   <div class="chat-panel" id="chatPanel">
-    <h4>Potrebuješ pomôcť?</h4>
-    <p>Napíš nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
+    <h4>Potrebujete pomôcť?</h4>
+    <p>Napíšte nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
     <a class="btn btn-primary btn-block" href="{% url 'core:contact' %}">Prejsť na kontakt</a>
   </div>
   <button class="chat-btn" id="chatBtn" aria-label="Otvoriť chat"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></button>

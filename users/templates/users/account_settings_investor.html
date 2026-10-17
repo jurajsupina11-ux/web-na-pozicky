@@ -14,14 +14,12 @@
       {{ bank_form.bank_account_iban }}
       {% if bank_form.bank_account_iban.errors %}<div style="color:#c4342b;font-size:13px;margin-top:4px;">{{ bank_form.bank_account_iban.errors }}</div>{% endif %}
     </div>
-    {% if bank_form.security_code %}
     <div style="margin-bottom:14px;">
       {{ bank_form.security_code.label_tag }}
       {{ bank_form.security_code }}
-      <p style="color:#8a93a8;font-size:12px;margin-top:4px;">Kód, ktorý si dostal e-mailom pri registrácii.</p>
+      <p style="color:#8a93a8;font-size:12px;margin-top:4px;">Kód, ktorý ste dostali e-mailom pri registrácii.</p>
       {% if bank_form.security_code.errors %}<div style="color:#c4342b;font-size:13px;margin-top:4px;">{{ bank_form.security_code.errors }}</div>{% endif %}
     </div>
-    {% endif %}
     <button type="submit" class="btn btn-primary">Uložiť IBAN</button>
   </form>
 </div>
@@ -36,7 +34,7 @@
 
 <div class="card">
   <h2>Zmena hesla</h2>
-  <p style="color:#55607a;">Pravidelná zmena hesla zvyšuje bezpečnosť tvojho účtu.</p>
+  <p style="color:#55607a;">Pravidelná zmena hesla zvyšuje bezpečnosť Vášho účtu.</p>
   <a class="btn btn-outline" href="{% url 'users:password_change' %}">Zmeniť heslo</a>
 </div>
 {% endblock %}

@@ -53,7 +53,7 @@
       <input type="hidden" name="ref_code" value="{{ ref_code }}">
       {% if ref_code %}<p class="form-note" style="background:var(--surface);border-radius:var(--radius-sm);padding:10px 14px;display:flex;align-items:center;gap:8px;"><span class="ic" style="width:18px;height:18px;flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13"/><path d="M19 12v7a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8"/><path d="M16.5 8a2.5 2.5 0 0 0 0-5C14 3 12 8 12 8"/></svg></span> Registruješ sa na pozvanie priateľa - po prvej investícii dostanete obaja bonus 10 €.</p>{% endif %}
       <p class="form-note" style="background:var(--surface);border-radius:var(--radius-sm);padding:10px 14px;">
-        Vitaj! Keďže aj investorský účet pracuje s reálnymi peniazmi, potrebujeme overiť tvoju totožnosť -
+        Vitajte! Keďže aj investorský účet pracuje s reálnymi peniazmi, potrebujeme overiť Vašu totožnosť -
         preto formulár obsahuje aj osobné údaje, rovnako ako pri žiadosti o pôžičku.
       </p>
       {% for field in form %}
@@ -101,8 +101,8 @@
 <a class="sticky-tab" href="{% url 'users:application_status' %}">Klientska zóna</a>
 <div class="chat-widget">
   <div class="chat-panel" id="chatPanel">
-    <h4>Potrebuješ pomôcť?</h4>
-    <p>Napíš nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
+    <h4>Potrebujete pomôcť?</h4>
+    <p>Napíšte nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
     <a class="btn btn-primary btn-block" href="{% url 'core:contact' %}">Prejsť na kontakt</a>
   </div>
   <button class="chat-btn" id="chatBtn" aria-label="Otvoriť chat"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></button>

@@ -25,6 +25,7 @@ urlpatterns = [
     path('trh/', views.marketplace, name='marketplace'),
     path('trh/<int:bid_id>/kupit/', views.marketplace_buy, name='marketplace_buy'),
     path('penazenka/vklad/', views.wallet_deposit, name='wallet_deposit'),
+    path('penazenka/vklad/qr-platba.png', views.deposit_payment_qr, name='deposit_payment_qr'),
     path('penazenka/vyber/', views.wallet_withdraw, name='wallet_withdraw'),
     path('investicia/<int:bid_id>/predaj/', views.bid_toggle_sale, name='bid_toggle_sale'),
     path('new/', views.AuctionCreateView.as_view(), name='create'),

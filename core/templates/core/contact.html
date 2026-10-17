@@ -54,10 +54,10 @@
       </div>
     </div>
     <form class="card form-card" action="mailto:{{ company.email }}" method="get" enctype="text/plain">
-      <h2>Napíš nám</h2>
-      <label>Meno<input type="text" name="meno" placeholder="Tvoje meno"></label>
-      <label>E-mail<input type="email" name="email" placeholder="tvoj e-mail"></label>
-      <label>Správa<textarea rows="4" name="body" placeholder="Ako ti môžeme pomôcť?"></textarea></label>
+      <h2>Napíšte nám</h2>
+      <label>Meno<input type="text" name="meno" placeholder="Vaše meno"></label>
+      <label>E-mail<input type="email" name="email" placeholder="váš e-mail"></label>
+      <label>Správa<textarea rows="4" name="body" placeholder="Ako Vám môžeme pomôcť?"></textarea></label>
       <button type="submit" class="btn btn-primary btn-block">Odoslať správu</button>
       <p class="form-note">Administrátor platformy? Prihláste sa <a href="{% url 'users:login' %}">tu</a>.</p>
     </form>
@@ -91,8 +91,8 @@
 <a class="sticky-tab" href="{% url 'users:application_status' %}">Klientska zóna</a>
 <div class="chat-widget">
   <div class="chat-panel" id="chatPanel">
-    <h4>Potrebuješ pomôcť?</h4>
-    <p>Napíš nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
+    <h4>Potrebujete pomôcť?</h4>
+    <p>Napíšte nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
     <a class="btn btn-primary btn-block" href="{% url 'core:contact' %}">Prejsť na kontakt</a>
   </div>
   <button class="chat-btn" id="chatBtn" aria-label="Otvoriť chat"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></button>

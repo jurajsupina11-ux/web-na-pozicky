@@ -214,12 +214,15 @@ class KYCForm(forms.ModelForm):
 class BankAccountForm(forms.ModelForm):
     """Zmena bankového účtu (IBAN), na ktorý sa vyplácajú peniaze - pre
     investora aj dlžníka, dostupné v Nastaveniach účtu. Peniaze sa posielajú
-    iba na slovenské bankové účty (SK IBAN). Zmena IBAN u investora vyžaduje
-    zadanie bezpečnostného kódu, ktorý dostal e-mailom pri registrácii."""
+    iba na slovenské bankové účty (SK IBAN). Zmena IBAN (odosielanie peňazí
+    niekam inam) je citlivá operácia, preto VŽDY vyžaduje potvrdenie
+    bezpečnostným kódom zaslaným e-mailom - u investora ide o kód z
+    registrácie, u dlžníka sa pri prvej zmene IBAN kód vygeneruje a pošle
+    na overený e-mail (viď views.account_settings)."""
 
     security_code = forms.CharField(
-        label='Bezpečnostný kód (z e-mailu pri registrácii)',
-        max_length=20, required=False,
+        label='Bezpečnostný kód (z e-mailu)',
+        max_length=20, required=True,
     )
 
     class Meta:
@@ -231,10 +234,6 @@ class BankAccountForm(forms.ModelForm):
         self.user = kwargs.get('instance')
         super().__init__(*args, **kwargs)
         _apply_autocomplete_and_classes(self)
-        # Bezpečnostný kód sa vyžaduje len pre investorov (majú ho z registrácie);
-        # dlžníci kód nedostávajú, ich IBAN sa overuje inak (osobné údaje pri KYC).
-        if not self.user or self.user.role != User.Role.LENDER:
-            self.fields.pop('security_code', None)
 
     def clean_bank_account_iban(self):
         value = self.cleaned_data['bank_account_iban']
@@ -243,9 +242,8 @@ class BankAccountForm(forms.ModelForm):
 
     def clean_security_code(self):
         code = self.cleaned_data.get('security_code', '').strip()
-        if self.user and self.user.role == User.Role.LENDER:
-            if not code or code != self.user.security_code:
-                raise ValidationError('Nesprávny bezpečnostný kód.')
+        if not self.user or not code or code != self.user.security_code:
+            raise ValidationError('Nesprávny alebo chýbajúci bezpečnostný kód. Kód nájdete v e-maile.')
         return code
 
 
@@ -295,7 +293,7 @@ class BorrowerApplicationForm(forms.Form):
     id_card_number = forms.CharField(label='Číslo občianskeho preukazu', max_length=20)
     birth_number = forms.CharField(
         label='Rodné číslo (bez lomítka)', max_length=15,
-        help_text='Slúži zároveň ako tvoje používateľské meno na prihlásenie.',
+        help_text='Slúži zároveň ako Vaše používateľské meno na prihlásenie.',
     )
     street_address = forms.CharField(label='Ulica a číslo', max_length=120)
     city = forms.CharField(label='Mesto', max_length=80)

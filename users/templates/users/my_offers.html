@@ -2,17 +2,17 @@
 {% block nav_offers %}active{% endblock %}
 {% block title %}Ponuky{% endblock %}
 {% block content %}
-<h1>Ponuky pre teba</h1>
-<p style="color:var(--muted);margin-top:0;">Keď splatíš pôžičku včas, odomkneš si výhodnejšie podmienky na ďalšiu žiadosť.</p>
+<h1>Ponuky pre vás</h1>
+<p style="color:var(--muted);margin-top:0;">Keď splatíte pôžičku včas, odomknete si výhodnejšie podmienky na ďalšiu žiadosť.</p>
 
 {% if has_closed_loan %}
 <div class="cta-strip">
-  <div><h2>Máš u nás splatenú pôžičku 🎉</h2><p>Ako overený klient môžeš požiadať o ďalšiu pôžičku 50 – 500 € na max. 30 dní, peniaze máš na účte do pár minút.</p></div>
+  <div><h2>Máte u nás splatenú pôžičku 🎉</h2><p>Ako overený klient môžete požiadať o ďalšiu pôžičku 50 – 500 € na max. 30 dní, peniaze máte na účte do pár minút.</p></div>
   <a class="btn btn-light" href="{% url 'users:loan_application' %}">Požičať si znova</a>
 </div>
 {% else %}
 <div class="alert alert-info">
-  Zatiaľ nemáš žiadnu splatenú pôžičku. Hneď ako prvú pôžičku úspešne splatíš, zobrazí sa tu ponuka na ďalšiu pôžičku.
+  Zatiaľ nemáte žiadnu splatenú pôžičku. Hneď ako prvú pôžičku úspešne splatíte, zobrazí sa tu ponuka na ďalšiu pôžičku.
 </div>
 {% endif %}
 
@@ -23,7 +23,7 @@
   <div class="detail-grid">
     <div>Pôžička<b>#{{ loan.pk }} · {{ loan.amount_requested }} €</b></div>
     <div>IBAN príjemcu<b>{{ bank_details.iban }}</b></div>
-    <div>Variabilný symbol<b>{{ loan.pk }}</b></div>
+    <div>Variabilný symbol<b>{{ loan.variable_symbol }}</b></div>
     <div>Suma na úhradu<b>{{ loan.repay_amount }} €</b></div>
   </div>
   <a class="btn btn-outline" href="{% url 'users:my_applications' %}">Zobraziť detail v Moje pôžičky</a>

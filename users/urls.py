@@ -23,6 +23,7 @@ urlpatterns = [
     path('moje-pozicky/<int:loan_id>/podpisat-zmluvu/', views.sign_loan_contract, name='sign_loan_contract'),
     path('moje-pozicky/<int:loan_id>/odklad/', views.request_postponement, name='request_postponement'),
     path('moje-pozicky/<int:loan_id>/nahlasit-uhradu/', views.report_payment, name='report_payment'),
+    path('moje-pozicky/<int:loan_id>/qr-platba.png', views.loan_payment_qr, name='loan_payment_qr'),
     path('moje-udaje/', views.my_profile, name='my_profile'),
     path('moje-zmluvy/', views.my_contracts, name='my_contracts'),
     path('moje-zmluvy/<int:loan_id>/zmluva.pdf', views.contract_loan_agreement_pdf, name='contract_loan_agreement'),

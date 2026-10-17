@@ -35,11 +35,14 @@ COMPANY = {
     'contact_person': 'Juraj Šupina',
 }
 
-#: Bankové údaje, na ktoré dlžníci zasielajú splátky (zhodné s users.views.REPAYMENT_BANK_DETAILS).
+#: Bankové údaje, na ktoré dlžníci zasielajú splátky (zhodné s core.payments.PLATFORM_BANK
+#: a users.views.REPAYMENT_BANK_DETAILS - jediný bankový účet platformy).
+from core.payments import PLATFORM_BANK, variable_symbol_for_user
+
 REPAYMENT_BANK = {
-    'bank_name': 'Fio banka, a.s., pobočka zahraničnej banky',
-    'iban': 'SK89 8330 0000 0021 0167 2695',
-    'swift': 'FIOZSKBA',
+    'bank_name': PLATFORM_BANK['bank_name'],
+    'iban': PLATFORM_BANK['iban'],
+    'swift': PLATFORM_BANK['swift'],
 }
 
 #: Úroková sadzba pôžičiek (% p.a.) sa už neuvádza ako jedna fixná hodnota -
@@ -321,7 +324,7 @@ def generate_payment_notice_pdf(loan, bid):
         Paragraph(f'Dlžník č. {loan.borrower.display_id}', styles['Normal']),
         Spacer(1, 8 * mm),
         Paragraph('Údaje potrebné na úhradu', styles['Heading']),
-        Paragraph(f'Variabilný symbol: {loan.pk}', styles['Normal']),
+        Paragraph(f'Variabilný symbol: {variable_symbol_for_user(loan.borrower)} (rodné číslo dlžníka)', styles['Normal']),
         Paragraph(
             'Uvedenie správneho variabilného symbolu je nevyhnutné pre korektné priradenie Vašej platby.',
             styles['Small'],
@@ -385,7 +388,8 @@ def generate_assignment_notice_pdf(bid):
         Paragraph(
             f'Na základe uvedeného Vás žiadame, aby ste Váš záväzok uhradili na nasledujúci účet spoločnosti '
             f'{COMPANY["name"]}: {REPAYMENT_BANK["bank_name"]}, IBAN: {REPAYMENT_BANK["iban"]}, pri úhrade '
-            f'uveďte variabilný symbol zhodný s číslom pôžičky ({loan.pk}).', styles['Normal'],
+            f'uveďte variabilný symbol zhodný s Vaším rodným číslom ({variable_symbol_for_user(loan.borrower)}).',
+            styles['Normal'],
         ),
         Spacer(1, 10 * mm),
         Paragraph(f'V Bratislave, dňa {transfer_date}', styles['Normal']),

@@ -17,7 +17,7 @@
 <body>
     {% if is_impersonating %}
     <div class="bg-warning text-dark text-center py-1 small">
-        👁 Pozeráš prostredie používateľa <strong>{{ user.username }}</strong> ako admin {{ real_admin.username }} ·
+        👁 Pozeráte prostredie používateľa <strong>{{ user.username }}</strong> ako admin {{ real_admin.username }} ·
         <a href="{% url 'users:impersonate_stop' %}">Skončiť náhľad</a>
     </div>
     {% endif %}

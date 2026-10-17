@@ -37,7 +37,7 @@
     {% if not application %}
     <h1 style="margin-top:14px;">Zatiaľ nemáš žiadnu žiadosť</h1>
     <div class="card" style="margin-top:20px;">
-      <p class="form-note">Vyplň žiadosť o pôžičku a dostaneš prihlasovacie údaje e-mailom hneď po schválení.</p>
+      <p class="form-note">Vyplňte žiadosť o pôžičku a dostanete prihlasovacie údaje e-mailom hneď po schválení.</p>
       <a class="btn btn-primary" href="{% url 'users:loan_application' %}">Požiadať o pôžičku</a>
     </div>
     {% else %}
@@ -46,13 +46,13 @@
       <div class="status-timeline">
         <div class="tl-step done"><span class="tl-dot"></span><div><b>Žiadosť odoslaná</b><span>{{ application.created_at|date:"d.m.Y, H:i" }}</span></div></div>
         {% if application.status == 'pending_review' %}
-        <div class="tl-step active"><span class="tl-dot"></span><div><b>Posúdenie administrátorom</b><span>Rozhodnutie (schválenie/zamietnutie) ti pošleme e-mailom</span></div></div>
+        <div class="tl-step active"><span class="tl-dot"></span><div><b>Posúdenie administrátorom</b><span>Rozhodnutie (schválenie/zamietnutie) Vám pošleme e-mailom</span></div></div>
         <div class="tl-step"><span class="tl-dot"></span><div><b>Zobrazené investorom v aukcii</b><span>—</span></div></div>
         <div class="tl-step"><span class="tl-dot"></span><div><b>Podpis zmluvy</b><span>—</span></div></div>
         <div class="tl-step"><span class="tl-dot"></span><div><b>Peniaze na účte</b><span>—</span></div></div>
         {% elif application.status == 'counter_offer' %}
         <div class="tl-step done"><span class="tl-dot"></span><div><b>Posúdenie administrátorom</b><span>{{ application.reviewed_at|date:"d.m.Y, H:i" }}</span></div></div>
-        <div class="tl-step active"><span class="tl-dot"></span><div><b>Protiponuka od platformy</b><span>Čaká sa na tvoje rozhodnutie</span></div></div>
+        <div class="tl-step active"><span class="tl-dot"></span><div><b>Protiponuka od platformy</b><span>Čaká sa na Vaše rozhodnutie</span></div></div>
         <div class="tl-step"><span class="tl-dot"></span><div><b>Podpis zmluvy</b><span>—</span></div></div>
         <div class="tl-step"><span class="tl-dot"></span><div><b>Peniaze na účte</b><span>—</span></div></div>
         {% elif application.status == 'rejected' %}
@@ -69,9 +69,9 @@
         <div><span>Úrok</span><b>{{ application.max_interest_rate }} % p.a.</b></div>
       </div>
       {% if application.status == 'pending_review' %}
-      <p class="form-note">O schválení alebo zamietnutí žiadosti ťa informujeme e-mailom, zvyčajne do niekoľkých hodín. Hneď ako žiadosť financuje investor, dostaneš ďalší e-mail s výzvou na podpis zmluvy.</p>
+      <p class="form-note">O schválení alebo zamietnutí žiadosti Vás informujeme e-mailom, zvyčajne do niekoľkých hodín. Hneď ako žiadosť financuje investor, dostanete ďalší e-mail s výzvou na podpis zmluvy.</p>
       {% elif application.status == 'counter_offer' %}
-      <p class="form-note">Pôvodne požadovanú sumu {{ application.amount_requested }} € sme nemohli schváliť v plnej výške. Namiesto toho ti ponúkame pôžičku vo výške <b>{{ application.counter_offer_amount }} €</b>.</p>
+      <p class="form-note">Pôvodne požadovanú sumu {{ application.amount_requested }} € sme nemohli schváliť v plnej výške. Namiesto toho Vám ponúkame pôžičku vo výške <b>{{ application.counter_offer_amount }} €</b>.</p>
       <div class="wizard-actions">
         <form method="post" action="{% url 'users:accept_counter_offer' application.pk %}">
           {% csrf_token %}
@@ -99,8 +99,8 @@
 <a class="sticky-tab" href="{% url 'users:application_status' %}">Klientska zóna</a>
 <div class="chat-widget">
   <div class="chat-panel" id="chatPanel">
-    <h4>Potrebuješ pomôcť?</h4>
-    <p>Napíš nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
+    <h4>Potrebujete pomôcť?</h4>
+    <p>Napíšte nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
     <a class="btn btn-primary btn-block" href="{% url 'core:contact' %}">Prejsť na kontakt</a>
   </div>
   <button class="chat-btn" id="chatBtn" aria-label="Otvoriť chat"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></button>

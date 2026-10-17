@@ -37,18 +37,22 @@
     <button type="button" class="btn btn-primary js-toggle-payment" data-target="payBox{{ loan.pk }}">Uhradiť pôžičku</button>
     <form method="post" action="{% url 'users:request_postponement' loan.pk %}">
       {% csrf_token %}
-      <button type="submit" class="btn btn-outline">Požiadať o odklad (+7 dní, {{ postpone_fee }} €)</button>
+      <button type="submit" class="btn btn-outline" onclick="return confirm('Naozaj chcete požiadať o odklad splatnosti o 7 dní za poplatok {{ postpone_fee }} €?');">Požiadať o odklad (+7 dní, {{ postpone_fee }} €)</button>
     </form>
   </div>
   <div class="report-payment-box" id="payBox{{ loan.pk }}">
     <h3 class="form-subhead" style="margin-top:0;">Platobné údaje na úhradu</h3>
-    <div class="detail-grid">
+    <div class="detail-grid" style="align-items:center;">
       <div>IBAN príjemcu<b>{{ bank_details.iban }}</b></div>
-      <div>Variabilný symbol<b>{{ loan.pk }}</b></div>
+      <div>Variabilný symbol<b>{{ loan.variable_symbol }}</b></div>
       <div>Suma na úhradu<b>{{ loan.repay_amount }} €</b></div>
       <div>Splatnosť<b>{{ loan.due_date|date:"d.m.Y" }}</b></div>
     </div>
-    <p class="form-note">Po prijatí platby na náš účet sa stav pôžičky automaticky zmení na „Splatená“. Platbu môžeš aj manuálne nahlásiť nižšie, ak si platil z iného účtu.</p>
+    <div style="margin-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <img src="{% url 'users:loan_payment_qr' loan.pk %}" alt="QR kód na úhradu" width="150" height="150" style="border-radius:10px;border:1px solid var(--line);">
+      <p class="form-note" style="margin:0;max-width:360px;">Naskenujte QR kód vo svojej bankovej aplikácii, prípadne zaplaťte ručne podľa uvedených údajov. Variabilný symbol je Vaše rodné číslo.</p>
+    </div>
+    <p class="form-note">Po prijatí platby na náš účet sa stav pôžičky automaticky zmení na „Splatená“. Platbu môžete aj manuálne nahlásiť nižšie, ak ste platili z iného účtu.</p>
     <form method="post" action="{% url 'users:report_payment' loan.pk %}">
       {% csrf_token %}
       <button type="submit" class="btn btn-outline" {% if loan.payment_reported %}disabled{% endif %}>
@@ -61,13 +65,13 @@
 {% endfor %}
 
 <div class="cta-strip">
-  <div><h2>Splatil si včas? Požičaj si znova.</h2><p>Stačí zvoliť sumu a splatnosť, tvoje údaje už máme overené z minulej žiadosti.</p></div>
+  <div><h2>Splatili ste včas? Požičajte si znova.</h2><p>Stačí zvoliť sumu a splatnosť, Vaše údaje už máme overené z minulej žiadosti.</p></div>
   <a class="btn btn-light" href="{% url 'users:loan_application' %}">Požičať si znova</a>
 </div>
 
 <div class="card">
   <h2>Ako a kam zaplatiť</h2>
-  <p style="color:#6b5a4d;">Splátku pošli bankovým prevodom na nasledujúci účet. Do variabilného symbolu uveď číslo svojej pôžičky.</p>
+  <p style="color:#6b5a4d;">Splátku pošlite bankovým prevodom na nasledujúci účet. Variabilný symbol je vždy Vaše rodné číslo (bez lomítka).</p>
   <div class="table-scroll">
   <table>
     <tr><th>Banka</th><td>{{ bank_details.bank_name }}</td></tr>

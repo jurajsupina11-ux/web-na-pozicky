@@ -7,9 +7,9 @@
 <div class="card" style="margin-bottom:16px;">
   <h2>Zmluva o pôžičke č. {{ loan.pk }}</h2>
   <p style="color:#6b5a4d;">
-    Tvoju žiadosť o pôžičku <strong>{{ loan.amount_requested }} €</strong> na {{ loan.duration_days }} dní
+    Vašu žiadosť o pôžičku <strong>{{ loan.amount_requested }} €</strong> na {{ loan.duration_days }} dní
     plne financoval investor s úrokom {{ bid.interest_rate }} % p.a. Pred vyplatením peňazí si prosím
-    stiahni a prečítaj Zmluvu o pôžičke a Predpis k úhrade.
+    stiahnite a prečítajte Zmluvu o pôžičke a Predpis k úhrade.
   </p>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 20px;">
     <a class="btn btn-outline" href="{% url 'users:contract_loan_agreement' loan.pk %}">Stiahnuť Zmluvu o pôžičke (PDF)</a>
@@ -27,7 +27,7 @@
     <button type="submit" class="btn btn-primary">Podpísať zmluvu a požiadať o vyplatenie</button>
   </form>
   <p class="note" style="font-size:12px;color:#b08a73;margin-top:14px;">
-    Po podpise zmluvy ti peniaze pošleme na tvoj bankový účet v pracovné dni od 8:00 do 16:00.
+    Po podpise zmluvy Vám peniaze pošleme na Váš bankový účet v pracovné dni od 8:00 do 16:00.
   </p>
 </div>
 {% endblock %}

@@ -6,13 +6,19 @@
 
 <div class="card">
   <h2>Bankový účet pre výplatu peňazí</h2>
-  <p style="color:#6b5a4d;">Zmena IBAN účtu, na ktorý sa vyplácajú schválené pôžičky.</p>
+  <p style="color:#6b5a4d;">Zmena IBAN účtu, na ktorý sa vyplácajú schválené pôžičky. Z bezpečnostných dôvodov je potrebné zadať bezpečnostný kód zaslaný e-mailom.</p>
   <form method="post" style="max-width:420px;">
     {% csrf_token %}
     <div style="margin-bottom:14px;">
       {{ bank_form.bank_account_iban.label_tag }}
       {{ bank_form.bank_account_iban }}
       {% if bank_form.bank_account_iban.errors %}<div style="color:#c4342b;font-size:13px;margin-top:4px;">{{ bank_form.bank_account_iban.errors }}</div>{% endif %}
+    </div>
+    <div style="margin-bottom:14px;">
+      {{ bank_form.security_code.label_tag }}
+      {{ bank_form.security_code }}
+      <p style="color:#b08a73;font-size:12px;margin-top:4px;">Kód ste dostali e-mailom pri schválení prvej pôžičky.</p>
+      {% if bank_form.security_code.errors %}<div style="color:#c4342b;font-size:13px;margin-top:4px;">{{ bank_form.security_code.errors }}</div>{% endif %}
     </div>
     <button type="submit" class="btn btn-primary">Uložiť IBAN</button>
   </form>
@@ -28,7 +34,7 @@
 
 <div class="card">
   <h2>Zmena hesla</h2>
-  <p style="color:#6b5a4d;">Pravidelná zmena hesla zvyšuje bezpečnosť tvojho účtu.</p>
+  <p style="color:#6b5a4d;">Pravidelná zmena hesla zvyšuje bezpečnosť Vášho účtu.</p>
   <a class="btn btn-outline" href="{% url 'users:password_change' %}">Zmeniť heslo</a>
 </div>
 {% endblock %}

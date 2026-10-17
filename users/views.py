@@ -172,7 +172,7 @@ def kyc_form(request):
         form = KYCForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Údaje boli overené. Môžeš pokračovať v žiadosti o pôžičku.')
+            messages.success(request, 'Údaje boli overené. Môžete pokračovať v žiadosti o pôžičku.')
             return redirect(next_url)
     else:
         form = KYCForm(instance=request.user)
@@ -202,7 +202,7 @@ def loan_application(request):
         return render(request, 'users/loan_application_repeat.html', {'form': form})
 
     if request.user.is_authenticated:
-        messages.info(request, 'Si prihlásený ako investor. Odhlás sa, ak chceš žiadať o pôžičku.')
+        messages.info(request, 'Ste prihlásený ako investor. Odhláste sa, ak chcete žiadať o pôžičku.')
         return redirect('auctions:list')
 
     if request.method == 'POST':
@@ -214,7 +214,7 @@ def loan_application(request):
             send_loan_application_received(user, auction, password=form.generated_password)
             messages.success(
                 request,
-                'Žiadosť o pôžičku bola odoslaná. Prihlasovacie údaje sme ti poslali e-mailom.',
+                'Žiadosť o pôžičku bola odoslaná. Prihlasovacie údaje sme Vám poslali e-mailom.',
             )
             return redirect('users:application_status')
     else:
@@ -265,12 +265,17 @@ def reject_counter_offer(request, loan_id):
     return redirect('users:application_status')
 
 
-#: Údaje platiteľa, na ktorého účet majú dlžníci zasielať splátky.
+#: Údaje platiteľa, na ktorého účet majú dlžníci zasielať splátky - jediný
+#: bankový účet platformy (zhodné s core.payments.PLATFORM_BANK a
+#: core.contracts.REPAYMENT_BANK). Variabilný symbol je vždy rodné číslo
+#: dlžníka (pozri core.payments.variable_symbol_for_user).
+from core.payments import PLATFORM_BANK, variable_symbol_for_user
+
 REPAYMENT_BANK_DETAILS = {
-    'bank_name': 'Fio banka, a.s., pobočka zahraničnej banky',
-    'iban': 'SK89 8330 0000 0021 0167 2695',
-    'swift': 'FIOZSKBA',
-    'variable_symbol_hint': 'VS = číslo pôžičky (napr. 101)',
+    'bank_name': PLATFORM_BANK['bank_name'],
+    'iban': PLATFORM_BANK['iban'],
+    'swift': PLATFORM_BANK['swift'],
+    'variable_symbol_hint': 'VS = Vaše rodné číslo (bez lomítka)',
 }
 
 #: Jednorazový poplatok za odklad splátky o 7 dní.
@@ -296,6 +301,8 @@ def _annotate_loan(loan):
     ), 2)
     loan.postpone_fees_amount = Decimal(loan.postponed_days // POSTPONE_DAYS) * POSTPONE_FEE
     loan.due_date = loan.starts_at + timedelta(days=loan.duration_days + loan.postponed_days)
+    #: Variabilný symbol platby pre túto pôžičku je vždy rodné číslo dlžníka.
+    loan.variable_symbol = variable_symbol_for_user(loan.borrower)
     return loan
 
 
@@ -357,28 +364,13 @@ def my_applications(request):
 
 @login_required
 def my_loans(request):
-    """Prostredie pre dlžníkov - prístupné až keď má aspoň jednu schválenú (vyfinancovanú,
-    alebo čakajúcu na podpis zmluvy) pôžičku. Obsahuje aktuálny stav pôžičky aj údaje,
-    ako a kam ju zaplatiť."""
-    loans = Auction.objects.filter(
-        borrower=request.user,
-        status__in=[Auction.Status.SIGNING, Auction.Status.FUNDED, Auction.Status.CLOSED],
-    )
-    if not loans.exists():
-        messages.warning(
-            request,
-            'Do prostredia pre dlžníkov sa dostaneš, až keď investor financuje aspoň jednu tvoju žiadosť.',
-        )
-        return redirect('users:my_applications')
-
-    for loan in loans.filter(status=Auction.Status.FUNDED):
-        _annotate_loan(loan)
-
-    return render(request, 'users/my_loans.html', {
-        'loans': loans,
-        'bank_details': REPAYMENT_BANK_DETAILS,
-        'postpone_fee': POSTPONE_FEE,
-    })
+    """Historická URL - presmeruje na jedinú, zjednotenú stránku 'Moje pôžičky'
+    (users:my_applications). Predtým existovali DVE samostatné stránky s
+    prekrývajúcim sa obsahom (my_applications a toto my_loans) a rôzne akcie
+    (podpis zmluvy, žiadosť o odklad, nahlásenie úhrady, overenie e-mailu)
+    presmerúvali práve sem - pre dlžníka to pôsobilo ako iná, nekonzistentná
+    podstránka bez viditeľných poplatkov. Teraz je už len jedna stránka."""
+    return redirect('users:my_applications')
 
 
 @login_required
@@ -399,7 +391,7 @@ def sign_loan_contract(request, loan_id):
         send_loan_approved(loan.borrower, loan)
         messages.success(
             request,
-            'Zmluva bola podpísaná. Peniaze ti pošleme na tvoj bankový účet v pracovné dni od 8:00 do 16:00.',
+            'Zmluva bola podpísaná. Peniaze Vám pošleme na Váš bankový účet v pracovné dni od 8:00 do 16:00.',
         )
         return redirect('users:my_loans')
     return render(request, 'users/sign_loan_contract.html', {'loan': loan, 'bid': bid})
@@ -478,6 +470,21 @@ def report_payment(request, loan_id):
             'Ďakujeme, nahlásenie úhrady sme zaznamenali. Platbu overíme do 1 pracovného dňa.',
         )
     return redirect('users:my_loans')
+
+
+@login_required
+def loan_payment_qr(request, loan_id):
+    """QR kód na úhradu konkrétnej pôžičky - IBAN, suma a variabilný symbol
+    (rodné číslo dlžníka) zakódované vo formáte SPD, aby sa dali načítať
+    priamo bankovou aplikáciou."""
+    from core.payments import payment_qr_response
+
+    loan = get_object_or_404(Auction, pk=loan_id, borrower=request.user, status=Auction.Status.FUNDED)
+    _annotate_loan(loan)
+    return payment_qr_response(
+        REPAYMENT_BANK_DETAILS['iban'], loan.repay_amount, loan.variable_symbol,
+        message=f'Splatka pozicky {loan.pk}',
+    )
 
 
 #: Jednorazový bonus (€) pre pozývateľa aj pozvaného po prvej investícii pozvaného.
@@ -659,7 +666,7 @@ def impersonate_start(request, user_id):
         return redirect('users:login')
     target = get_object_or_404(User, pk=user_id, is_superuser=False)
     request.session['impersonate_user_id'] = target.pk
-    messages.info(request, f'Zobrazuješ prostredie používateľa „{target.username}“.')
+    messages.info(request, f'Zobrazujete prostredie používateľa „{target.username}“.')
     if target.role == User.Role.BORROWER:
         return redirect('users:my_applications')
     return redirect('auctions:investor_dashboard')

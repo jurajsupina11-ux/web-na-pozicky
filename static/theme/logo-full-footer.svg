@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Insight Partners - plné logo pre tmavú pätičku (footer): rovnaká farebná
      mincová ikona ako v hlavičke, ale nápis "Insight Partners" je biely,
-     aby bol čitateľný na tmavom pozadí pätičky (var(--ink)). -->
+     aby bol čitateľný na tmavom pozadí pätičky. -->
 <svg
    width="210" height="45"
    viewBox="20 52 175 37"

@@ -10,8 +10,8 @@
 <body class="role-investor">
 <div class="bg-dots"></div>
 {% if is_impersonating %}
-<div style="background:#fff4e5;color:#8a5a00;font-size:12.5px;padding:8px 24px;text-align:center;">
-  <span class="ic" style="display:inline-flex;vertical-align:middle;width:16px;height:16px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></span> Pozeráš prostredie používateľa <strong>{{ user.username }}</strong> ako admin {{ real_admin.username }} ·
+<div class="impersonate-bar" style="background:#fff4e5;color:#8a5a00;font-size:12.5px;padding:8px 24px;text-align:center;">
+  <span class="ic" style="display:inline-flex;vertical-align:middle;width:16px;height:16px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></span> Pozeráte prostredie používateľa <strong>{{ user.username }}</strong> ako admin {{ real_admin.username }} ·
   <a href="{% url 'users:impersonate_stop' %}" style="color:#8a5a00;font-weight:700;">Skončiť náhľad</a>
 </div>
 {% endif %}
@@ -154,8 +154,8 @@
 <a class="sticky-tab" href="{% url 'auctions:investor_dashboard' %}">Klientska zóna</a>
 <div class="chat-widget">
   <div class="chat-panel" id="chatPanel">
-    <h4>Potrebuješ pomôcť?</h4>
-    <p>Napíš nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
+    <h4>Potrebujete pomôcť?</h4>
+    <p>Napíšte nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
     <a class="btn btn-primary btn-block" href="{% url 'core:contact' %}">Prejsť na kontakt</a>
   </div>
   <button class="chat-btn" id="chatBtn" aria-label="Otvoriť chat"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></button>

@@ -2,7 +2,7 @@
 {% block title %}Nová žiadosť o pôžičku{% endblock %}
 {% block content %}
 <div class="dash-top"><h1 style="margin-bottom:4px;">Nová žiadosť</h1><span class="role-badge">Rýchla žiadosť</span></div>
-<p style="color:var(--muted);margin-top:0;">Tvoje osobné údaje, adresu aj zamestnanie už máme overené z predchádzajúcej žiadosti - stačí zvoliť sumu a splatnosť.</p>
+<p style="color:var(--muted);margin-top:0;">Vaše osobné údaje, adresu aj zamestnanie už máme overené z predchádzajúcej žiadosti - stačí zvoliť sumu a splatnosť.</p>
 <div class="card" style="max-width:620px;">
   <form method="post">
     {% csrf_token %}
@@ -17,7 +17,7 @@
       <div>Bankový účet pre výplatu<b>{{ user.masked_bank_account_iban }}</b></div>
     </div>
     <button type="submit" class="btn btn-primary btn-block">Odoslať žiadosť</button>
-    <p class="form-note">Keďže si už overený klient, žiadosť sa po odoslaní rovno zobrazí investorom v aukčnej miestnosti - rozhodnutie ti pošleme e-mailom.</p>
+    <p class="form-note">Keďže ste už overený klient, žiadosť sa po odoslaní rovno zobrazí investorom v aukčnej miestnosti - rozhodnutie Vám pošleme e-mailom.</p>
   </form>
 </div>
 {% endblock %}

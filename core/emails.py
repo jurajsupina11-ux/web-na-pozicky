@@ -32,16 +32,16 @@ def send_investor_welcome(user):
     ktorý bude potrebovať na potvrdenie žiadosti o výber peňazí a na zmenu
     bankového účtu (IBAN) v Nastaveniach."""
     _send(
-        'Vitaj na Pôžičky Predlžníkov - tvoj bezpečnostný kód',
+        'Vitajte na Pôžičky Predlžníkov - Váš bezpečnostný kód',
         (
             f'Dobrý deň,\n\n'
-            f'vitaj medzi investormi na Pôžičky Predlžníkov!\n\n'
-            f'Tvoj bezpečnostný kód je: {user.security_code}\n\n'
-            f'Tento kód budeš potrebovať vždy, keď:\n'
-            f'- požiadaš o výber peňazí z peňaženky na svoj bankový účet,\n'
-            f'- budeš meniť bankový účet (IBAN), na ktorý sa ti majú peniaze posielať,\n'
-            f'- budeš meniť heslo k účtu.\n\n'
-            f'Kód si ulož na bezpečné miesto a nikomu ho neposkytuj.\n\n'
+            f'vitajte medzi investormi na Pôžičky Predlžníkov!\n\n'
+            f'Váš bezpečnostný kód je: {user.security_code}\n\n'
+            f'Tento kód budete potrebovať vždy, keď:\n'
+            f'- požiadate o výber peňazí z peňaženky na svoj bankový účet,\n'
+            f'- budete meniť bankový účet (IBAN), na ktorý sa Vám majú peniaze posielať,\n'
+            f'- budete meniť heslo k účtu.\n\n'
+            f'Kód si uložte na bezpečné miesto a nikomu ho neposkytujte.\n\n'
             f'Peniaze posielame výhradne na slovenské bankové účty (SK IBAN) a platby spracúvame '
             f'v pracovné dni od 8:00 do 16:00.\n\n'
             f'S pozdravom,\nPôžičky Predlžníkov'
@@ -60,7 +60,7 @@ def send_loan_application_received(user, auction, password=None):
     credentials = ''
     if password:
         credentials = (
-            f'Tvoje prihlasovacie údaje:\n'
+            f'Vaše prihlasovacie údaje:\n'
             f'Používateľské meno: {user.username}\n'
             f'Heslo: {password}\n\n'
             f'Heslo si po prvom prihlásení odporúčame zmeniť (v sekcii Nastavenia).\n\n'
@@ -84,15 +84,20 @@ def send_loan_application_received(user, auction, password=None):
 
 def send_loan_application_approved(user, auction):
     """Dlžníkovi: žiadosť bola administrátorom schválená - žiadosť ide medzi
-    otvorené ponuky pre investorov."""
+    otvorené ponuky pre investorov. Spolu so schválením posielame aj
+    bezpečnostný kód, ktorý bude dlžník potrebovať pri zmene bankového účtu
+    (IBAN) v Nastaveniach."""
     _send(
-        'Tvoja žiadosť o pôžičku bola schválená',
+        'Vaša žiadosť o pôžičku bola schválená',
         (
             f'Dobrý deň,\n\n'
-            f'tvoja žiadosť o pôžičku {auction.amount_requested} € na {auction.duration_days} dní '
+            f'vaša žiadosť o pôžičku {auction.amount_requested} € na {auction.duration_days} dní '
             f'bola schválená a je teraz zobrazená investorom na financovanie.\n\n'
-            f'Hneď ako ju niektorý investor financuje, dostaneš ďalší e-mail a budeš môcť podpísať '
+            f'Hneď ako ju niektorý investor financuje, dostanete ďalší e-mail a budete môcť podpísať '
             f'zmluvu vo svojom účte.\n\n'
+            f'Váš bezpečnostný kód je: {user.security_code}\n'
+            f'Tento kód budete potrebovať pri zmene bankového účtu (IBAN), na ktorý sa Vám majú '
+            f'vyplácať peniaze. Kód si uložte na bezpečné miesto a nikomu ho neposkytujte.\n\n'
             f'S pozdravom,\nPôžičky Predlžníkov'
         ),
         user.email,
@@ -103,12 +108,12 @@ def send_loan_application_rejected(user, auction):
     """Dlžníkovi: žiadosť bola zamietnutá (napr. na základe úverového registra)."""
     reason = f'\n\nDôvod: {auction.rejection_reason}\n' if auction.rejection_reason else '\n'
     _send(
-        'Tvoja žiadosť o pôžičku bola zamietnutá',
+        'Vaša žiadosť o pôžičku bola zamietnutá',
         (
             f'Dobrý deň,\n\n'
-            f'bohužiaľ, tvoju žiadosť o pôžičku {auction.amount_requested} € sme nemohli schváliť.'
+            f'bohužiaľ, Vašu žiadosť o pôžičku {auction.amount_requested} € sme nemohli schváliť.'
             f'{reason}\n'
-            f'Žiadosť môžeš kedykoľvek podať znova.\n\n'
+            f'Žiadosť môžete kedykoľvek podať znova.\n\n'
             f'S pozdravom,\nPôžičky Predlžníkov'
         ),
         user.email,
@@ -119,12 +124,12 @@ def send_loan_application_counter_offer(user, auction):
     """Dlžníkovi: namiesto zamietnutia platforma ponúka nižšiu sumu, dlžník ju
     môže prijať alebo odmietnuť vo svojom účte."""
     _send(
-        'Protiponuka k tvojej žiadosti o pôžičku',
+        'Protiponuka k Vašej žiadosti o pôžičku',
         (
             f'Dobrý deň,\n\n'
             f'pôvodne požadovanú sumu {auction.amount_requested} € sme nemohli schváliť v plnej výške, '
-            f'namiesto toho ti ponúkame pôžičku vo výške {auction.counter_offer_amount} €.\n\n'
-            f'Protiponuku môžeš prijať alebo odmietnuť vo svojom účte (sekcia "Moje žiadosti").\n\n'
+            f'namiesto toho Vám ponúkame pôžičku vo výške {auction.counter_offer_amount} €.\n\n'
+            f'Protiponuku môžete prijať alebo odmietnuť vo svojom účte (sekcia "Moje žiadosti").\n\n'
             f'S pozdravom,\nPôžičky Predlžníkov'
         ),
         user.email,
@@ -151,11 +156,11 @@ def send_email_verification(user, verify_url):
     """Dlžníkovi: odkaz na overenie e-mailovej adresy - vyžaduje sa pred
     podpisom Zmluvy o pôžičke."""
     _send(
-        'Over svoju e-mailovú adresu',
+        'Overte svoju e-mailovú adresu',
         (
             f'Dobrý deň,\n\n'
-            f'pred podpisom Zmluvy o pôžičke je potrebné overiť tvoju e-mailovú adresu. '
-            f'Klikni prosím na nasledujúci odkaz:\n\n'
+            f'pred podpisom Zmluvy o pôžičke je potrebné overiť Vašu e-mailovú adresu. '
+            f'Kliknite prosím na nasledujúci odkaz:\n\n'
             f'{verify_url}\n\n'
             f'S pozdravom,\nPôžičky Predlžníkov'
         ),
@@ -240,12 +245,12 @@ def send_buyback_notice_borrower(user, auction):
 def send_auction_expired(user, auction):
     """Dlžníkovi: žiadosť o pôžičku nebola vyfinancovaná do konca lehoty a bola zrušená."""
     _send(
-        'Tvoja žiadosť o pôžičku nebola vyfinancovaná',
+        'Vaša žiadosť o pôžičku nebola vyfinancovaná',
         (
             f'Dobrý deň,\n\n'
-            f'tvoja žiadosť o pôžičku {auction.amount_requested} € bohužiaľ nebola vyfinancovaná žiadnym '
+            f'Vaša žiadosť o pôžičku {auction.amount_requested} € bohužiaľ nebola vyfinancovaná žiadnym '
             f'investorom v stanovenej lehote a bola zrušená.\n\n'
-            f'Môžeš podať novú žiadosť vo svojom účte.\n\n'
+            f'Môžete podať novú žiadosť vo svojom účte.\n\n'
             f'S pozdravom,\nPôžičky Predlžníkov'
         ),
         user.email,
