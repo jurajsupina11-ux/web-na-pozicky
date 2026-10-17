@@ -27,10 +27,12 @@ def check(name, condition, extra=""):
     results.append((status, name, extra))
     print(f"[{status}] {name}" + (f" -- {extra}" if extra and status == 'FAIL' else ""))
 
-# cleanup from previous runs
+# cleanup from previous runs (aj podla rodneho cisla, ak sa username medzicasom zmenil
+# alebo ak iny testovaci skript nechal zaznam s rovnakym cislom - rodne cislo je unique)
 User.objects.filter(
     username__in=['e2e_investor', 'e2e_borrower', 'e2e_investor2', 'e2e_bot_investor', '9001011234'],
 ).delete()
+User.objects.filter(birth_number__in=['8605061111', '9001011234']).delete()
 
 c = Client(raise_request_exception=False)
 
@@ -61,7 +63,7 @@ signup_data = {
     'last_name': 'Investor',
     'date_of_birth': '1985-05-05',
     'id_card_number': 'CD987654',
-    'birth_number': '8505051234',
+    'birth_number': '8605061111',
     'street_address': 'Investicna 1',
     'city': 'Bratislava',
     'postal_code': '81101',
@@ -80,7 +82,7 @@ if investor:
     check('Investor GDPR consent recorded', investor.gdpr_consent_given is True)
     check('Investor display_id generated', bool(investor.display_id) and len(investor.display_id) == 6)
     check('Investor KYC data saved (kyc_completed)', investor.kyc_completed is True)
-    check('Investor birth number saved', investor.birth_number == '8505051234')
+    check('Investor birth number saved', investor.birth_number == '8605061111')
 
 # honeypot field should silently reject bot-like submissions
 bot_signup_data = dict(signup_data)
@@ -106,10 +108,9 @@ c.logout()
 # ========== 3. WALLET DEPOSIT (manual bank transfer - request + admin confirmation) ==========
 c.force_login(investor)
 
-# Deposit requires a verified e-mail first
-r = c.post('/aukcie/penazenka/vklad/', {'amount': '500'}, follow=True)
-check('Deposit redirects to e-mail verification when not verified', 'overit-email' in r.redirect_chain[-1][0] if r.redirect_chain else False, str(r.redirect_chain))
-
+# Vklad NEVYZADUJE overenie e-mailu (prijimanie penazi, nie ich odosielanie -
+# viz docstring auctions.views.wallet_deposit), takze ziadost prejde hned.
+# E-mail overime tu pre neskorsie kroky (bid/sign vyzaduju over. e-mail).
 r = c.post('/accounts/overit-email/', follow=True)
 check('Investor verification e-mail request succeeds', r.status_code == 200)
 investor.refresh_from_db()
@@ -213,7 +214,10 @@ c.logout()
 
 # ========== 6. BORROWER CAN NOW ACCESS LOAN ENVIRONMENT ==========
 c.force_login(borrower)
-r = c.get('/accounts/moje-pozicky/')
+# /accounts/moje-pozicky/ je historicka URL, ktora vzdy presmeruje (302) na
+# zjednotenu stranku 'Moje ziadosti' (users:my_applications) - viz
+# users.views.my_loans docstring. Preto treba follow=True.
+r = c.get('/accounts/moje-pozicky/', follow=True)
 check('Borrower can access Moje pozicky while awaiting signature', r.status_code == 200)
 check('Moje pozicky shows signing hint', b'podpis' in r.content.lower())
 
@@ -238,7 +242,7 @@ auction.refresh_from_db()
 check('Auction fully funded (FUNDED) after contract signature', auction.status == Auction.Status.FUNDED, f'status={auction.status}')
 check('Auction records contract_signed_at timestamp', auction.contract_signed_at is not None)
 
-r = c.get('/accounts/moje-pozicky/')
+r = c.get('/accounts/moje-pozicky/', follow=True)
 check('Moje pozicky shows the loan amount', b'200' in r.content)
 
 r = c.get('/accounts/moje-ziadosti/')
@@ -266,11 +270,26 @@ check('Report payment succeeds', r.status_code == 200)
 auction.refresh_from_db()
 check('Auction payment_reported flag set', auction.payment_reported is True)
 
-# Account settings - update IBAN
-r = c.post('/accounts/nastavenia/', {'bank_account_iban': 'SK0000000000000000000000'}, follow=True)
+# Account settings - update IBAN (vyzaduje bezpecnostny kod - viz BankAccountForm)
+r = c.post('/accounts/nastavenia/', {
+    'bank_account_iban': 'SK0000000000000000000000',
+    'security_code': borrower.security_code,
+}, follow=True)
 check('Borrower can update IBAN via account settings', r.status_code == 200)
 borrower.refresh_from_db()
 check('IBAN actually updated in DB', borrower.bank_account_iban == 'SK0000000000000000000000', f'iban={borrower.bank_account_iban}')
+
+# Bez spravneho bezpecnostneho kodu sa IBAN zmenit NEMA (security gating)
+r = c.post('/accounts/nastavenia/', {
+    'bank_account_iban': 'SK1111111111111111111111',
+    'security_code': 'wrong-code',
+}, follow=True)
+borrower.refresh_from_db()
+check(
+    'IBAN change rejected with wrong security code',
+    borrower.bank_account_iban == 'SK0000000000000000000000',
+    f'iban={borrower.bank_account_iban}',
+)
 
 c.logout()
 
@@ -305,9 +324,15 @@ c.force_login(investor)
 c.post(f'/aukcie/investicia/{bid.pk}/predaj/', follow=True)  # re-list for sale
 c.logout()
 
+bid.refresh_from_db()
 c.force_login(investor2)
 r = c.get('/aukcie/trh/')
-check('Second investor sees listing on marketplace', bid.auction.borrower.display_name.encode() in r.content or str(bid.amount).encode() in r.content)
+# Karta na trhu zobrazuje predavajuceho (lender) investora, nie dlznika z pozicky,
+# a sumu v slovenskom formate (ciarka ako desatinny oddelovac).
+check(
+    'Second investor sees listing on marketplace',
+    bid.lender.display_name.encode() in r.content and b'200,00' in r.content,
+)
 r = c.post(f'/aukcie/trh/{bid.pk}/kupit/', follow=True)
 check('Second investor can buy listed investment', r.status_code == 200)
 bid.refresh_from_db()
