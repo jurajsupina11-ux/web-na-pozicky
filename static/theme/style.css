@@ -408,6 +408,11 @@ td{padding:14px 12px;border-bottom:1px solid var(--line);}
 .chat-panel h4{margin:0 0 6px;font-size:14px;}
 .chat-panel p{font-size:12.5px;margin:0 0 12px;}
 
+.dash-sidebar-toggle{display:none;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:10px 16px;font-weight:700;font-size:13.5px;color:var(--ink);margin-bottom:16px;cursor:pointer;}
+.dash-sidebar-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.dash-sidebar-close{display:none;margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;}
+.dash-sidebar-overlay{display:none;}
+
 /* Responsive */
 @media(max-width:900px){
   .hero-grid,.split-grid,.form-grid,.auth-grid,.picker-grid{grid-template-columns:1fr;}
@@ -461,6 +466,7 @@ td{padding:14px 12px;border-bottom:1px solid var(--line);}
   .filter-bar{gap:8px;}
   .filter-bar select,.filter-bar input{flex:1;min-width:120px;}
 }
+@media(max-width:700px){.dash-sidebar-close{display:flex;}.dash-sidebar .sidebar-user{align-items:center;}}
 @media(max-width:480px){
   .impersonate-bar{font-size:11px !important;padding:7px 10px !important;line-height:1.4;}
   .wrap{padding:0 14px;}
@@ -486,11 +492,6 @@ td{padding:14px 12px;border-bottom:1px solid var(--line);}
   .market-card{padding:4px;}
   .sidebar-nav-link{font-size:13px;padding:9px 10px;}
 }
-.dash-sidebar-toggle{display:none;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:10px 16px;font-weight:700;font-size:13.5px;color:var(--ink);margin-bottom:16px;cursor:pointer;}
-.dash-sidebar-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-.dash-sidebar-close{display:none;margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;}
-.dash-sidebar-overlay{display:none;}
-@media(max-width:700px){.dash-sidebar-close{display:flex;}.dash-sidebar .sidebar-user{align-items:center;}}
 .btn-approve{background:#e4f8f1;color:#128a66;border:1px solid #bdeedc;}
 .btn-reject{background:#fde6e6;color:#c23030;border:1px solid #f7c6c6;}
 .admin-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}

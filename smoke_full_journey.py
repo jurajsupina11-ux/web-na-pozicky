@@ -5,6 +5,7 @@ import os
 import django
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+os.environ.setdefault('ALLOWED_HOSTS', 'testserver,localhost,127.0.0.1')
 django.setup()
 
 from decimal import Decimal
@@ -27,7 +28,9 @@ def check(label, resp, expect=(200, 302)):
     return resp
 
 print("=== CISTENIE testovacich uctov ===")
-User.objects.filter(username__in=['9001011234', 'testinvestor1', 'fundertest1', '9002022222']).delete()
+User.objects.filter(username__in=[
+    '9001011234', 'testinvestor1', 'fundertest1', '9002022222', 'buyertest1',
+]).delete()
 
 # ---------------------------------------------------------------------------
 print("\n=== BORROWER (DLZNIK) JOURNEY ===")
@@ -125,12 +128,27 @@ if borrower and auction and auction.status == Auction.Status.ACTIVE:
         if bid:
             check('investor contract_loan_agreement PDF', fc.get(
                 reverse('auctions:contract_loan_agreement', args=[bid.pk])), expect=(200,))
-            check('investor contract_assignment_agreement PDF', fc.get(
-                reverse('auctions:contract_assignment_agreement', args=[bid.pk])), expect=(200,))
-            check('investor contract_assignment_notice PDF', fc.get(
-                reverse('auctions:contract_assignment_notice', args=[bid.pk])), expect=(200,))
             check('bid_toggle_sale (list on secondary market)', fc.post(
                 reverse('auctions:bid_toggle_sale', args=[bid.pk])))
+
+            # Odkupime investiciu novym investorom na sekundarnom trhu, aby
+            # sa realne vytvorilo postupenie (previous_lender_id) a dalo sa
+            # otestovat stiahnutie Zmluvy o postupeni + Oznamenia o postupeni.
+            buyer2 = User.objects.create_user(
+                username='buyertest1', email='buyer2@example.com', password='x',
+                role=User.Role.LENDER, wallet_balance=Decimal('10000'), kyc_completed=True,
+            )
+            bc = Client()
+            bc.force_login(buyer2)
+            check('marketplace_buy POST', bc.post(
+                reverse('auctions:marketplace_buy', args=[bid.pk])))
+            bid.refresh_from_db()
+            print(f"   bid.lender after marketplace_buy: {bid.lender_id}, previous_lender: {bid.previous_lender_id}")
+
+            check('investor contract_assignment_agreement PDF', bc.get(
+                reverse('auctions:contract_assignment_agreement', args=[bid.pk])), expect=(200,))
+            check('investor contract_assignment_notice PDF', bc.get(
+                reverse('auctions:contract_assignment_notice', args=[bid.pk])), expect=(200,))
 
 print("\n--- repeat application as existing borrower ---")
 if borrower:
