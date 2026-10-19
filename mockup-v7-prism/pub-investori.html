@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pôžičky pre Dlžníkov – Pre investorov</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo-icon.svg?v=1792420092">
+<link rel="stylesheet" href="assets/style.css?v=1792420092">
+</head>
+<body class="role-investor">
+<div class="bg-dots"></div>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="pub-landing.html">
+      <img src="assets/logo-full.svg?v=1792420092" alt="Insight Partners" class="logo-full-img">
+    </a>
+    <button class="burger" id="burgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="mainNav">
+      <a href="pub-landing.html">Domov</a>
+      <a href="pub-investori.html" class="active">Pre investorov</a>
+      <a href="pub-pre-ziadatelov.html">Pre žiadateľov</a>
+      <a href="pub-caste-otazky.html">Časté otázky</a>
+      <a href="pub-kontakt.html">Kontakt</a>
+      <div class="nav-cta">
+        
+        <a class="btn btn-ghost" href="pub-prihlasenie-investor.html">Prihlásiť sa</a>
+        <a class="btn btn-primary" href="pub-registracia.html">Začať investovať</a>
+        
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero hero-sm">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Pre investorov</span>
+      <h1>Zarábajte <em>19 – 24 % p.a.</em><br>na krátkych pôžičkách</h1>
+      <p class="lead">Investujte od 50 € do overených žiadostí o pôžičku a dostaňte výnos späť do 30 dní.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="pub-registracia.html">Začať investovať</a>
+        <a class="btn btn-outline btn-lg" href="#">Pozrieť aktuálne ponuky</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="float-card card-a"><span class="pill pill-up">+22,1 € výnos</span><b>312 €</b><span>Zrealizovaná investícia · 18 dní</span></div>
+      <div class="float-card card-b"><span class="pill pill-info">Schválené</span><b>200 €</b><span>Úrok 20,3 % p.a. · 18 dní</span></div>
+      <div class="float-card card-c"><span class="pill pill-up">+8,9 % mesačne</span><b>150 €</b><span>Splatená investícia · Mária K.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">Výhody</span><h2>Prečo investovať cez nás</h2></div>
+    <div class="benefit-grid">
+      <div class="benefit-card"><div class="benefit-icon"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 7-7"/><path d="M14 8h7v7"/></svg></span></div><h3>Vysoký výnos</h3><p>Úrok 19 – 24 % p.a. podľa dĺžky splatnosti pôžičky.</p></div>
+      <div class="benefit-card"><div class="benefit-icon"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span></div><h3>Overení žiadatelia</h3><p>Každý žiadateľ prejde identifikačným a bonitným overením (KYC).</p></div>
+      <div class="benefit-card"><div class="benefit-icon"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M11 20V4"/><path d="M18 20v-7"/></svg></span></div><h3>Diverzifikácia</h3><p>Rozlož investíciu od 50 € do viacerých pôžičiek naraz.</p></div>
+      <div class="benefit-card"><div class="benefit-icon"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span></div><h3>Sekundárny trh</h3><p>Investíciu môžete kedykoľvek ponúknuť na predaj inému investorovi.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="wrap" style="max-width:640px;">
+    <div class="slider-calc">
+      <h3>Kalkulačka investície</h3>
+      <div class="slider-row">
+        <div class="slider-row-head"><span>Suma investície</span><b id="investAmountVal">500 €</b></div>
+        <input type="range" id="investAmount" min="50" max="5000" step="50" value="500">
+        <div class="slider-minmax"><span>50 €</span><span>5 000 €</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-row-head"><span>Doba investovania</span><b id="investMonthsVal">12 mes.</b></div>
+        <input type="range" id="investMonths" min="12" max="60" step="1" value="12">
+        <div class="slider-minmax"><span>12 mes.</span><span>60 mes.</span></div>
+      </div>
+      <div class="slider-result">
+        <div><span>Výnos p.a.</span><b id="investRateVal" class="accent">19,0 %</b></div>
+        <div><span>Výnos spolu</span><b id="investReturnVal">+95,00 €</b></div>
+        <div><span>Spolu k vyplateniu</span><b id="investTotalVal" class="accent">595,00 €</b></div>
+      </div>
+      <p class="form-note">Reprezentatívny príklad, reálny výnos závisí od portfólia konkrétnych pôžičiek, ktoré si zvolíte financovať.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">Postup</span><h2>Ako začať investovať</h2></div>
+    <div class="steps-grid">
+      <div class="step-card"><div class="step-num">1</div><h3>Registrácia</h3><p>Vyplníte KYC údaje, registrácia trvá 2 minúty, bez poplatkov.</p></div>
+      <div class="step-card"><div class="step-num">2</div><h3>Vklad na peňaženku</h3><p>Pošlete peniaze bankovým prevodom, pripíšeme ich na Váš účet.</p></div>
+      <div class="step-card"><div class="step-num">3</div><h3>Výber žiadosti</h3><p>Prehliadate aukčnú miestnosť a financujete žiadosti, ktoré Vás zaujmú.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section cta-band">
+  <div class="wrap cta-inner">
+    <h2>Pripravení začať zarábať?</h2>
+    <p>Registrácia je zadarmo, prvú investíciu môžete urobiť už dnes.</p>
+    <a class="btn btn-primary btn-lg" href="pub-registracia.html">Vytvoriť investorský účet</a>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <img src="assets/logo-full-footer.svg?v=1792420092" alt="Insight Partners" class="logo-full-img">
+      <p>Insight Partners s. r. o.<br>P2P platforma pre krátkodobé pôžičky medzi investormi a žiadateľmi.</p>
+    </div>
+    <div>
+      <h4>Platforma</h4>
+      <a href="pub-investori.html">Pre investorov</a>
+      <a href="pub-pre-ziadatelov.html">Pre žiadateľov</a>
+    </div>
+    <div>
+      <h4>Podpora</h4>
+      <a href="pub-caste-otazky.html">Časté otázky</a>
+      <a href="pub-kontakt.html">Kontakt</a>
+      <a href="pub-obchodne-podmienky.html">Obchodné podmienky</a>
+      <a href="pub-ochrana-udajov.html">Ochrana osobných údajov</a>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">© 2026 Insight Partners s. r. o. Všetky práva vyhradené.</div>
+</footer>
+<a class="sticky-tab" href="#">Klientska zóna</a>
+<div class="chat-widget">
+  <div class="chat-panel" id="chatPanel">
+    <h4>Potrebujete pomôcť?</h4>
+    <p>Napíšte nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
+    <a class="btn btn-primary btn-block" href="pub-kontakt.html">Prejsť na kontakt</a>
+  </div>
+  <button class="chat-btn" id="chatBtn" aria-label="Otvoriť chat"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></button>
+</div>
+<script src="assets/script.js?v=1792420092"></script>
+<script>document.addEventListener("submit",function(e){e.preventDefault();});document.addEventListener("click",function(e){var a=e.target.closest("a");if(a&&a.getAttribute("href")==="#"){e.preventDefault();}});</script></body>
+</html>
