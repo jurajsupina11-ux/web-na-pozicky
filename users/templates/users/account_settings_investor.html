@@ -6,19 +6,19 @@
 
 <div class="card" style="margin-bottom:16px;">
   <h2>Bankový účet pre výplatu peňazí</h2>
-  <p style="color:#55607a;">Zmena IBAN účtu, na ktorý sa vypláca zostatok z peňaženky. Peniaze posielame iba na slovenské bankové účty (SK IBAN).</p>
+  <p style="color:#6C7588;">Zmena IBAN účtu, na ktorý sa vypláca zostatok z peňaženky. Peniaze posielame iba na slovenské bankové účty (SK IBAN).</p>
   <form method="post" style="max-width:420px;">
     {% csrf_token %}
     <div style="margin-bottom:14px;">
       {{ bank_form.bank_account_iban.label_tag }}
       {{ bank_form.bank_account_iban }}
-      {% if bank_form.bank_account_iban.errors %}<div style="color:#c4342b;font-size:13px;margin-top:4px;">{{ bank_form.bank_account_iban.errors }}</div>{% endif %}
+      {% if bank_form.bank_account_iban.errors %}<div style="color:#12334C;font-size:13px;margin-top:4px;">{{ bank_form.bank_account_iban.errors }}</div>{% endif %}
     </div>
     <div style="margin-bottom:14px;">
       {{ bank_form.security_code.label_tag }}
       {{ bank_form.security_code }}
-      <p style="color:#8a93a8;font-size:12px;margin-top:4px;">Kód, ktorý ste dostali e-mailom pri registrácii.</p>
-      {% if bank_form.security_code.errors %}<div style="color:#c4342b;font-size:13px;margin-top:4px;">{{ bank_form.security_code.errors }}</div>{% endif %}
+      <p style="color:#6C7588;font-size:12px;margin-top:4px;">Kód, ktorý ste dostali e-mailom pri registrácii.</p>
+      {% if bank_form.security_code.errors %}<div style="color:#12334C;font-size:13px;margin-top:4px;">{{ bank_form.security_code.errors }}</div>{% endif %}
     </div>
     <button type="submit" class="btn btn-primary">Uložiť IBAN</button>
   </form>
@@ -26,7 +26,7 @@
 
 <div class="card" style="margin-bottom:16px;">
   <h2>Notifikácie</h2>
-  <p style="color:#55607a;">E-mailové upozornenia na nové žiadosti a splatenie pôžičiek.</p>
+  <p style="color:#6C7588;">E-mailové upozornenia na nové žiadosti a splatenie pôžičiek.</p>
   <label style="display:flex;align-items:center;gap:10px;font-size:14px;">
     <input type="checkbox" checked disabled> Zasielať e-mailové upozornenia
   </label>
@@ -34,7 +34,7 @@
 
 <div class="card">
   <h2>Zmena hesla</h2>
-  <p style="color:#55607a;">Pravidelná zmena hesla zvyšuje bezpečnosť Vášho účtu.</p>
+  <p style="color:#6C7588;">Pravidelná zmena hesla zvyšuje bezpečnosť Vášho účtu.</p>
   <a class="btn btn-outline" href="{% url 'users:password_change' %}">Zmeniť heslo</a>
 </div>
 {% endblock %}

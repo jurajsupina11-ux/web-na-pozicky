@@ -4,9 +4,9 @@
 {% block extra_style %}
 <style>
   .field{margin-bottom:14px;}
-  .field label{display:block;font-size:13px;font-weight:600;color:#33406b;margin-bottom:6px;}
-  .field input{width:100%;max-width:300px;padding:10px 12px;border:1px solid #dbe4f5;border-radius:8px;font-size:14px;font-family:inherit;}
-  .field input:focus{outline:none;border-color:#2554ea;}
+  .field label{display:block;font-size:13px;font-weight:600;color:#12334C;margin-bottom:6px;}
+  .field input{width:100%;max-width:300px;padding:10px 12px;border:1px solid #E7E9EC;border-radius:8px;font-size:14px;font-family:inherit;}
+  .field input:focus{outline:none;border-color:#00AAD4;}
 </style>
 {% endblock %}
 {% block content %}
@@ -27,7 +27,7 @@
     <tr><th>Vyfinancované</th><td>{{ auction.funding_progress|floatformat:0 }} %</td></tr>
   </table>
   </div>
-  {% if auction.description %}<p style="color:#55607a;margin-top:16px;">{{ auction.description }}</p>{% endif %}
+  {% if auction.description %}<p style="color:#6C7588;margin-top:16px;">{{ auction.description }}</p>{% endif %}
 </div>
 
 <div class="card" style="margin-bottom:16px;">
@@ -49,7 +49,7 @@
 {% if user.is_authenticated and auction.is_open %}
 <div class="card">
   <h2>Financovať túto žiadosť</h2>
-  <p style="color:#55607a;margin-top:0;">
+  <p style="color:#6C7588;margin-top:0;">
     Pôžičky sa financujú vždy celé naraz - jeden investor financuje presne {{ auction.amount_requested }} €
     s úrokom {{ auction.max_interest_rate }} % p.a. Čiastočné spolufinancovanie nie je možné.
   </p>

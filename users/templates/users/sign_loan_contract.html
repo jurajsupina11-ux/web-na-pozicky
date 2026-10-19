@@ -6,7 +6,7 @@
 
 <div class="card" style="margin-bottom:16px;">
   <h2>Zmluva o pôžičke č. {{ loan.pk }}</h2>
-  <p style="color:#6b5a4d;">
+  <p style="color:#6C7588;">
     Vašu žiadosť o pôžičku <strong>{{ loan.amount_requested }} €</strong> na {{ loan.duration_days }} dní
     plne financoval investor s úrokom {{ bid.interest_rate }} % p.a. Pred vyplatením peňazí si prosím
     stiahnite a prečítajte Zmluvu o pôžičke a Predpis k úhrade.
@@ -19,14 +19,14 @@
     {% csrf_token %}
     <div class="gdpr-field" style="display:flex;align-items:flex-start;gap:8px;margin-bottom:16px;">
       <input type="checkbox" id="agree" required style="margin-top:3px;width:auto;">
-      <label for="agree" style="font-weight:400;font-size:13.5px;color:#5c3a24;">
+      <label for="agree" style="font-weight:400;font-size:13.5px;color:#12334C;">
         Prečítal/-a som si Zmluvu o pôžičke a súhlasím s jej podmienkami (výška pôžičky, úrok, termín
         splatnosti a zmluvná pokuta pri omeškaní).
       </label>
     </div>
     <button type="submit" class="btn btn-primary">Podpísať zmluvu a požiadať o vyplatenie</button>
   </form>
-  <p class="note" style="font-size:12px;color:#b08a73;margin-top:14px;">
+  <p class="note" style="font-size:12px;color:#6C7588;margin-top:14px;">
     Po podpise zmluvy Vám peniaze pošleme na Váš bankový účet v pracovné dni od 8:00 do 16:00.
   </p>
 </div>

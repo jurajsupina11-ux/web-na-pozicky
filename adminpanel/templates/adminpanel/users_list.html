@@ -6,7 +6,7 @@
 
 <form method="get" style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap;">
   <input type="text" name="q" value="{{ query }}" placeholder="Meno, e-mail, rodné číslo, display ID...">
-  <select name="role" style="padding:8px 10px;border:1px solid #dbe4f5;border-radius:8px;font-size:13px;">
+  <select name="role" style="padding:8px 10px;border:1px solid #E7E9EC;border-radius:8px;font-size:13px;">
     <option value="">Všetky role</option>
     <option value="borrower" {% if role_filter == 'borrower' %}selected{% endif %}>Dlžník</option>
     <option value="lender" {% if role_filter == 'lender' %}selected{% endif %}>Investor</option>
