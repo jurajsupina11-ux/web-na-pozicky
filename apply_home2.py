@@ -14,6 +14,14 @@ NEW = '/* ===== DOMOVSKA v2 ===== */'
 SEL = {'@P': 'body.home-page .picker-card', '@G': 'body.home-page .picker-grid', '@CTA': 'body.home-page .cta-band'}
 
 
+EXTRA = {
+    'v6-swiss': "\nbody.home-page .picker-hero::after{display:none;}\n",
+    'v6-zen': "\nbody.home-page .picker-hero h1{color:#14281D;}body.home-page .picker-hero .picker-head p{color:#2B4538;}\n",
+    'v7-sunset': ("\nbody.home-page .picker-hero h1{color:#fff;text-shadow:0 2px 3px rgba(90,10,60,.55),0 4px 22px rgba(90,10,60,.55);}"
+                  "body.home-page .picker-hero .picker-head p{color:#fff;text-shadow:0 1px 10px rgba(90,10,60,.7);font-weight:600;}\n"),
+}
+
+
 def read_vars(css):
     v = {}
     for blk in re.findall(r':root\s*\{([^}]*)\}', css):
@@ -56,7 +64,7 @@ def tokens(v, style):
     t = {
         'BG': p.bg, 'SUR': sur, 'INK': p.ink, 'MUT': pick(v, 'muted') or mix(p.ink, p.bg, .4),
         'INV': p.inv, 'BOR': p.bor, 'INVT': gcol(p.inv), 'BORT': gcol(p.bor),
-        'INVD': deep(p.inv), 'BORD': deep(p.bor),
+        'INVD': deep(p.inv), 'BORD': deep(p.bor), 'INVDD': mix(deep(p.inv), '#000000', .35),
         'RB': rb if re.fullmatch(r'\d+px', rb or '') else '999px',
         'INVA3': rgba(p.inv, .3), 'INVA7': rgba(p.inv, .7), 'INVA14': rgba(p.inv, .14),
         'BORA3': rgba(p.bor, .3), 'BORA7': rgba(p.bor, .7), 'BORA14': rgba(p.bor, .14),
@@ -100,7 +108,7 @@ def main():
         cut = [s.index(m) for m in (OLD, NEW) if m in s]
         if cut:
             s = s[:min(cut)].rstrip() + '\n'
-        open(sp, 'w', encoding='utf-8').write(s + '\n' + NEW + '\n' + build_css(style, lay, t))
+        open(sp, 'w', encoding='utf-8').write(s + '\n' + NEW + '\n' + build_css(style, lay, t) + EXTRA.get(key, ''))
         files = {'hero': A2.hero(p), 'bg': A2.bg2(p), 'inv': A3.inv_card(p), 'bor': A3.bor_card(p),
                  'cta': A3.cta(p), 'stats': A3.stats(p), 's1': A2.step_icon(p, 1), 's2': A2.step_icon(p, 2), 's3': A2.step_icon(p, 3)}
         for name, data in files.items():

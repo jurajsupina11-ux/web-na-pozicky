@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;600;700&family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 /* ===== Dizajn A — "Aurora Light": svetlý, zaoblený, gradientový fintech štýl ===== */
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap');
 9..144,600;9..144,700&display=swap');
@@ -531,7 +531,7 @@ td{padding:14px 12px;border-bottom:1px solid var(--line);}
 .badge-role.borrower{background:var(--borrower-bg);color:#12334C;}
 .badge-role.investor{background:var(--investor-bg);color:#12334C;}
 
-:root{--radius-sm:0px;--brand-ink:#0C1A10;--brand-text:#A7F070;--inv-ink:#0C1A10;--inv-text:#A7F070;--bor-ink:#2A0A18;--bor-text:#F4A3C0;--hdr-top:0;--hdr-bd:4px solid #566C86;--hero-chip:#FFCD75;--hero-chip-ink:#1A1C2C;--hero-btn:#38B764;--hero-btn-ink:#0C1A10;--hero-bd:0;--wal-btn:#FFCD75;--wal-btn-ink:#0B1020;--th-ink:#A7F070;--focus:rgba(0,0,0,.12);--card-bd:4px solid #566C86;--inp-bd:3px solid #94B0C2;--ft-bd:0;--sb-bd:4px solid #566C86;--h1:46px;--fh:'Pixelify Sans';--fb:'VT323';--bg:#1A1C2C;--surface:#292B45;--soft:#222440;--line:#566C86;--ink:#F4F4F4;--muted:#94B0C2;--radius:0px;--rb:0px;--shadow:6px 6px 0 #0C0D18;--brand:#38B764;--inv:#38B764;--bor:#F4A3C0;--hdr-bg:#1A1C2C;--hdr-ink:#F4F4F4;--hero-bg:#41A6F6;--hero-bg-solid:#41A6F6;--hero-ink:#0C0D18;--hero-sub:#10243F;--hero-em:#FFFFFF;--cta-bg:#292B45;--sb-bg:#222440;--sb-ink:#F4F4F4;--sb-sub:#94B0C2;--sb-line:#566C86;--sb-hover:rgba(167,240,112,.12);--wal-bg:#292B45;--wal-bd:4px solid #FFCD75;--wal-ink:#F4F4F4;--wal-num:#FFCD75;--ft-bg:#0C0D18;--ft-ink:#94B0C2;--ft-h:#FFCD75;--ft-line:#566C86;--vis-bg:transparent;--vis-bd:0;--vis-r:0px;}
+:root{--radius-sm:0px;--brand-ink:#0C1A10;--brand-text:#A7F070;--inv-ink:#0C1A10;--inv-text:#A7F070;--bor-ink:#2A0A18;--bor-text:#F4A3C0;--hdr-top:0;--hdr-bd:4px solid #566C86;--hero-chip:#FFCD75;--hero-chip-ink:#1A1C2C;--hero-btn:#38B764;--hero-btn-ink:#0C1A10;--hero-bd:0;--wal-btn:#FFCD75;--wal-btn-ink:#0B1020;--th-ink:#A7F070;--focus:rgba(0,0,0,.12);--card-bd:4px solid #566C86;--inp-bd:3px solid #94B0C2;--ft-bd:0;--sb-bd:4px solid #566C86;--h1:64px;--fh:'VT323';--fb:'VT323';--bg:#1A1C2C;--surface:#292B45;--soft:#222440;--line:#566C86;--ink:#F4F4F4;--muted:#94B0C2;--radius:0px;--rb:0px;--shadow:6px 6px 0 #0C0D18;--brand:#38B764;--inv:#38B764;--bor:#F4A3C0;--hdr-bg:#1A1C2C;--hdr-ink:#F4F4F4;--hero-bg:#41A6F6;--hero-bg-solid:#41A6F6;--hero-ink:#0C0D18;--hero-sub:#10243F;--hero-em:#FFFFFF;--cta-bg:#292B45;--sb-bg:#222440;--sb-ink:#F4F4F4;--sb-sub:#94B0C2;--sb-line:#566C86;--sb-hover:rgba(167,240,112,.12);--wal-bg:#292B45;--wal-bd:4px solid #FFCD75;--wal-ink:#F4F4F4;--wal-num:#FFCD75;--ft-bg:#0C0D18;--ft-ink:#94B0C2;--ft-h:#FFCD75;--ft-line:#566C86;--vis-bg:transparent;--vis-bd:0;--vis-r:0px;}
 /* ---- KOSTRA A: premenne dizajnu -> prvky (hlavicka, tlacidla, karty) ---- */
 :root{--violet:var(--brand);--violet-dark:var(--ink);--pink:var(--brand);--teal:var(--inv);--investor:var(--inv);--investor-bg:var(--soft);--borrower:var(--bor);--borrower-bg:var(--soft);--red:var(--bor);--amber:var(--bor);}
 body{--acc:var(--brand);--acc-ink:var(--brand-ink);--acc-text:var(--brand-text);--role-accent:var(--acc);}
@@ -755,6 +755,9 @@ body .hero-visual{--vis-img:url('hero-art.svg');}
 
 body.home-page .picker-hero{background:url('img-home-hero.svg') center/cover no-repeat,var(--hero-bg,#1A1C2C);padding:96px 0 124px;}
 body.home-page .picker-head{margin-bottom:54px;}
+body.home-page .picker-hero h1{color:var(--hero-ink,#F4F4F4);}
+body.home-page .picker-hero .picker-head p,body.home-page .picker-hero .lead{color:var(--hero-sub,#94B0C2);}
+body.home-page .picker-hero .eyebrow{background:var(--hero-chip,#38B764);color:var(--hero-chip-ink,#FFFFFF);}
 body.home-page .picker-head h1{font-size:clamp(38px,5.2vw,64px);}
 body.home-page .picker-card{position:relative;display:flex;flex-direction:column;overflow:hidden;background:#292B45;color:#F4F4F4;border:4px solid #F4F4F4;border-radius:14px;box-shadow:8px 8px 0 #F4F4F4;padding:0;text-decoration:none;transition:transform .2s,box-shadow .2s;}
 body.home-page .picker-card:hover{transform:translateY(-8px);}
@@ -785,10 +788,10 @@ body.home-page .step-card:nth-child(1)::before{background-image:url('img-home-s1
 body.home-page .step-card:nth-child(2)::before{background-image:url('img-home-s2.svg');}
 body.home-page .step-card:nth-child(3)::before{background-image:url('img-home-s3.svg');}
 body.home-page .step-num{position:absolute;top:18px;right:18px;width:40px;height:40px;font-size:17px;}
-body.home-page .stats-band{background:url('img-home-stats.svg') center/cover no-repeat,linear-gradient(120deg,#18502C,#563943);color:#fff;padding:84px 0;}
+body.home-page .stats-band{background:url('img-home-stats.svg') center/cover no-repeat,linear-gradient(120deg,#18502C,#10341D);color:#fff;padding:84px 0;}
 body.home-page .stats-grid b{color:#fff;font-size:clamp(34px,4.4vw,58px);background:none;-webkit-text-fill-color:#fff;}
 body.home-page .stats-grid span{color:rgba(255,255,255,.88);}
-body.home-page .cta-band{position:relative;overflow:hidden;background:url('img-home-cta.svg') center/cover no-repeat,linear-gradient(135deg,#563943,#18502C);color:#fff;padding:110px 0;}
+body.home-page .cta-band{position:relative;overflow:hidden;background:url('img-home-cta.svg') center/cover no-repeat,linear-gradient(135deg,#10341D,#18502C);color:#fff;padding:110px 0;}
 body.home-page .cta-band .cta-inner{position:relative;z-index:1;}
 body.home-page .cta-band h2,body.home-page .cta-band p{color:#fff;}
 body.home-page .cta-band .btn-lg{padding:18px 38px;font-size:17px;font-weight:800;border:3px solid #fff;border-radius:0px;box-shadow:0 16px 30px -10px rgba(0,0,0,.55);}

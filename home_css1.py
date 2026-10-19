@@ -3,6 +3,9 @@
 COMMON = r"""
 body.home-page .picker-hero{background:url('img-home-hero.svg') center/cover no-repeat,var(--hero-bg,{BG});padding:96px 0 124px;}
 body.home-page .picker-head{margin-bottom:54px;}
+body.home-page .picker-hero h1{color:var(--hero-ink,{INK});}
+body.home-page .picker-hero .picker-head p,body.home-page .picker-hero .lead{color:var(--hero-sub,{MUT});}
+body.home-page .picker-hero .eyebrow{background:var(--hero-chip,{INV});color:var(--hero-chip-ink,{INVT});}
 body.home-page .picker-head h1{font-size:clamp(38px,5.2vw,64px);}
 @P{position:relative;display:flex;flex-direction:column;overflow:hidden;background:{SUR};color:{INK};border:{CB};border-radius:{CR};box-shadow:{CS};padding:0;text-decoration:none;transition:transform .2s,box-shadow .2s;}
 @P:hover{transform:translateY(-8px);}
@@ -33,10 +36,10 @@ body.home-page .step-card:nth-child(1)::before{background-image:url('img-home-s1
 body.home-page .step-card:nth-child(2)::before{background-image:url('img-home-s2.svg');}
 body.home-page .step-card:nth-child(3)::before{background-image:url('img-home-s3.svg');}
 body.home-page .step-num{position:absolute;top:18px;right:18px;width:40px;height:40px;font-size:17px;}
-body.home-page .stats-band{background:url('img-home-stats.svg') center/cover no-repeat,linear-gradient(120deg,{INVD},{BORD});color:#fff;padding:84px 0;}
+body.home-page .stats-band{background:url('img-home-stats.svg') center/cover no-repeat,linear-gradient(120deg,{INVD},{INVDD});color:#fff;padding:84px 0;}
 body.home-page .stats-grid b{color:#fff;font-size:clamp(34px,4.4vw,58px);background:none;-webkit-text-fill-color:#fff;}
 body.home-page .stats-grid span{color:rgba(255,255,255,.88);}
-@CTA{position:relative;overflow:hidden;background:url('img-home-cta.svg') center/cover no-repeat,linear-gradient(135deg,{BORD},{INVD});color:#fff;padding:110px 0;}
+@CTA{position:relative;overflow:hidden;background:url('img-home-cta.svg') center/cover no-repeat,linear-gradient(135deg,{INVDD},{INVD});color:#fff;padding:110px 0;}
 @CTA .cta-inner{position:relative;z-index:1;}
 @CTA h2,@CTA p{color:#fff;}
 @CTA .btn-lg{padding:18px 38px;font-size:17px;font-weight:800;border:3px solid #fff;border-radius:{RB};box-shadow:0 16px 30px -10px rgba(0,0,0,.55);}

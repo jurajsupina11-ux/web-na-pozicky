@@ -46,9 +46,9 @@ D['watercolor'] = dict(
 D['pixel'] = dict(
     title='Pixel - 8-bitova hra (zelena / ruzova)',
     desc='Retro videohra: pixelove mince, stlpce ako v Mariovi, hrube okraje. Investor: zelena, Dlznik: ruzova.',
-    fonts='Pixelify+Sans:wght@500;600;700&family=VT323',
+    fonts='VT323',
     art=B.pixel_hero(), extra=EX['pixel'],
-    vars=base(fh="'Pixelify Sans'", fb="'VT323'", bg='#1A1C2C', surface='#292B45', soft='#222440', line='#566C86',
+    vars=base(fh="'VT323'", fb="'VT323'", bg='#1A1C2C', surface='#292B45', soft='#222440', line='#566C86',
               ink='#F4F4F4', muted='#94B0C2', radius='0px', radius_sm='0px', rb='0px', shadow='6px 6px 0 #0C0D18',
               brand='#38B764', brand_ink='#0C1A10', brand_text='#A7F070', inv='#38B764', inv_ink='#0C1A10', inv_text='#A7F070',
               bor='#F4A3C0', bor_ink='#2A0A18', bor_text='#F4A3C0', hdr_bg='#1A1C2C', hdr_ink='#F4F4F4', hdr_bd='4px solid #566C86',
@@ -58,7 +58,7 @@ D['pixel'] = dict(
               sb_hover='rgba(167,240,112,.12)', wal_bg='#292B45', wal_bd='4px solid #FFCD75', wal_ink='#F4F4F4',
               wal_num='#FFCD75', wal_btn='#FFCD75', ft_bg='#0C0D18', ft_ink='#94B0C2', ft_h='#FFCD75', ft_line='#566C86',
               th_ink='#A7F070', card_bd='4px solid #566C86', inp_bd='3px solid #94B0C2', vis_bg='transparent', vis_bd='0',
-              vis_r='0px', h1='46px', **HDR),
+              vis_r='0px', h1='64px', **HDR),
     css=img_css('#0C0D18', '#292B45', '#292B45') +
     "body{font-size:19px;}h1,h2,h3{text-transform:uppercase;line-height:1.25;}body .btn{border:4px solid #0C0D18;box-shadow:4px 4px 0 #0C0D18;"
     "text-transform:uppercase;font-size:13px;}body .btn:active{transform:translate(4px,4px);box-shadow:none;}body .hero{border-bottom:6px solid #0C0D18;}"
