@@ -1,4 +1,4 @@
-﻿"""Prida mobilnu opravu tabuliek do skel_c.css a do vsetkych zostavenych mockup-*/assets/style.css."""
+"""Prida mobilnu opravu tabuliek do skel_c.css a do vsetkych zostavenych mockup-*/assets/style.css."""
 import glob
 
 MARK = '/* ===== MOBIL: tabulky ===== */'
@@ -15,7 +15,7 @@ CSS = MARK + """
 }
 """
 
-targets = ['skel_c.css'] + glob.glob('mockup-*/assets/style.css')
+targets = glob.glob('mockup-*/assets/style.css')
 n = 0
 for t in targets:
     s = open(t, encoding='utf-8').read()

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moje pôžičky</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo-icon.svg?v=1792424599">
+<link rel="stylesheet" href="assets/style.css?v=1792424599">
+
+</head>
+<body class="role-borrower">
+<div class="bg-dots"></div>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="bor-moje-pozicky.html">
+      <img src="assets/logo-full.svg?v=1792424599" alt="Insight Partners" class="logo-full-img">
+    </a>
+    <button class="burger" id="burgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="mainNav">
+      <a href="pub-landing.html">Domov</a>
+      <a href="pub-pre-ziadatelov.html">Pre žiadateľov</a>
+      <a href="pub-caste-otazky.html">Časté otázky</a>
+      <a href="pub-kontakt.html">Kontakt</a>
+      <div class="nav-cta">
+        
+        <form method="post" action="#" style="display:inline;">
+          
+          <button type="submit" class="btn btn-primary" style="border:none;cursor:pointer;">Odhlásiť sa</button>
+        </form>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="section dash-page">
+  <div class="wrap dash-shell">
+    <button type="button" class="dash-sidebar-toggle" id="dashSidebarToggle">
+      <svg viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/></svg>
+      Menu
+    </button>
+    <div class="dash-sidebar-overlay" id="dashSidebarOverlay"></div>
+    <aside class="dash-sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar">DE</div>
+        <div><b>demo_dlznik</b><span>Dlžník · účet</span></div>
+        <button type="button" class="dash-sidebar-close" id="dashSidebarClose" aria-label="Zatvoriť menu">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="bor-moje-pozicky.html" class="sidebar-nav-link active">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg></span>
+          Moje pôžičky
+        </a>
+        <a href="bor-nova-ziadost.html" class="sidebar-nav-link">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>
+          Nová žiadosť
+        </a>
+        <a href="bor-ponuky.html" class="sidebar-nav-link ">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/></svg></span>
+          Ponuky
+        </a>
+        <a href="bor-zmluvy.html" class="sidebar-nav-link ">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span>
+          Moje zmluvy
+        </a>
+        <a href="bor-moje-udaje.html" class="sidebar-nav-link ">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg></span>
+          Moje údaje
+        </a>
+        <div class="sidebar-sep"></div>
+        <a href="bor-notifikacie.html" class="sidebar-nav-link ">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+          Notifikácie 
+        </a>
+        <a href="bor-pozvi-priatela.html" class="sidebar-nav-link ">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="18" cy="8" r="2"/><path d="M22 20v-1a3 3 0 0 0-2-2.83"/></svg></span>
+          Pozvi priateľa
+        </a>
+        <a href="#" class="sidebar-nav-link js-open-support">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+          Podpora
+        </a>
+        
+        <form method="post" action="#">
+          
+          <button type="submit" class="sidebar-nav-link danger" style="width:100%;text-align:left;background:none;border:none;cursor:pointer;font:inherit;">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span>
+            Odhlásiť sa
+          </button>
+        </form>
+      </nav>
+    </aside>
+    <div class="fade-in-up">
+      
+      
+<div class="dash-top">
+  <div><h1 style="margin-bottom:4px;">Moje pôžičky</h1><a href="bor-moje-udaje.html" style="font-size:13px;font-weight:600;">Moje údaje a nastavenia →</a></div>
+  <a class="btn btn-primary" href="bor-nova-ziadost.html">+ Nová žiadosť</a>
+</div>
+
+
+
+<div class="card loan-card">
+  <div class="loan-head">
+    <div><b class="loan-amount">200,00 €</b><span>Pôžička #2 · splatnosť 25.10.2026</span></div>
+    <span class="status-pill status-active">Aktívna</span>
+  </div>
+  <div class="table-scroll">
+  <table>
+    <tr><th>Istina</th><th>Úrok (24,00 % p.a.)</th><th>Poplatky za odklad</th><th>Spolu na úhradu</th></tr>
+    <tr>
+      <td>200,00 €</td>
+      <td>1,84 €</td>
+      <td>0 €</td>
+      <td><strong>201,84 €</strong></td>
+    </tr>
+  </table>
+  </div>
+  <div class="loan-actions">
+    <button type="button" class="btn btn-primary js-toggle-payment" data-target="payBox2">Uhradiť pôžičku</button>
+    <form method="post" action="#">
+      
+      <button type="submit" class="btn btn-outline" onclick="return confirm('Naozaj chcete požiadať o odklad splatnosti o 7 dní za poplatok  €?');">Požiadať o odklad (+7 dní,  €)</button>
+    </form>
+  </div>
+  <div class="report-payment-box" id="payBox2">
+    <h3 class="form-subhead" style="margin-top:0;">Platobné údaje na úhradu</h3>
+    <div class="detail-grid" style="align-items:center;">
+      <div>IBAN príjemcu<b></b></div>
+      <div>Variabilný symbol<b>9001011111</b></div>
+      <div>Suma na úhradu<b>201,84 €</b></div>
+      <div>Splatnosť<b>25.10.2026</b></div>
+    </div>
+    <div style="margin-top:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <img src="assets/logo-icon.svg" alt="QR kód na úhradu" width="150" height="150" style="border-radius:10px;border:1px solid var(--line);">
+      <p class="form-note" style="margin:0;max-width:360px;">Naskenujte QR kód vo svojej bankovej aplikácii, prípadne zaplaťte ručne podľa uvedených údajov. Variabilný symbol je Vaše rodné číslo.</p>
+    </div>
+    <p class="form-note">Po prijatí platby na náš účet sa stav pôžičky automaticky zmení na „Splatená“. Platbu môžete aj manuálne nahlásiť nižšie, ak ste platili z iného účtu.</p>
+    <form method="post" action="#">
+      
+      <button type="submit" class="btn btn-outline" >
+        Nahlásiť vykonanú úhradu
+      </button>
+    </form>
+  </div>
+</div>
+
+
+
+
+<div class="card" id="starePozicky">
+  <div style="display:flex;justify-content:space-between;align-items:center;">
+    <h2 style="margin:0;">História pôžičiek a zmlúv</h2>
+    <a href="bor-zmluvy.html" style="font-size:13px;font-weight:600;">Zobraziť všetky zmluvy →</a>
+  </div>
+  <div class="table-scroll">
+  <table>
+    <tr><th>Pôžička</th><th>Suma</th><th>Stav</th><th>Dátum</th><th>Zmluva</th></tr>
+    
+    <tr>
+      <td>#2</td>
+      <td>200,00 €</td>
+      <td>
+        <span class="status-pill status-active">Aktívna</span>
+        
+      </td>
+      <td>11.10.2026</td>
+      <td>—</td>
+    </tr>
+    
+  </table>
+  </div>
+</div>
+
+
+<div class="cta-strip">
+  <div><h2>Splatili ste včas? Požičajte si znova.</h2><p>Stačí zvoliť sumu a splatnosť, Vaše údaje už máme overené z minulej žiadosti.</p></div>
+  <a class="btn btn-light" href="bor-nova-ziadost.html">Požičať si znova</a>
+</div>
+
+
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <img src="assets/logo-full-footer.svg?v=1792424599" alt="Insight Partners" class="logo-full-img">
+      <p>Insight Partners s. r. o.<br>P2P platforma pre krátkodobé pôžičky medzi investormi a žiadateľmi.</p>
+    </div>
+    <div>
+      <h4>Platforma</h4>
+      <a href="pub-investori.html">Pre investorov</a>
+      <a href="pub-pre-ziadatelov.html">Pre žiadateľov</a>
+    </div>
+    <div>
+      <h4>Podpora</h4>
+      <a href="pub-caste-otazky.html">Časté otázky</a>
+      <a href="pub-kontakt.html">Kontakt</a>
+      <a href="pub-obchodne-podmienky.html">Obchodné podmienky</a>
+      <a href="pub-ochrana-udajov.html">Ochrana osobných údajov</a>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    © 2026 Insight Partners s. r. o. Všetky práva vyhradené.
+  </div>
+</footer>
+
+<a class="sticky-tab" href="bor-moje-pozicky.html">Klientska zóna</a>
+<div class="chat-widget">
+  <div class="chat-panel" id="chatPanel">
+    <h4>Potrebujete pomôcť?</h4>
+    <p>Napíšte nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
+    <a class="btn btn-primary btn-block" href="pub-kontakt.html">Prejsť na kontakt</a>
+  </div>
+  <button class="chat-btn" id="chatBtn" aria-label="Otvoriť chat"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></button>
+</div>
+<script src="assets/script.js?v=1792424599"></script>
+
+<script>document.addEventListener("submit",function(e){e.preventDefault();});document.addEventListener("click",function(e){var a=e.target.closest("a");if(a&&a.getAttribute("href")==="#"){e.preventDefault();}});</script></body>
+</html>
