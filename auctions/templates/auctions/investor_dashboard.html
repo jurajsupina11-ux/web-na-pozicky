@@ -22,13 +22,14 @@
   .wallet-illustration{opacity:.9;flex-shrink:0;}
   .welcome-row{display:flex;align-items:center;gap:22px;margin-bottom:16px;}
   .welcome-row .badge-icon{width:52px;height:52px;border-radius:var(--radius-sm);background:#e6fbf6;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  @media(max-width:600px){
+  @media(max-width:700px){
     .toprow .btn{width:100%;justify-content:center;}
-    .wallet-card{padding:20px;}
+    .wallet-card{padding:18px;flex-direction:column;align-items:stretch;gap:14px;}
     .wallet-card .balance{font-size:26px;}
-    .wallet-actions{width:100%;}
-    .wallet-actions form{flex:1;min-width:140px;}
-    .wallet-actions input{width:100%;}
+    .wallet-actions{width:100%;flex-direction:column;gap:12px;}
+    .wallet-actions form{width:100%;min-width:0;flex-wrap:wrap;gap:8px;}
+    .wallet-actions input{width:100%;flex:none;min-width:0;box-sizing:border-box;}
+    .wallet-actions button{width:100%;flex:none;white-space:nowrap;}
     .wallet-illustration{display:none;}
     .empty-state{flex-direction:column;text-align:center;padding:24px 18px;}
   }

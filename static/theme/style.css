@@ -106,7 +106,7 @@ a{color:inherit;text-decoration:none;}
 .btn-mini{padding:7px 14px;font-size:12.5px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--violet-dark);cursor:pointer;}
 
 /* Header */
-.site-header{position:sticky;top:0;z-index:50;background:rgba(247,245,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+.site-header{position:sticky;top:0;z-index:100;background:rgba(247,245,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
 .header-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;}
 .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-family:'Sora',sans-serif;}
 .logo-mark{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--violet),var(--pink));color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;}
@@ -408,7 +408,7 @@ td{padding:14px 12px;border-bottom:1px solid var(--line);}
 .chat-panel h4{margin:0 0 6px;font-size:14px;}
 .chat-panel p{font-size:12.5px;margin:0 0 12px;}
 
-.dash-sidebar-toggle{display:none;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:10px 16px;font-weight:700;font-size:13.5px;color:var(--ink);margin-bottom:16px;cursor:pointer;}
+.dash-sidebar-toggle{display:none;align-items:center;gap:8px;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius-sm);padding:10px 16px;font-weight:700;font-size:13.5px;color:var(--ink);margin-bottom:16px;cursor:pointer;box-shadow:var(--shadow);}
 .dash-sidebar-toggle svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .dash-sidebar-close{display:none;margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;}
 .dash-sidebar-overlay{display:none;}
@@ -424,11 +424,11 @@ td{padding:14px 12px;border-bottom:1px solid var(--line);}
 }
 @media(max-width:700px){
   .burger{display:flex;}
-  .main-nav{position:fixed;top:68px;left:0;right:0;background:var(--surface);flex-direction:column;align-items:stretch;padding:20px 24px;gap:14px;box-shadow:0 14px 30px -10px rgba(0,0,0,.15);transform:translateY(-10px);opacity:0;pointer-events:none;transition:.2s;}
+  .main-nav{position:fixed;top:68px;left:0;right:0;background:var(--surface);flex-direction:column;align-items:stretch;padding:20px 24px;gap:14px;box-shadow:0 14px 30px -10px rgba(0,0,0,.15);transform:translateY(-10px);opacity:0;pointer-events:none;transition:.2s;z-index:90;}
   .main-nav.open{transform:translateY(0);opacity:1;pointer-events:auto;}
   .nav-cta{flex-direction:column;margin:6px 0 0;}
-  h1{font-size:30px;}
-  h2{font-size:24px;}
+  h1{font-size:26px;}
+  h2{font-size:22px;}
   .hero{padding:30px 0 20px;}
   .steps-grid,.benefit-grid,.stats-grid,.stat-grid,.market-grid{grid-template-columns:1fr;}
   .breakdown-grid{grid-template-columns:repeat(2,1fr);}
@@ -439,25 +439,35 @@ td{padding:14px 12px;border-bottom:1px solid var(--line);}
   .sticky-tab{display:none;}
   .chat-widget{right:14px;bottom:14px;}
   .chat-panel{width:240px;}
-  .dash-shell{grid-template-columns:1fr;}
-  .dash-sidebar-toggle{display:flex;}
-  .dash-sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;max-width:84vw;z-index:40;border-radius:0;overflow-y:auto;transform:translateX(-100%);transition:transform .25s ease;box-shadow:0 0 0 100vw rgba(0,0,0,0);}
+
+  /* --- Dashboard shell (sidebar + obsah) na mobile --- */
+  .dash-page{padding-top:16px;}
+  .dash-shell{grid-template-columns:1fr;gap:0;}
+  .dash-sidebar-toggle{display:flex;width:100%;justify-content:center;}
+  .dash-sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;max-width:84vw;z-index:120;border-radius:0;overflow-y:auto;padding-top:24px;transform:translateX(-100%);transition:transform .25s ease;box-shadow:none;}
   .dash-sidebar.open{transform:translateX(0);box-shadow:20px 0 60px rgba(0,0,0,.25);}
-  .dash-sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(20,16,30,.45);z-index:39;}
+  .dash-sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(20,16,30,.45);z-index:110;}
   .dash-sidebar-overlay.show{display:block;}
   .sidebar-nav{flex-direction:column;flex-wrap:nowrap;}
   .admin-grid-2{grid-template-columns:1fr;}
   .detail-grid,.breakdown-grid,.status-summary{grid-template-columns:1fr;}
   .btn{white-space:normal;text-align:center;}
-  .dash-top,.toprow{gap:10px;}
+
+  /* --- Hlavička jednotlivých podstránok (nadpis + akčné tlačidlo) --- */
+  .dash-top,.toprow{flex-direction:column;align-items:stretch;gap:12px;margin-bottom:18px;}
   .dash-top>div:last-child,.toprow>div:last-child{width:100%;display:flex;flex-wrap:wrap;gap:8px;}
-  .dash-top .btn,.toprow .btn{flex:1;min-width:120px;}
-  .wallet-card{padding:20px;}
-  .wallet-actions{width:100%;}
-  .wallet-actions form{flex:1;min-width:130px;}
+  .dash-top .btn,.toprow .btn,.dash-top>a.btn{flex:1;min-width:120px;width:100%;}
+
+  /* --- Wallet karta (vklad/výber) - zvislé usporiadanie namiesto natlačeného riadku --- */
+  .wallet-card{padding:18px;flex-direction:column;align-items:stretch;gap:14px;}
+  .wallet-card .wallet-illustration{display:none;}
+  .wallet-actions{width:100%;flex-direction:column;gap:12px;}
+  .wallet-actions form{width:100%;min-width:0;flex-wrap:wrap;gap:8px;}
+  .wallet-actions input{width:100%;flex:none;min-width:0;box-sizing:border-box;}
+  .wallet-actions button{width:100%;flex:none;white-space:nowrap;}
   .withdraw-code{width:100%;}
-  .loan-actions{width:100%;}
-  .loan-actions .btn,.loan-actions form{flex:1;min-width:140px;}
+  .loan-actions{width:100%;flex-direction:column;}
+  .loan-actions .btn,.loan-actions form{flex:none;min-width:0;width:100%;}
   .loan-actions form .btn{width:100%;}
   .nav-user{flex-wrap:wrap;}
   .empty-state{flex-direction:column;text-align:center;gap:14px;padding:22px 16px;}
@@ -470,19 +480,21 @@ td{padding:14px 12px;border-bottom:1px solid var(--line);}
 @media(max-width:480px){
   .impersonate-bar{font-size:11px !important;padding:7px 10px !important;line-height:1.4;}
   .wrap{padding:0 14px;}
-  h1{font-size:22px;}
-  h2{font-size:19px;}
-  .header-inner{padding:12px 14px;}
+  h1{font-size:21px;}
+  h2{font-size:18px;}
+  .header-inner{padding:10px 14px;}
   .logo-text{font-size:11px;}
   .logo-mark{width:32px;height:32px;font-size:12px;}
   .site-header .btn{padding:9px 14px;font-size:13px;}
   .dash-sidebar-toggle{padding:9px 14px;font-size:13px;margin-bottom:12px;}
-  .dash-page{padding-top:20px;}
-  .card{padding:16px;}
+  .dash-page{padding-top:14px;}
+  .card{padding:14px;}
   .stat-tile{padding:14px;}
   .stat-tile b{font-size:18px;}
   .loan-amount{font-size:20px;}
-  .wallet-card>div:first-child b{font-size:24px;}
+  .wallet-card{padding:16px;}
+  .wallet-card .balance,.wallet-card>div:first-child b{font-size:22px;}
+  .wallet-actions input,.wallet-actions button{font-size:13px;padding:10px 12px;}
   table{font-size:12.5px;}
   td,th{padding:9px 8px;}
   .chat-btn{width:48px;height:48px;font-size:20px;}
@@ -491,6 +503,18 @@ td{padding:14px 12px;border-bottom:1px solid var(--line);}
   .cta-strip .btn{width:100%;}
   .market-card{padding:4px;}
   .sidebar-nav-link{font-size:13px;padding:9px 10px;}
+}
+/* Alert/flash hlasenia (django messages) - pouzivane naprieč celou appkou,
+   ale doteraz nemali ziadny vlastny styl, co na mobile sposobovalo
+   horizontalne pretecenie textu/ikon mimo viewport. */
+.alert{box-sizing:border-box;width:100%;padding:14px 18px;border-radius:var(--radius-sm);font-size:13.5px;line-height:1.5;margin-bottom:16px;}
+.alert-info{background:var(--investor-bg);color:#0d6b58;border:1px solid #bdeedc;}
+.alert-success{background:#e4f8f1;color:#128a66;border:1px solid #bdeedc;}
+.alert-warning{background:#fff4df;color:#9a6c00;border:1px solid #ffe3a8;}
+.alert-error,.alert-danger{background:#fde6e6;color:#c23030;border:1px solid #f7c6c6;}
+@media(max-width:700px){
+  .alert{flex-wrap:wrap;gap:8px !important;}
+  .alert .ic{display:none;}
 }
 .btn-approve{background:#e4f8f1;color:#128a66;border:1px solid #bdeedc;}
 .btn-reject{background:#fde6e6;color:#c23030;border:1px solid #f7c6c6;}
