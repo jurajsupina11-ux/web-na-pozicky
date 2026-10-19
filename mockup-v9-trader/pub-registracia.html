@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registrácia investora – Pôžičky pre Dlžníkov</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo-icon.svg?v=1792422101">
+<link rel="stylesheet" href="assets/style.css?v=1792422101">
+</head>
+<body class="role-investor">
+<div class="bg-dots"></div>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="pub-landing.html">
+      <img src="assets/logo-full.svg?v=1792422101" alt="Insight Partners" class="logo-full-img">
+    </a>
+    <button class="burger" id="burgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="mainNav">
+      <a href="pub-landing.html">Domov</a>
+      <a href="pub-investori.html">Pre investorov</a>
+      <a href="pub-pre-ziadatelov.html">Pre žiadateľov</a>
+      <a href="pub-caste-otazky.html">Časté otázky</a>
+      <a href="pub-kontakt.html">Kontakt</a>
+      <div class="nav-cta">
+        
+        <a class="btn btn-ghost" href="pub-prihlasenie-investor.html">Prihlásiť sa</a>
+        <a class="btn btn-primary" href="pub-ziadost-o-uver.html">Hľadám pôžičku</a>
+        
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="section auth-page">
+  <div class="wrap auth-grid">
+    <div class="auth-side">
+      <span class="eyebrow">Investorský účet</span>
+      <h1>Zarábajte 19 – 24 % p.a.<br>na krátkodobých pôžičkách</h1>
+      <p>Vytvorte si investorský účet a začnite financovať overené žiadosti o pôžičku už dnes. Registrácia trvá 2 minúty.</p>
+      <div class="stat-chip"><span>Úrok podľa dĺžky splatnosti</span><b>19 – 24 %</b></div>
+    </div>
+    <form class="card form-card" method="post" autocomplete="on">
+      
+      <h2>Registrácia investora</h2>
+      <input type="hidden" name="ref_code" value="">
+      
+      <p class="form-note" style="background:var(--surface);border-radius:var(--radius-sm);padding:10px 14px;">
+        Vitajte! Keďže aj investorský účet pracuje s reálnymi peniazmi, potrebujeme overiť Vašu totožnosť -
+        preto formulár obsahuje aj osobné údaje, rovnako ako pri žiadosti o pôžičku.
+      </p>
+      
+        
+        <input type="text" name="website" autocomplete="off" tabindex="-1" style="position:absolute;left:-9999px;" class="" id="id_website">
+        
+      
+        
+        <label>Používateľské meno<input type="text" name="username" maxlength="150" autocapitalize="none" autocomplete="username" autofocus class="form-control" placeholder="Používateľské meno" required aria-describedby="id_username_helptext" id="id_username">
+          
+          
+        </label>
+        
+      
+        
+        <label>E-mailová adresa<input type="email" name="email" maxlength="254" class="form-control" autocomplete="email" placeholder="E-mailová adresa" id="id_email">
+          
+          
+        </label>
+        
+      
+        
+        <label>Phone number<input type="text" name="phone_number" maxlength="20" class="form-control" autocomplete="tel" placeholder="Phone number" id="id_phone_number">
+          
+          
+        </label>
+        
+      
+        
+        <label>Meno<input type="text" name="first_name" maxlength="150" class="form-control" autocomplete="given-name" placeholder="Meno" required id="id_first_name">
+          
+          
+        </label>
+        
+      
+        
+        <label>Priezvisko<input type="text" name="last_name" maxlength="150" class="form-control" autocomplete="family-name" placeholder="Priezvisko" required id="id_last_name">
+          
+          
+        </label>
+        
+      
+        
+        <label>Dátum narodenia<input type="date" name="date_of_birth" class="form-control" autocomplete="bday" placeholder="Dátum narodenia" required id="id_date_of_birth">
+          
+          
+        </label>
+        
+      
+        
+        <label>Číslo občianskeho preukazu<input type="text" name="id_card_number" maxlength="20" class="form-control" autocomplete="off" placeholder="Číslo občianskeho preukazu" required id="id_id_card_number">
+          
+          
+        </label>
+        
+      
+        
+        <label>Rodné číslo (bez lomítka)<input type="text" name="birth_number" maxlength="15" class="form-control" autocomplete="off" placeholder="Rodné číslo (bez lomítka)" required id="id_birth_number">
+          
+          
+        </label>
+        
+      
+        
+        <label>Ulica a číslo<input type="text" name="street_address" maxlength="120" class="form-control" autocomplete="street-address" placeholder="Ulica a číslo" required id="id_street_address">
+          
+          
+        </label>
+        
+      
+        
+        <label>Mesto<input type="text" name="city" maxlength="80" class="form-control" autocomplete="address-level2" placeholder="Mesto" required id="id_city">
+          
+          
+        </label>
+        
+      
+        
+        <label>PSČ<input type="text" name="postal_code" maxlength="10" class="form-control" autocomplete="postal-code" placeholder="PSČ" required id="id_postal_code">
+          
+          
+        </label>
+        
+      
+        
+        <label>IBAN pre výplatu peňazí (voliteľné, dá sa doplniť aj neskôr)<input type="text" name="bank_account_iban" maxlength="34" class="form-control" autocomplete="off" placeholder="IBAN pre výplatu peňazí (voliteľné, dá sa doplniť aj neskôr)" id="id_bank_account_iban">
+          
+          
+        </label>
+        
+      
+        
+        <label>Heslo<input type="password" name="password1" autocomplete="new-password" class="form-control" placeholder="Heslo" required aria-describedby="id_password1_helptext" id="id_password1">
+          <span class="form-note" style="display:block;">Minimálne 8 znakov, nesmie byť príliš jednoduché ani celé číselné.</span>
+          
+        </label>
+        
+      
+        
+        <label>Potvrdenie hesla<input type="password" name="password2" autocomplete="new-password" class="form-control" placeholder="Potvrdenie hesla" required aria-describedby="id_password2_helptext" id="id_password2">
+          
+          
+        </label>
+        
+      
+        
+        <label>Súhlasím so spracovaním osobných údajov (GDPR) a s obchodnými podmienkami.<input type="checkbox" name="gdpr_consent" class="form-check-input" placeholder="Súhlasím so spracovaním osobných údajov (GDPR) a s obchodnými podmienkami." required id="id_gdpr_consent">
+          
+          
+        </label>
+        
+      
+      <p class="form-note">Viac v <a href="pub-obchodne-podmienky.html">obchodných podmienkach</a> a <a href="pub-ochrana-udajov.html">ochrane osobných údajov</a>.</p>
+      <button type="submit" class="btn btn-primary btn-block">Vytvoriť účet</button>
+      <p class="form-note">Už máte účet? <a href="pub-prihlasenie-investor.html">Prihláste sa</a>.</p>
+    </form>
+  </div>
+</section>
+
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <img src="assets/logo-full-footer.svg?v=1792422101" alt="Insight Partners" class="logo-full-img">
+      <p>Insight Partners s. r. o.<br>P2P platforma pre krátkodobé pôžičky medzi investormi a žiadateľmi.</p>
+    </div>
+    <div>
+      <h4>Platforma</h4>
+      <a href="pub-investori.html">Pre investorov</a>
+      <a href="pub-pre-ziadatelov.html">Pre žiadateľov</a>
+    </div>
+    <div>
+      <h4>Podpora</h4>
+      <a href="pub-caste-otazky.html">Časté otázky</a>
+      <a href="pub-kontakt.html">Kontakt</a>
+      <a href="pub-obchodne-podmienky.html">Obchodné podmienky</a>
+      <a href="pub-ochrana-udajov.html">Ochrana osobných údajov</a>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    © 2026 Insight Partners s. r. o. Všetky práva vyhradené.
+  </div>
+</footer>
+
+<a class="sticky-tab" href="#">Klientska zóna</a>
+<div class="chat-widget">
+  <div class="chat-panel" id="chatPanel">
+    <h4>Potrebujete pomôcť?</h4>
+    <p>Napíšte nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
+    <a class="btn btn-primary btn-block" href="pub-kontakt.html">Prejsť na kontakt</a>
+  </div>
+  <button class="chat-btn" id="chatBtn" aria-label="Otvoriť chat"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></button>
+</div>
+<script src="assets/script.js?v=1792422101"></script>
+<script>document.addEventListener("submit",function(e){e.preventDefault();});document.addEventListener("click",function(e){var a=e.target.closest("a");if(a&&a.getAttribute("href")==="#"){e.preventDefault();}});</script></body>
+</html>
+

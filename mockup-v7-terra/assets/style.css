@@ -693,6 +693,27 @@ body .sticky-tab{background:var(--acc);color:var(--acc-ink);border-radius:var(--
 }
 @media(max-width:480px){body .logo-full-img{height:54px;}.main-nav{top:70px;}}
 
+/* ===== MOBIL: poistka proti pretekaniu ===== */
+html,body{max-width:100%;overflow-x:hidden;}
+body .hero-grid,body .split-grid,body .form-grid,body .auth-grid,body .picker-grid,body .steps-grid,body .benefit-grid,body .stat-grid,body .footer-grid,body .dash-layout{min-width:0;}
+body .hero-grid>*,body .split-grid>*,body .picker-grid>*,body .steps-grid>*,body .benefit-grid>*,body .footer-grid>*,body .dash-layout>*{min-width:0;}
+@media(max-width:900px){
+  body .hero-grid,body .split-grid,body .form-grid,body .auth-grid,body .picker-grid{grid-template-columns:minmax(0,1fr);}
+  body .hero h1,body .picker-hero h1{overflow-wrap:anywhere;hyphens:auto;}
+  body .hero-visual{max-width:100%;overflow:hidden;}
+  body .hero-visual .card-a,body .hero-visual .card-b,body .hero-visual .card-c{max-width:78%;}
+}
+@media(max-width:700px){
+  body .steps-grid,body .benefit-grid{grid-template-columns:minmax(0,1fr);}
+  body .footer-grid{grid-template-columns:minmax(0,1fr);}
+  body .hero-actions,body .hero .btn-row,body .hero .cta-row{display:flex;flex-wrap:wrap;gap:10px;}
+  body .hero .btn,body .picker-hero .btn{max-width:100%;white-space:normal;text-align:center;}
+  body .hero h1,body .picker-hero h1{font-size:32px;}
+  body .wrap{padding-left:16px;padding-right:16px;}
+  body table{display:block;overflow-x:auto;max-width:100%;}
+  body .step-card::after,body .benefit-card::after{width:60px;height:60px;}
+}
+
 
 body .hero::before,body .picker-hero::before{content:'';position:absolute;right:6%;top:-70px;width:260px;height:260px;border-radius:50%;background:#E8A33D;opacity:.8;animation:flt 9s ease-in-out infinite;pointer-events:none;}
 body .hero::after,body .picker-hero::after{content:'';position:absolute;left:-40px;bottom:-70px;width:380px;height:190px;border-radius:380px 380px 0 0;background:#4D5F2A;opacity:.2;pointer-events:none;}
