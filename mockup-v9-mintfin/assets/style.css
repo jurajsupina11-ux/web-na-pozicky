@@ -731,7 +731,6 @@ body .logo{background:#fff;padding:3px 10px;border-radius:10px;}
 body .cta-band,body .cta-band h2{color:#04281E;}body .btn{font-weight:800;}body .hero .btn-primary{color:#fff;}body .logo-full-img{height:70px;}body{--nav-gap:12px;}body .main-nav a{font-size:13px;padding:8px 2px;}body .main-nav .btn-primary{padding:11px 18px;}
 
 body .hero-visual{--vis-img:url('hero-art.svg');}
-
 /* ===== MOBIL: tabulky ===== */
 @media(max-width:700px){
   body table{display:block;width:100%;max-width:100%;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;border-collapse:collapse;}
