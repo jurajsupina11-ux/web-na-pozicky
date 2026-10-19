@@ -3,7 +3,7 @@ import functools
 import http.server
 import os
 
-ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'mockup-v2')
+ROOT = os.path.dirname(os.path.abspath(__file__))  # cely projekt: /mockup-v5-smaragd/, /mockup-v4-hravy/ ...
 
 
 class NoCache(http.server.SimpleHTTPRequestHandler):

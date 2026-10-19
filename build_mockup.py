@@ -19,7 +19,7 @@ from auctions.models import Auction
 from mockup_pages import all_pages
 from users.models import User
 
-OUT = 'mockup-v2'
+OUT = os.environ.get('MOCKUP_OUT', 'mockup-v2')
 STAMP = str(int(__import__('time').time()))
 PREVENT = (
     '<script>document.addEventListener("submit",function(e){e.preventDefault();});'

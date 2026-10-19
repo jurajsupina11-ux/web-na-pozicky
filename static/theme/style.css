@@ -1,5 +1,6 @@
 /* ===== Dizajn A — "Aurora Light": svetlý, zaoblený, gradientový fintech štýl ===== */
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap');
 
 :root{
   --bg:#F5F7FA;
@@ -529,175 +530,185 @@ td{padding:14px 12px;border-bottom:1px solid var(--line);}
 .badge-role.borrower{background:var(--borrower-bg);color:#12334C;}
 .badge-role.investor{background:var(--investor-bg);color:#12334C;}
 
-/* ===== DIZAJN v4 "Hravy": kremova, hrube obrysy, tvrde tiene, nalepky, animacie ===== */
-:root{--forest:#0E3B35;--coral:#FF5A3C;--sun:#FFC933;--cream:#FFF3E0;
-  --ink:var(--forest);--bg:var(--cream);--surface:#fff;--muted:#4C6B66;--line:var(--forest);
-  --radius:20px;--radius-sm:12px;--shadow:6px 6px 0 var(--forest);
-  --investor:var(--sun);--investor-bg:#FFF0BF;--borrower:var(--coral);--borrower-bg:#FFE0D8;
-  --role-accent:var(--sun);--violet:var(--forest);--violet-dark:var(--forest);--pink:var(--coral);--teal:var(--forest);}
-body.role-borrower{--role-accent:var(--coral);}
-body{background:var(--cream) radial-gradient(rgba(14,59,53,.13) 1.4px,transparent 1.4px) 0 0/22px 22px;color:var(--forest);}
+/* ===== DIZAJN v5 "Private banking": slonovina, serif, tenke linky, zlaty akcent ===== */
+:root{--ink:#0C2A22;--brand:#0F4C3A;--hero:#0B3A2C;--accent:#C9A24B;--accent-d:#8A6A1F;--accent-rgb:201,162,75;
+  --paper:#FAF7F0;--soft:#F2EEE2;--line:#E3DCCB;--muted:#5E6B66;
+  --bg:var(--paper);--surface:#fff;--radius:8px;--radius-sm:5px;--shadow:0 1px 2px rgba(12,42,34,.06);
+  --investor:var(--brand);--investor-bg:var(--soft);--borrower:var(--accent);--borrower-bg:#F7EFD9;
+  --violet:var(--brand);--violet-dark:var(--ink);--pink:var(--accent);--teal:var(--brand);--red:#9B2C1D;
+  --role-accent:var(--brand);--serif:'Fraunces',Georgia,'Times New Roman',serif;}
+body.role-borrower{--role-accent:var(--accent);}
+body{background:var(--paper);color:var(--ink);}
 body::before,body::after,.bg-dots{display:none;}
-h1,h2,h3{color:var(--forest);letter-spacing:-.02em;}
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;color:var(--ink);}
 p{color:var(--muted);}
-a:focus-visible,button:focus-visible{outline:3px dashed var(--coral);outline-offset:3px;}
-@keyframes floaty4{0%,100%{transform:translateY(0) rotate(0);}50%{transform:translateY(-14px) rotate(6deg);}}
-@keyframes spin4{to{transform:rotate(360deg);}}
-@keyframes pop4{0%{transform:scale(.9);opacity:0;}100%{transform:scale(1);opacity:1;}}
+b,th,td{font-variant-numeric:tabular-nums;}
+a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px;}
+@keyframes spin5{to{transform:rotate(360deg);}}
+@keyframes rise5{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
 
 /* Hlavicka */
-body .site-header{background:var(--cream);border:0;border-bottom:3px solid var(--forest);backdrop-filter:none;}
-.header-inner{padding-top:12px;padding-bottom:12px;}
+body .site-header,body.role-investor .site-header,body.role-borrower .site-header{background:#fff;border:0;border-top:4px solid var(--brand);border-bottom:1px solid var(--line);backdrop-filter:none;}
+body.role-borrower .site-header{border-top-color:var(--accent);}
+.header-inner{padding-top:8px;padding-bottom:8px;}
 .logo{display:flex;align-items:center;flex-shrink:0;}
-.logo-full-img{height:64px;width:auto;max-width:none;display:block;}
-.footer-brand .logo-full-img{height:84px;}
-.main-nav{gap:4px;}
-.main-nav a{color:var(--forest);font-weight:700;padding:8px 16px;border:2px solid transparent;border-radius:999px;white-space:nowrap;}
-.main-nav a:hover,.main-nav a.active{background:var(--sun);border-color:var(--forest);color:var(--forest);}
-.burger span{background:var(--forest);}
+body .logo-full-img{height:92px;width:auto;max-width:none;display:block;}
+body .footer-brand .logo-full-img{height:110px;}
+.main-nav{gap:26px;}
+.main-nav a{color:var(--ink);font-weight:700;font-size:12.5px;letter-spacing:.07em;text-transform:uppercase;padding:8px 2px;border:0;border-bottom:2px solid transparent;border-radius:0;white-space:nowrap;background:none;}
+.main-nav a:hover,.main-nav a.active{background:none;color:var(--brand);border-bottom-color:var(--accent);}
+.burger span{background:var(--ink);border-radius:0;}
 
-/* Tlacidla: nalepky s tvrdym tienom */
-body .btn{border:2.5px solid var(--forest);border-radius:14px;font-weight:800;box-shadow:4px 4px 0 var(--forest) !important;transition:transform .12s,box-shadow .12s;padding:13px 24px;white-space:nowrap;}
-body .btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--forest) !important;}
-body .btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--forest) !important;}
-body .btn-primary,body.role-investor .btn-primary,body.role-borrower .btn-primary{background:var(--sun);color:var(--forest);}
-body.role-borrower .btn-primary{background:var(--coral);}
-body .btn-outline,body.role-investor .btn-outline,body.role-borrower .btn-outline{background:#fff;color:var(--forest);border-color:var(--forest);}
-body .btn-light{background:#fff;color:var(--forest);}
-body .btn-light-outline{background:transparent;color:var(--forest);}
-body .btn-investor{background:var(--sun);color:var(--forest);}
-body .btn-borrower{background:var(--coral);color:var(--forest);}
-body .btn-outline-investor,body .btn-outline-borrower{background:#fff;color:var(--forest);border-color:var(--forest);}
-body .btn-mini{box-shadow:2px 2px 0 var(--forest) !important;border-radius:10px;padding:6px 12px;}
-body .main-nav .btn-primary{color:var(--forest);margin-left:8px;}
+/* Tlacidla */
+body .btn{border:1.5px solid transparent;border-radius:4px;font-weight:700;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;padding:14px 26px;box-shadow:none !important;transition:background .2s,color .2s,transform .2s;white-space:nowrap;}
+body .btn:hover{transform:translateY(-2px);}
+body .btn-primary,body.role-investor .btn-primary,body.role-borrower .btn-primary{background:var(--brand);color:#fff;border-color:var(--brand);}
+body .btn-primary:hover,body.role-investor .btn-primary:hover,body.role-borrower .btn-primary:hover{background:var(--accent);border-color:var(--accent);color:var(--ink);}
+body.role-borrower .btn-primary{background:var(--ink);border-color:var(--ink);}
+body .btn-outline,body.role-investor .btn-outline,body.role-borrower .btn-outline{background:transparent;color:var(--brand);border-color:var(--brand);}
+body .btn-outline:hover{background:var(--brand);color:#fff;}
+body .btn-investor{background:var(--brand);color:#fff;}
+body .btn-borrower{background:var(--accent);color:var(--ink);}
+body .btn-outline-investor{background:transparent;color:var(--brand);border-color:var(--brand);}
+body .btn-outline-borrower{background:transparent;color:var(--accent-d);border-color:var(--accent);}
+body .btn-light{background:#fff;color:var(--ink);border-color:var(--line);}
+body .btn-light-outline{background:transparent;color:var(--ink);border-color:var(--ink);}
+body .btn-mini{padding:7px 14px;border-radius:3px;font-size:11px;}
+body .main-nav .btn-primary{color:#fff;margin-left:6px;}
+body .main-nav .btn-primary:hover{color:var(--ink);}
 
-/* Stitky a karty */
-body .eyebrow,body.role-investor .eyebrow,body.role-borrower .eyebrow,body .role-badge{background:var(--coral);color:#fff;border:2px solid var(--forest);border-radius:999px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:11.5px;padding:5px 14px;transform:rotate(-2deg);display:inline-block;}
-body .status-pill{border:2px solid var(--forest);border-radius:999px;background:#fff;color:var(--forest);font-weight:800;}
-body .status-active,body .status-paid{background:var(--sun);}
-body .status-due,body .status-late{background:var(--coral);color:#fff;}
-body .nav-badge{background:var(--coral);color:#fff;border:2px solid var(--forest);border-radius:999px;}
-body .card,body .stat-tile,body .step-card,body .benefit-card,body .float-card,body .stat-chip,body .calc-box,body .market-card,body .picker-card{background:#fff;border:2.5px solid var(--forest);border-radius:20px;box-shadow:6px 6px 0 var(--forest);transition:transform .15s,box-shadow .15s;}
-body .step-card:hover,body .benefit-card:hover,body .market-card:hover,body .stat-tile:hover{transform:translate(-3px,-3px) rotate(-.6deg);box-shadow:10px 10px 0 var(--forest);}
-body .step-num{background:var(--coral);color:#fff;border:2.5px solid var(--forest);border-radius:12px;animation:pop4 .5s both;}
-body .benefit-icon{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border:2.5px solid var(--forest);border-radius:16px;background:var(--coral);margin-bottom:12px;}
-body .benefit-card:nth-child(odd) .benefit-icon{background:var(--sun);}
-body .benefit-icon .ic svg{color:var(--forest);}
-body .card.note{background:var(--cream);box-shadow:none;border-style:dashed;}
-body .alert{background:var(--sun);border:2.5px solid var(--forest);border-radius:16px;color:var(--forest);box-shadow:4px 4px 0 var(--forest);}
-body .alert-warning,body .alert-error{background:var(--coral);color:#fff;}
+/* Stitky */
+body .eyebrow,body.role-investor .eyebrow,body.role-borrower .eyebrow,body .role-badge{background:none;color:var(--accent-d);padding:0;border-radius:0;text-transform:uppercase;letter-spacing:.18em;font-size:11.5px;font-weight:800;display:inline-flex;align-items:center;gap:10px;}
+body .eyebrow::before,body .role-badge::before{content:'';width:28px;height:2px;background:var(--accent);}
+body .status-pill{border-radius:3px;text-transform:uppercase;letter-spacing:.06em;font-size:10.5px;font-weight:800;padding:4px 10px;}
+body .status-active,body .status-paid{background:#E2EFE8;color:var(--brand);}
+body .status-due,body .status-signing{background:#F7EFD9;color:var(--accent-d);}
+body .status-late{background:#F8E3DF;color:var(--red);}
+body .nav-badge{background:var(--accent);color:var(--ink);border-radius:3px;}
 
-/* Uvodne sekcie: tmavozelena s animovanymi tvarmi */
-body .picker-hero,body .hero{background:var(--forest) radial-gradient(rgba(255,243,224,.14) 1.5px,transparent 1.5px) 0 0/24px 24px;color:var(--cream);position:relative;overflow:hidden;border-bottom:3px solid var(--forest);}
-body .picker-hero::before,body .hero::before{content:'';position:absolute;right:-90px;top:-90px;width:300px;height:300px;border-radius:50%;background:var(--sun);border:3px solid var(--cream);animation:floaty4 7s ease-in-out infinite;pointer-events:none;}
-body .picker-hero::after,body .hero::after{content:'';position:absolute;left:-70px;bottom:-70px;width:200px;height:200px;background:var(--coral);border:3px solid var(--cream);transform:rotate(18deg);border-radius:30px;animation:spin4 40s linear infinite;pointer-events:none;}
-body .picker-hero .wrap,body .hero .wrap{position:relative;z-index:1;}
-body .picker-hero{padding:80px 0 60px;}
-body .picker-hero h1,body .hero h1{color:var(--cream);font-size:56px;line-height:1.05;}
-body .picker-hero p,body .picker-hero .lead,body .hero p,body .hero .lead{color:#E8DCC4;}
-body .hero h1 em,body .picker-hero h1 em{color:var(--sun);}
-body .hero-stats b{color:var(--sun);}
-body .hero-stats span,body .picker-links a{color:#E8DCC4;}
-body .picker-links a:hover{color:var(--sun);}
+/* Karty */
+body .card,body .stat-tile,body .step-card,body .benefit-card,body .float-card,body .stat-chip,body .calc-box,body .market-card,body .picker-card{background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:0 1px 0 rgba(12,42,34,.04);transition:transform .25s,box-shadow .25s;}
+body .card{padding:30px;}
+body .stat-tile{border-left:4px solid var(--accent);}
+body .stat-tile b,body .card.stat b{font-family:var(--serif);font-size:28px;font-weight:600;}
+body .step-card{border-top:3px solid var(--accent);}
+body .benefit-card{border-top:3px solid var(--brand);}
+body .step-card:hover,body .benefit-card:hover,body .market-card:hover,body .stat-tile:hover{transform:translateY(-4px);box-shadow:0 18px 34px -20px rgba(12,42,34,.45);}
+body .step-num{width:auto;height:auto;background:none;color:var(--accent);font-family:var(--serif);font-size:44px;font-weight:600;border-radius:0;margin-bottom:4px;justify-content:flex-start;}
+body .benefit-icon{display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:50%;background:var(--soft);margin-bottom:12px;}
+body .benefit-icon .ic svg{color:var(--brand);}
+body .card.note{background:var(--soft);box-shadow:none;border-left:4px solid var(--accent);}
+body .alert{background:var(--soft);color:var(--ink);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:4px;}
+body .alert-warning,body .alert-error{border-left-color:var(--red);}
+
+/* Uvodne sekcie: tmava s mriezkou, jemne animovane obrysy */
+body .picker-hero,body .hero{background-color:var(--hero);background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:48px 48px;color:#fff;position:relative;overflow:hidden;border-bottom:4px solid var(--accent);}
+body .picker-hero::before,body .hero::before{content:'';position:absolute;right:-130px;top:-130px;width:420px;height:420px;border:1px solid rgba(var(--accent-rgb),.5);border-radius:50%;box-shadow:0 0 0 40px rgba(var(--accent-rgb),.07),0 0 0 80px rgba(var(--accent-rgb),.04);pointer-events:none;}
+body .picker-hero::after,body .hero::after{content:'';position:absolute;left:-70px;bottom:-70px;width:220px;height:220px;border:1px solid rgba(255,255,255,.2);transform:rotate(18deg);animation:spin5 70s linear infinite;pointer-events:none;}
+body .picker-hero .wrap,body .hero .wrap{position:relative;z-index:1;animation:rise5 .7s both;}
+body .picker-hero{padding:84px 0 64px;}
+body .picker-hero h1,body .hero h1{color:#fff;font-size:54px;line-height:1.08;}
+body .picker-hero p,body .picker-hero .lead,body .hero p,body .hero .lead{color:rgba(255,255,255,.78);}
+body .hero h1 em,body .picker-hero h1 em{color:var(--accent);font-style:italic;}
+body .picker-hero .eyebrow,body .hero .eyebrow{color:var(--accent);}
+body .hero-stats b{color:var(--accent);font-family:var(--serif);}
+body .hero-stats span,body .picker-links a{color:rgba(255,255,255,.72);}
+body .picker-links a:hover{color:var(--accent);}
 body .hero-blob{display:none;}
-body .picker-card{padding:40px 34px;}
-body .role-card-borrower{background:var(--coral);transform:rotate(-1.2deg);}
-body .role-card-investor{background:var(--sun);transform:rotate(1.2deg);}
-body .picker-card:hover{transform:rotate(0) translate(-3px,-3px);box-shadow:10px 10px 0 var(--forest);}
-body .picker-hero .picker-card h2,body .picker-hero .picker-card p,body .picker-hero .picker-cta,body .picker-hero .picker-stat b,body .picker-hero .picker-stat span,body .picker-hero .picker-card .picker-icon{color:var(--forest);}
-body .picker-stat{border-top:2.5px dashed var(--forest);}
-body .picker-icon .ic{background:#fff;border:2.5px solid var(--forest);border-radius:16px;width:60px;height:60px;align-items:center;justify-content:center;}
-body .hero-visual{position:relative;display:block;min-height:420px;background:var(--sun) url('hero-art.svg') no-repeat center/78%;border:3px solid var(--cream);border-radius:28px;box-shadow:8px 8px 0 var(--cream);padding:0;}
-body .hero-visual .float-card{display:flex;position:absolute;max-width:215px;animation:floaty4 6s ease-in-out infinite;}
-body .hero-visual .card-a{top:-18px;left:-22px;transform:rotate(-4deg);}
-body .hero-visual .card-b{bottom:-18px;right:-18px;transform:rotate(3deg);animation-delay:1.2s;}
-body .hero-visual .card-c{top:42%;left:-26px;transform:rotate(-2deg);animation-delay:2.4s;}
-body .hero .btn-primary{background:var(--sun);}
-body .hero .btn-outline{background:var(--cream);}
-body .section.cta-band,body .cta-band{background:var(--coral);border:3px solid var(--forest);border-radius:28px;margin:30px 16px;box-shadow:8px 8px 0 var(--forest);}
-body .cta-band h2,body .cta-band p{color:var(--forest);}
-body .stats-band{background:var(--sun);border:3px solid var(--forest);border-radius:28px;color:var(--forest);box-shadow:8px 8px 0 var(--forest);}
-body .stats-grid b{color:var(--forest);-webkit-text-fill-color:currentColor;background:none;}
-body .stats-grid span{color:var(--forest);}
+body .hero .btn-primary,body .picker-hero .btn-primary{background:var(--accent);border-color:var(--accent);color:var(--ink);}
+body .hero .btn-primary:hover{background:#fff;border-color:#fff;}
+body .hero .btn-outline,body .cta-band .btn-outline{background:transparent;border-color:#fff;color:#fff;}
+body .hero .btn-outline:hover,body .cta-band .btn-outline:hover{background:#fff;color:var(--ink);}
+body .picker-card{padding:40px 34px;border-top:5px solid var(--brand);}
+body .role-card-borrower{border-top-color:var(--accent);}
+body .picker-card:hover{transform:translateY(-6px);box-shadow:0 26px 40px -22px rgba(0,0,0,.6);}
+body .picker-hero .picker-card h2{color:var(--ink);}
+body .picker-hero .picker-card p{color:var(--muted);}
+body .picker-hero .picker-cta{color:var(--brand);text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:5px;}
+body .picker-hero .picker-stat b{font-family:var(--serif);color:var(--brand);}
+body .picker-hero .role-card-borrower .picker-stat b{color:var(--accent-d);}
+body .picker-hero .picker-stat span{color:var(--muted);}
+body .picker-stat{border-top:1px solid var(--line);}
+body .picker-icon .ic{background:var(--soft);border-radius:50%;width:56px;height:56px;align-items:center;justify-content:center;color:var(--brand);}
+body .hero-visual{display:flex;flex-direction:column;gap:14px;justify-content:flex-end;min-height:440px;padding:22px;background:rgba(255,255,255,.04) url('hero-art.svg') no-repeat center 22%/90%;border:1px solid rgba(var(--accent-rgb),.5);border-radius:10px;}
+body .hero-visual .float-card{position:static;animation:none;transform:none;max-width:250px;border-left:4px solid var(--accent);}
+body .hero-visual .float-card b{color:var(--ink);font-family:var(--serif);}
+body .hero-visual .float-card span{color:var(--muted);}
+body .hero-visual .card-b{align-self:flex-end;}
+body .hero-visual .card-c{align-self:center;}
+body .cta-band,body .section.cta-band{background:var(--hero);border-top:4px solid var(--accent);border-radius:8px;margin:30px 16px;}
+body .cta-band h2{color:#fff;}
+body .cta-band p{color:rgba(255,255,255,.8);}
+body .stats-band{background:var(--soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line);border-radius:0;color:var(--ink);margin:0;}
+body .stats-grid b{font-family:var(--serif);color:var(--brand);-webkit-text-fill-color:currentColor;background:none;font-size:36px;}
+body .stats-grid span{color:var(--muted);}
 
 /* Sidebar */
-body .dash-sidebar{background:var(--forest);border:3px solid var(--forest);border-radius:22px;box-shadow:6px 6px 0 var(--sun);}
-body .dash-sidebar .sidebar-user{border-bottom:2px dashed rgba(255,243,224,.35);}
-body .dash-sidebar .sidebar-user b{color:var(--cream);}
-body .dash-sidebar .sidebar-user span{color:#CDBFA3;}
-body .dash-sidebar .sidebar-avatar{background:var(--sun);color:var(--forest);border:2.5px solid var(--cream);border-radius:14px;}
-body .sidebar-nav-link{color:var(--cream);border:2px solid transparent;border-radius:12px;font-weight:700;}
-body .sidebar-nav-link:hover{background:rgba(255,243,224,.12);color:#fff;}
-body .sidebar-nav-link.active,body.role-investor .sidebar-nav-link.active{background:var(--sun);color:var(--forest);border-color:var(--cream);}
-body.role-borrower .sidebar-nav-link.active{background:var(--coral);}
-body .sidebar-nav .sidebar-sep{background:rgba(255,243,224,.3);}
-body .sidebar-nav-link.danger{color:var(--coral);}
-body .dash-sidebar-close{color:var(--cream);}
-body .dash-sidebar-toggle{background:var(--sun);color:var(--forest);border:2.5px solid var(--forest);border-radius:14px;box-shadow:4px 4px 0 var(--forest);font-weight:800;}
-body .dash-sidebar-toggle svg{stroke:var(--forest);}
-body .dash-top h1{font-size:40px;border:0;padding:0;}
-body .dash-top a{font-weight:700;text-decoration:underline wavy var(--coral);}
+body .dash-sidebar{background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:none;padding:20px 12px;}
+body .dash-sidebar .sidebar-user{border-bottom:1px solid var(--line);}
+body .dash-sidebar .sidebar-user b{color:var(--ink);}
+body .dash-sidebar .sidebar-user span{color:var(--muted);}
+body .dash-sidebar .sidebar-avatar{background:var(--brand);color:var(--accent);border-radius:4px;font-family:var(--serif);}
+body .sidebar-nav-link{color:var(--ink);border-radius:4px;border-left:3px solid transparent;padding:11px 14px;font-weight:600;}
+body .sidebar-nav-link .ic{color:var(--muted);}
+body .sidebar-nav-link:hover{background:var(--soft);color:var(--ink);}
+body .sidebar-nav-link.active,body.role-investor .sidebar-nav-link.active{background:var(--soft);color:var(--brand);border-left-color:var(--accent);}
+body .sidebar-nav-link.active .ic{color:var(--brand);}
+body .sidebar-nav .sidebar-sep{background:var(--line);}
+body .sidebar-nav-link.danger{color:var(--red);}
+body .dash-sidebar-close{color:var(--ink);}
+body .dash-sidebar-toggle{background:#fff;color:var(--ink);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:4px;box-shadow:none;font-weight:700;}
+body .dash-sidebar-toggle svg{stroke:var(--ink);}
+body .dash-top h1{font-size:38px;border:0;padding:0;}
+body .dash-top a{color:var(--accent-d);font-weight:700;}
 
-/* Penazenka, statistiky, tabulky, formulare */
-body .wallet-card{background:var(--sun);color:var(--forest);border:3px solid var(--forest);border-radius:24px;box-shadow:8px 8px 0 var(--forest);padding:30px;}
-body .wallet-card .balance{color:var(--forest);font-size:46px;}
-body .wallet-card .balance-label{color:var(--forest);font-weight:700;}
-body .wallet-actions input{border:2.5px solid var(--forest);background:#fff;border-radius:12px;}
-body .wallet-actions button{background:var(--forest);color:var(--cream);border:2.5px solid var(--forest);border-radius:12px;font-weight:800;}
-body .wallet-actions button.outline{background:#fff;color:var(--forest);}
+/* Penazenka, tabulky, formulare */
+body .wallet-card{background:var(--hero) url('spark.svg') no-repeat right 28px bottom 18px/300px;color:#fff;border:0;border-bottom:4px solid var(--accent);border-radius:8px;padding:32px;}
+body .wallet-card .balance{color:var(--accent);font-family:var(--serif);font-size:48px;font-weight:600;}
+body .wallet-card .balance-label{color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.12em;font-size:11.5px;font-weight:700;}
 body .wallet-card .wallet-illustration{display:none;}
-body .stat-grid .stat-tile:nth-child(4n+1){background:var(--sun);}
-body .stat-grid .stat-tile:nth-child(4n+3){background:var(--coral);}
-body .stat-grid .stat-tile:nth-child(4n+3) b,body .stat-grid .stat-tile:nth-child(4n+3) span{color:var(--forest);}
-body .stat-tile.up b{color:var(--forest);}
-table{border-collapse:separate;border-spacing:0;}
-th{background:var(--forest);color:var(--cream);font-size:12px;letter-spacing:.06em;border:0;}
-th:first-child{border-radius:10px 0 0 10px;}
-th:last-child{border-radius:0 10px 10px 0;}
-td{border-bottom:2px dashed rgba(14,59,53,.3);}
-body .row-expand:hover,body .row-details{background:#FFF0BF;}
-body .card input:not([type=checkbox]):not([type=range]),body .card textarea,body .card select,body .form-card select,body .form-card input:not([type=checkbox]):not([type=range]){border:2.5px solid var(--forest);border-radius:12px;background:#fff;}
-body .card input:focus,body .card textarea:focus,body .card select:focus{outline:none;box-shadow:4px 4px 0 var(--sun);}
-body .form-subhead{color:var(--coral);border-top:2.5px dashed var(--forest);}
+body .wallet-actions input{border:0;border-radius:4px;background:#fff;}
+body .wallet-actions button{background:var(--accent);color:var(--ink);border:0;border-radius:4px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:12px;}
+body .wallet-actions button.outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.65);}
+table{border-collapse:collapse;}
+th{background:none;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em;border-bottom:2px solid var(--brand);}
+td{border-bottom:1px solid var(--line);}
+body .row-expand:hover,body .row-details{background:var(--soft);}
+body .card input:not([type=checkbox]):not([type=range]),body .card textarea,body .card select,body .form-card select,body .form-card input:not([type=checkbox]):not([type=range]){border:1px solid #CFC7B2;border-radius:4px;background:#fff;}
+body .card input:focus,body .card textarea:focus,body .card select:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(var(--accent-rgb),.3);}
+body .form-subhead{color:var(--accent-d);border-top:1px solid var(--line);text-transform:uppercase;letter-spacing:.1em;}
 
 /* Pata a plavajuce prvky */
-body .site-footer{background:var(--forest);color:#CDBFA3;border-top:8px double var(--sun);}
-body .site-footer h4{color:var(--sun);}
-body .site-footer a,body .footer-brand p{color:#CDBFA3;}
+body .site-footer{background:var(--ink);color:rgba(255,255,255,.7);border-top:4px solid var(--accent);}
+body .site-footer h4{color:var(--accent);text-transform:uppercase;letter-spacing:.14em;font-size:12px;}
+body .site-footer a,body .footer-brand p{color:rgba(255,255,255,.7);}
 body .site-footer a:hover{color:#fff;}
-body .footer-bottom{border-top:2px dashed rgba(255,243,224,.3);color:#CDBFA3;}
-body .chat-btn{background:var(--coral);border:3px solid var(--forest);border-radius:50%;box-shadow:4px 4px 0 var(--forest);animation:floaty4 4s ease-in-out infinite;}
-body .chat-panel{border:2.5px solid var(--forest);border-radius:18px;box-shadow:6px 6px 0 var(--forest);}
-body .sticky-tab{background:var(--coral);color:var(--forest);border:2.5px solid var(--forest);border-right:0;border-radius:16px 0 0 16px;box-shadow:none;}
+body .footer-bottom{border-top:1px solid rgba(255,255,255,.14);color:rgba(255,255,255,.55);}
+body .chat-btn{background:var(--brand);border:2px solid var(--accent);border-radius:50%;box-shadow:none;}
+body .chat-panel{border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:6px;}
+body .sticky-tab{background:var(--brand);color:#fff;border-radius:4px 0 0 4px;box-shadow:none;}
 
 /* Menu pod 980 px a mobil */
 @media(max-width:980px){
   .burger{display:flex;}
-  .main-nav{position:fixed;top:88px;left:0;right:0;background:var(--cream);flex-direction:column;align-items:stretch;padding:18px 20px;gap:6px;border-bottom:3px solid var(--forest);transform:translateY(-8px);opacity:0;pointer-events:none;transition:.2s;z-index:90;}
+  .main-nav{position:fixed;top:108px;left:0;right:0;background:#fff;flex-direction:column;align-items:stretch;padding:16px 20px;gap:4px;border-bottom:1px solid var(--line);transform:translateY(-8px);opacity:0;pointer-events:none;transition:.2s;z-index:90;}
   .main-nav.open{transform:none;opacity:1;pointer-events:auto;}
   .nav-cta{flex-direction:column;align-items:stretch;margin:6px 0 0;}
 }
-@media(max-width:900px){body .picker-hero h1,body .hero h1{font-size:36px;}body .hero-visual{min-height:300px;margin:20px 20px 0;}body .hero-visual .card-a,body .hero-visual .card-c{left:-10px;}}
+@media(max-width:900px){body .picker-hero h1,body .hero h1{font-size:36px;}body .hero-visual{min-height:320px;margin-top:20px;}}
 @media(max-width:700px){
-  .logo-full-img{height:48px;}.footer-brand .logo-full-img{height:68px;}
-  body .dash-sidebar{border-radius:0;box-shadow:none;}
+  body .logo-full-img{height:64px;}body .footer-brand .logo-full-img{height:84px;}
+  .main-nav{top:80px;}
+  body .dash-sidebar{border-radius:0;}
   body .dash-top h1{font-size:28px;}
-  body .card,body .stat-tile{box-shadow:4px 4px 0 var(--forest);}
-  body .wallet-card{padding:20px;box-shadow:5px 5px 0 var(--forest);}
-  body .wallet-card .balance{font-size:32px;}
-  body .picker-hero::before{width:180px;height:180px;}
-  body .role-card-borrower,body .role-card-investor{transform:none;}
+  body .card{padding:20px;}
+  body .wallet-card{padding:20px;background-size:180px;}
+  body .wallet-card .balance{font-size:34px;}
+  body .picker-hero::before{width:260px;height:260px;}
 }
+@media(max-width:480px){body .logo-full-img{height:56px;}.main-nav{top:72px;}}
 
-/* v4 opravy: citatelnost kariet v hero */
-body .hero-visual .float-card b{color:var(--forest);}
-body .hero-visual .float-card span{color:var(--muted);}
-body .hero-visual .float-card .pill{color:var(--forest);}
-
-/* Logo so sloganom: vacsie, aby sa dal slogan precitat */
-body .logo-full-img{height:92px;}
-body .footer-brand .logo-full-img{height:110px;}
-body .header-inner{padding-top:8px;padding-bottom:8px;}
-@media(max-width:980px){body .main-nav{top:108px;}}
-@media(max-width:700px){body .logo-full-img{height:64px;}body .footer-brand .logo-full-img{height:84px;}body .main-nav{top:80px;}}
-@media(max-width:480px){body .logo-full-img{height:56px;}body .main-nav{top:72px;}}
+/* v5 opravy: graf v penazenke nesmie prekryvat tlacidla */
+body .wallet-card{background-position:left 24px bottom 10px;background-size:260px;}
+body .wallet-card>*{position:relative;z-index:1;}
+@media(prefers-reduced-motion:reduce){body .picker-hero .wrap,body .hero .wrap{animation:none;}}
