@@ -183,7 +183,7 @@ else:
     # ďalej bez chyby, len reálne e-maily neodosiela.
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Pôžičky Predlžníkov <noreply@pozickypredlznikov.sk>')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='Pôžičky pre Dlžníkov <noreply@pozickypredlznikov.sk>')
 
 
 # Security (relevant behind Render's proxy / HTTPS)

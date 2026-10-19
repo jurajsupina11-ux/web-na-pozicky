@@ -298,7 +298,7 @@ def investor_history_pdf(request):
     styles['Title'].fontName = 'Vera-Bold'
     styles['Normal'].fontName = 'Vera'
     elements = [
-        Paragraph('Pôžičky Predlžníkov – história investícií', styles['Title']),
+        Paragraph('Pôžičky pre Dlžníkov – história investícií', styles['Title']),
         Paragraph(
             f'Obdobie: {date_from_str or "od začiatku"} – {date_to_str or "dnes"}',
             styles['Normal'],
@@ -406,7 +406,7 @@ def tax_statement_pdf(request, year):
     styles['Title'].fontName = 'Vera-Bold'
     styles['Normal'].fontName = 'Vera'
     elements = [
-        Paragraph(f'Pôžičky Predlžníkov – ročný daňový výkaz {year}', styles['Title']),
+        Paragraph(f'Pôžičky pre Dlžníkov – ročný daňový výkaz {year}', styles['Title']),
         Paragraph(f'Investor: {request.user.display_name} ({request.user.username})', styles['Normal']),
         Paragraph(
             'Súhrn úrokových príjmov zo splatených pôžičiek za daný rok - podklad pre daňové priznanie '

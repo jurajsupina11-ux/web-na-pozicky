@@ -32,10 +32,10 @@ def send_investor_welcome(user):
     ktorý bude potrebovať na potvrdenie žiadosti o výber peňazí a na zmenu
     bankového účtu (IBAN) v Nastaveniach."""
     _send(
-        'Vitajte na Pôžičky Predlžníkov - Váš bezpečnostný kód',
+        'Vitajte na Pôžičky pre Dlžníkov - Váš bezpečnostný kód',
         (
             f'Dobrý deň,\n\n'
-            f'vitajte medzi investormi na Pôžičky Predlžníkov!\n\n'
+            f'vitajte medzi investormi na Pôžičky pre Dlžníkov!\n\n'
             f'Váš bezpečnostný kód je: {user.security_code}\n\n'
             f'Tento kód budete potrebovať vždy, keď:\n'
             f'- požiadate o výber peňazí z peňaženky na svoj bankový účet,\n'
@@ -44,7 +44,7 @@ def send_investor_welcome(user):
             f'Kód si uložte na bezpečné miesto a nikomu ho neposkytujte.\n\n'
             f'Peniaze posielame výhradne na slovenské bankové účty (SK IBAN) a platby spracúvame '
             f'v pracovné dni od 8:00 do 16:00.\n\n'
-            f'S pozdravom,\nPôžičky Predlžníkov'
+            f'S pozdravom,\nPôžičky pre Dlžníkov'
         ),
         user.email,
     )
@@ -76,7 +76,7 @@ def send_loan_application_received(user, auction, password=None):
             f'niekoľko minút až hodín. Hneď ako bude vybavená, dostanete e-mail s výsledkom '
             f'(schválenie, prípadne dôvod zamietnutia alebo protiponuka). Do schválenia nemáte '
             f'prístup do prostredia pre dlžníkov, len na stránku so stavom žiadosti.\n\n'
-            f'S pozdravom,\nPôžičky Predlžníkov'
+            f'S pozdravom,\nPôžičky pre Dlžníkov'
         ),
         user.email,
     )
@@ -98,7 +98,7 @@ def send_loan_application_approved(user, auction):
             f'Váš bezpečnostný kód je: {user.security_code}\n'
             f'Tento kód budete potrebovať pri zmene bankového účtu (IBAN), na ktorý sa Vám majú '
             f'vyplácať peniaze. Kód si uložte na bezpečné miesto a nikomu ho neposkytujte.\n\n'
-            f'S pozdravom,\nPôžičky Predlžníkov'
+            f'S pozdravom,\nPôžičky pre Dlžníkov'
         ),
         user.email,
     )
@@ -114,7 +114,7 @@ def send_loan_application_rejected(user, auction):
             f'bohužiaľ, Vašu žiadosť o pôžičku {auction.amount_requested} € sme nemohli schváliť.'
             f'{reason}\n'
             f'Žiadosť môžete kedykoľvek podať znova.\n\n'
-            f'S pozdravom,\nPôžičky Predlžníkov'
+            f'S pozdravom,\nPôžičky pre Dlžníkov'
         ),
         user.email,
     )
@@ -130,7 +130,7 @@ def send_loan_application_counter_offer(user, auction):
             f'pôvodne požadovanú sumu {auction.amount_requested} € sme nemohli schváliť v plnej výške, '
             f'namiesto toho Vám ponúkame pôžičku vo výške {auction.counter_offer_amount} €.\n\n'
             f'Protiponuku môžete prijať alebo odmietnuť vo svojom účte (sekcia "Moje žiadosti").\n\n'
-            f'S pozdravom,\nPôžičky Predlžníkov'
+            f'S pozdravom,\nPôžičky pre Dlžníkov'
         ),
         user.email,
     )
@@ -146,7 +146,7 @@ def send_loan_approved(user, auction):
             f'vyfinancovaná. Peniaze budú čoskoro odoslané na váš bankový účet.\n\n'
             f'Prihláste sa do svojho účtu a v sekcii "Moje pôžičky" nájdete všetky informácie '
             f'o splácaní.\n\n'
-            f'S pozdravom,\nPôžičky Predlžníkov'
+            f'S pozdravom,\nPôžičky pre Dlžníkov'
         ),
         user.email,
     )
@@ -162,7 +162,7 @@ def send_email_verification(user, verify_url):
             f'pred podpisom Zmluvy o pôžičke je potrebné overiť Vašu e-mailovú adresu. '
             f'Kliknite prosím na nasledujúci odkaz:\n\n'
             f'{verify_url}\n\n'
-            f'S pozdravom,\nPôžičky Predlžníkov'
+            f'S pozdravom,\nPôžičky pre Dlžníkov'
         ),
         user.email,
     )
@@ -177,7 +177,7 @@ def send_investment_confirmation(user, bid):
             f'potvrdzujeme prijatie vašej investície {bid.amount} € s úrokom {bid.interest_rate} % p.a. '
             f'do pôžičky #{bid.auction.pk}.\n\n'
             f'Stav investície môžete sledovať vo svojom Dashboarde investora.\n\n'
-            f'S pozdravom,\nPôžičky Predlžníkov'
+            f'S pozdravom,\nPôžičky pre Dlžníkov'
         ),
         user.email,
     )
@@ -191,7 +191,7 @@ def send_repayment_reported(user, auction):
             f'Dobrý deň,\n\n'
             f'dlžník nahlásil úhradu pôžičky #{auction.pk} ({auction.amount_requested} €). '
             f'Platba sa momentálne overuje, o výsledku vás budeme informovať.\n\n'
-            f'S pozdravom,\nPôžičky Predlžníkov'
+            f'S pozdravom,\nPôžičky pre Dlžníkov'
         ),
         user.email,
     )
@@ -206,7 +206,7 @@ def send_payment_overdue_reminder(user, auction):
             f'vaša pôžička #{auction.pk} ({auction.amount_requested} €) je po termíne splatnosti. '
             f'Prosíme, uhraďte dlžnú sumu čo najskôr, prípadne požiadajte o odklad splátky vo '
             f'svojom účte (sekcia "Moje pôžičky").\n\n'
-            f'S pozdravom,\nPôžičky Predlžníkov'
+            f'S pozdravom,\nPôžičky pre Dlžníkov'
         ),
         user.email,
     )
@@ -221,7 +221,7 @@ def send_buyback_notice_lender(user, auction):
             f'pôžička #{auction.pk} ({auction.amount_requested} €) nebola splatená do 90 dní po splatnosti. '
             f'V súlade s garanciou odkúpenia sme vašu investíciu (istina + dohodnutý úrok) automaticky '
             f'vyplatili na vašu peňaženku. Ďalšie vymáhanie dlhu od dlžníka preberá platforma.\n\n'
-            f'S pozdravom,\nPôžičky Predlžníkov'
+            f'S pozdravom,\nPôžičky pre Dlžníkov'
         ),
         user.email,
     )
@@ -234,9 +234,9 @@ def send_buyback_notice_borrower(user, auction):
         (
             f'Dobrý deň,\n\n'
             f'vaša pôžička #{auction.pk} ({auction.amount_requested} €) nebola splatená do 90 dní po splatnosti '
-            f'a bola odkúpená platformou Pôžičky Predlžníkov. Váš dlh teraz evidujeme priamo voči platforme, '
+            f'a bola odkúpená platformou Pôžičky pre Dlžníkov. Váš dlh teraz evidujeme priamo voči platforme, '
             f'prosíme uhraďte dlžnú sumu čo najskôr, inak bude pristúpené k ďalšiemu vymáhaniu.\n\n'
-            f'S pozdravom,\nPôžičky Predlžníkov'
+            f'S pozdravom,\nPôžičky pre Dlžníkov'
         ),
         user.email,
     )
@@ -251,7 +251,7 @@ def send_auction_expired(user, auction):
             f'Vaša žiadosť o pôžičku {auction.amount_requested} € bohužiaľ nebola vyfinancovaná žiadnym '
             f'investorom v stanovenej lehote a bola zrušená.\n\n'
             f'Môžete podať novú žiadosť vo svojom účte.\n\n'
-            f'S pozdravom,\nPôžičky Predlžníkov'
+            f'S pozdravom,\nPôžičky pre Dlžníkov'
         ),
         user.email,
     )
@@ -266,7 +266,7 @@ def send_payment_due_soon_reminder(user, auction, days_left):
             f'splatnosť vašej pôžičky #{auction.pk} ({auction.amount_requested} €) sa blíži '
             f'({days_left} {"deň" if days_left == 1 else "dni" if days_left < 5 else "dní"} do splatnosti). '
             f'Všetky platobné údaje nájdete vo svojom účte (sekcia "Moje pôžičky").\n\n'
-            f'S pozdravom,\nPôžičky Predlžníkov'
+            f'S pozdravom,\nPôžičky pre Dlžníkov'
         ),
         user.email,
     )

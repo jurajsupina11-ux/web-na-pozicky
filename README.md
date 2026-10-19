@@ -1,4 +1,4 @@
-# Pôžičky Predlžníkov
+# Pôžičky pre Dlžníkov
 
 Aukčný systém na krátkodobé pôžičky (P2P lending) – web (Django) + budúca mobilná appka.
 
