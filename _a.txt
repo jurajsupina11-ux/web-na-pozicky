@@ -1,3 +1,0 @@
-hotovo 29 z 29
-hotovo 29 dizajnov, 1479 stranok
-9b7d358 Domovska stranka: opravy kontrastu (zen, sunset, swiss), pixel font, kontrolny skript
