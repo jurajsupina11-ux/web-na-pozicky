@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pôžičky pre Dlžníkov – Pre žiadateľov o pôžičku</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo-icon.svg?v=1792419099">
+<link rel="stylesheet" href="assets/style.css?v=1792419099">
+</head>
+<body class="role-borrower">
+<div class="bg-dots"></div>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="logo" href="pub-landing.html">
+      <img src="assets/logo-full.svg?v=1792419099" alt="Insight Partners" class="logo-full-img">
+    </a>
+    <button class="burger" id="burgerBtn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="main-nav" id="mainNav">
+      <a href="pub-landing.html">Domov</a>
+      <a href="pub-investori.html">Pre investorov</a>
+      <a href="pub-pre-ziadatelov.html" class="active">Pre žiadateľov</a>
+      <a href="pub-caste-otazky.html">Časté otázky</a>
+      <a href="pub-kontakt.html">Kontakt</a>
+      <div class="nav-cta">
+        
+        <a class="btn btn-ghost" href="pub-prihlasenie-dlznik.html">Prihlásiť sa</a>
+        <a class="btn btn-primary" href="pub-ziadost-o-uver.html">Požiadať o pôžičku</a>
+        
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+<section class="hero hero-sm">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Pre žiadateľov o pôžičku</span>
+      <h1>Peniaze do <em>5 minút,</em><br>bez čakania na banku</h1>
+      <p class="lead">Požičiate si 50 € – 500 € na 15 až 30 dní. Jedným formulárom zadáte žiadosť aj vytvoríte účet.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="pub-ziadost-o-uver.html">Požiadať o pôžičku</a>
+        <a class="btn btn-outline btn-lg" href="#ako-funguje">Ako to funguje</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="float-card card-b"><span class="pill pill-info">Schválené</span><b>200 €</b><span>Úrok 20,3 % p.a. · 18 dní</span></div>
+      <div class="float-card card-a"><span class="pill pill-info">Schválené</span><b>350 €</b><span>Úrok 22,1 % p.a. · 25 dní</span></div>
+      <div class="float-card card-c"><span class="pill pill-up">Vyplatené na účet</span><b>150 €</b><span>Do 5 minút od schválenia</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="wrap" style="max-width:640px;">
+    <div class="slider-calc">
+      <h3>Kalkulačka pôžičky</h3>
+      <div class="slider-row">
+        <div class="slider-row-head"><span>Suma pôžičky</span><b id="loanAmountVal">50 €</b></div>
+        <input type="range" id="loanAmount" min="50" max="500" step="10" value="50">
+        <div class="slider-minmax"><span>50 €</span><span>500 €</span></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-row-head"><span>Splatnosť</span><b id="loanDaysVal">15 dní</b></div>
+        <input type="range" id="loanDays" min="15" max="30" step="1" value="15">
+        <div class="slider-minmax"><span>15 dní</span><span>30 dní</span></div>
+      </div>
+      <div class="slider-result">
+        <div><span>Úrok p.a.</span><b id="loanRateVal" class="accent">19,0 %</b></div>
+        <div><span>Aukčný poplatok</span><b id="loanFeeVal">20,00 €</b></div>
+        <div><span>Spolu na splatenie</span><b id="loanTotalVal" class="accent">70,39 €</b></div>
+      </div>
+      <p class="form-note">Reprezentatívny príklad: pri pôžičke 50 € na 15 dní s úrokom 19 % p.a. a aukčným poplatkom 20 € zaplatíš spolu 70,39 €. Ročná percentuálna miera nákladov (RPMN) sa líši podľa zvolenej sumy a splatnosti.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="ako-funguje">
+  <div class="wrap">
+    <div class="section-head"><span class="eyebrow">Postup</span><h2>Ako to funguje</h2></div>
+    <div class="steps-grid">
+      <div class="step-card"><div class="step-num">1</div><h3>Vyplníte jednu žiadosť</h3><p>Osobné údaje aj parametre pôžičky zadáte v jednom formulári.</p></div>
+      <div class="step-card"><div class="step-num">2</div><h3>Žiadosť sa zobrazí investorom</h3><p>Po administrátorskom schválení sa žiadosť objaví v aukčnej miestnosti.</p></div>
+      <div class="step-card"><div class="step-num">3</div><h3>Investor financuje, máte peniaze</h3><p>Po podpise zmluvy idú peniaze na Váš bankový účet.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap faq-wrap">
+    <div class="section-head"><span class="eyebrow">Časté otázky</span><h2>Koľko to bude stáť</h2></div>
+    <div class="accordion">
+      <details open><summary>Koľko ma pôžička bude stáť?</summary><p>Úrok 19 – 24 % p.a. podľa dĺžky splácania (15 – 30 dní) a jednorazový aukčný poplatok platforme, minimálne 20 €.</p></details>
+      <details><summary>Čo ak nestihnem splatiť včas?</summary><p>V účte môžete jedným kliknutím požiadať o odklad splátky o 7 dní za jednorazový poplatok.</p></details>
+      <details><summary>Aké údaje budem potrebovať?</summary><p>Číslo občianskeho preukazu, rodné číslo, adresu a bankový účet, na ktorý sa pôžička vyplatí.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="section cta-band">
+  <div class="wrap cta-inner">
+    <h2>Potrebujete peniaze rýchlo?</h2>
+    <p>Vyplňte žiadosť a dostanete odpoveď do pár minút po financovaní investorom.</p>
+    <a class="btn btn-primary btn-lg" href="pub-ziadost-o-uver.html">Požiadať o pôžičku</a>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <img src="assets/logo-full-footer.svg?v=1792419099" alt="Insight Partners" class="logo-full-img">
+      <p>Insight Partners s. r. o.<br>P2P platforma pre krátkodobé pôžičky medzi investormi a žiadateľmi.</p>
+    </div>
+    <div>
+      <h4>Platforma</h4>
+      <a href="pub-investori.html">Pre investorov</a>
+      <a href="pub-pre-ziadatelov.html">Pre žiadateľov</a>
+    </div>
+    <div>
+      <h4>Podpora</h4>
+      <a href="pub-caste-otazky.html">Časté otázky</a>
+      <a href="pub-kontakt.html">Kontakt</a>
+      <a href="pub-obchodne-podmienky.html">Obchodné podmienky</a>
+      <a href="pub-ochrana-udajov.html">Ochrana osobných údajov</a>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">© 2026 Insight Partners s. r. o. Všetky práva vyhradené.</div>
+</footer>
+<a class="sticky-tab" href="#">Klientska zóna</a>
+<div class="chat-widget">
+  <div class="chat-panel" id="chatPanel">
+    <h4>Potrebujete pomôcť?</h4>
+    <p>Napíšte nám a odpovieme zvyčajne do pár minút v pracovné dni 8:00 – 18:00.</p>
+    <a class="btn btn-primary btn-block" href="pub-kontakt.html">Prejsť na kontakt</a>
+  </div>
+  <button class="chat-btn" id="chatBtn" aria-label="Otvoriť chat"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span></button>
+</div>
+<script src="assets/script.js?v=1792419099"></script>
+<script>document.addEventListener("submit",function(e){e.preventDefault();});document.addEventListener("click",function(e){var a=e.target.closest("a");if(a&&a.getAttribute("href")==="#"){e.preventDefault();}});</script></body>
+</html>

@@ -1,0 +1,54 @@
+/* ---- KOSTRA A: premenne dizajnu -> prvky (hlavicka, tlacidla, karty) ---- */
+:root{--violet:var(--brand);--violet-dark:var(--ink);--pink:var(--brand);--teal:var(--inv);--investor:var(--inv);--investor-bg:var(--soft);--borrower:var(--bor);--borrower-bg:var(--soft);--red:var(--bor);--amber:var(--bor);}
+body{--acc:var(--brand);--acc-ink:var(--brand-ink);--acc-text:var(--brand-text);--role-accent:var(--acc);}
+body.role-investor{--acc:var(--inv);--acc-ink:var(--inv-ink);--acc-text:var(--inv-text);}
+body.role-borrower{--acc:var(--bor);--acc-ink:var(--bor-ink);--acc-text:var(--bor-text);}
+body{background:var(--bg);color:var(--ink);font-family:var(--fb),system-ui,sans-serif;}
+body::before,body::after,.bg-dots{display:none;}
+h1,h2,h3,h4{font-family:var(--fh),system-ui,sans-serif;color:var(--ink);}
+p{color:var(--muted);}
+body em,body.role-investor em,body.role-borrower em{color:var(--acc-text);font-style:normal;}
+a:focus-visible,button:focus-visible{outline:3px solid var(--acc);outline-offset:2px;}
+
+body .site-header,body.role-investor .site-header,body.role-borrower .site-header{background:var(--hdr-bg);border:0;border-top:var(--hdr-top,5px solid var(--acc));border-bottom:var(--hdr-bd,0);backdrop-filter:var(--hdr-blur,none);-webkit-backdrop-filter:var(--hdr-blur,none);}
+.header-inner{padding-top:8px;padding-bottom:8px;}
+.logo{display:flex;align-items:center;flex-shrink:0;background:var(--logo-plate,transparent);border-radius:14px;padding:var(--logo-pad,0);}
+body .logo-full-img{height:84px;width:auto;max-width:none;display:block;}
+body .footer-brand .logo-full-img{height:104px;}
+.main-nav{gap:var(--nav-gap,22px);}
+.main-nav a{color:var(--hdr-ink);font-weight:600;font-size:14.5px;padding:8px 4px;border:0;border-bottom:2px solid transparent;white-space:nowrap;background:none;}
+.main-nav a:hover,.main-nav a.active{color:var(--acc-text);border-bottom-color:var(--acc);background:none;}
+body .main-nav .btn-primary,body.role-investor .main-nav .btn-primary,body.role-borrower .main-nav .btn-primary{color:var(--acc-ink);padding:12px 24px;margin-left:6px;}
+.burger span{background:var(--hdr-ink);}
+
+body .btn{border:2px solid transparent;border-radius:var(--rb);font-family:var(--fb),system-ui,sans-serif;font-weight:700;padding:13px 26px;box-shadow:none;white-space:nowrap;transition:transform .15s,background .2s,color .2s,box-shadow .2s;}
+body .btn:hover{transform:translateY(-2px);}
+body .btn-primary,body.role-investor .btn-primary,body.role-borrower .btn-primary{background:var(--acc);color:var(--acc-ink);border-color:var(--acc);box-shadow:var(--btn-sh,none);}
+body .btn-outline,body.role-investor .btn-outline,body.role-borrower .btn-outline{background:transparent;color:var(--acc-text);border-color:var(--acc);}
+body .btn-outline:hover{background:var(--acc);color:var(--acc-ink);}
+body .btn-investor{background:var(--inv);color:var(--inv-ink);border-color:var(--inv);}
+body .btn-borrower{background:var(--bor);color:var(--bor-ink);border-color:var(--bor);}
+body .btn-outline-investor{background:transparent;color:var(--inv-text);border-color:var(--inv);}
+body .btn-outline-borrower{background:transparent;color:var(--bor-text);border-color:var(--bor);}
+body .btn-light{background:var(--surface);color:var(--ink);border-color:var(--line);}
+body .btn-light-outline{background:transparent;color:var(--ink);border-color:var(--ink);}
+body .btn-mini{padding:6px 14px;font-size:12px;}
+
+body .eyebrow,body.role-investor .eyebrow,body.role-borrower .eyebrow,body .role-badge,body.role-investor .role-badge,body.role-borrower .role-badge{background:var(--acc);color:var(--acc-ink);border-radius:var(--rb);font-size:12px;font-weight:800;padding:6px 14px;letter-spacing:.04em;}
+body .status-pill{border-radius:var(--rb);font-weight:700;background:var(--soft);color:var(--ink);}
+body .status-active,body .status-paid{background:var(--inv);color:var(--inv-ink);}
+body .status-due,body .status-signing,body .status-late{background:var(--bor);color:var(--bor-ink);}
+body .nav-badge{background:var(--bor);color:var(--bor-ink);border-radius:var(--rb);}
+
+body .card,body .stat-tile,body .step-card,body .benefit-card,body .float-card,body .stat-chip,body .calc-box,body .market-card,body .picker-card{background:var(--surface);border:var(--card-bd,1px solid var(--line));border-radius:var(--radius);box-shadow:var(--shadow);color:var(--ink);transition:transform .2s,box-shadow .2s,border-color .2s;}
+body .card{padding:28px;}
+body .stat-tile b,body .card.stat b{color:var(--ink);}
+body .step-num,body.role-investor .step-num,body.role-borrower .step-num{background:var(--acc);color:var(--acc-ink);}
+body .benefit-icon{display:inline-flex;align-items:center;justify-content:center;width:54px;height:54px;border-radius:var(--radius-sm);background:var(--soft);margin-bottom:12px;}
+body .benefit-icon .ic svg{color:var(--acc-text);}
+body .card.note{background:var(--soft);box-shadow:none;}
+body .alert{background:var(--soft);color:var(--ink);border:1px solid var(--line);border-left:5px solid var(--acc);border-radius:var(--radius-sm);}
+body .alert-warning,body .alert-error{border-left-color:var(--bor);}
+body .stats-band{background:var(--soft);color:var(--ink);border-radius:var(--radius);}
+body .stats-grid b{color:var(--acc-text);background:none;-webkit-text-fill-color:currentColor;}
+body .stats-grid span{color:var(--muted);}
