@@ -761,3 +761,22 @@ body .hero-visual{--vis-img:url('hero-art.svg');}
   body .btn,body .wallet-card,body .card{max-width:100%;box-sizing:border-box;}
   body .btn{white-space:normal;}
 }
+
+/* ===== DOMOVSKA STRANKA ===== */
+
+body.home-page .picker-hero .picker-head{border-top:3px double #1A1A1A;border-bottom:3px double #1A1A1A;padding:26px 0;max-width:none;}body.home-page .picker-hero h1{font-size:76px;}
+body.home-page .picker-hero .picker-grid{gap:0;max-width:none;}body.home-page .picker-card{border-radius:0;box-shadow:none;border:0;border-right:1px solid #1A1A1A;padding:30px 36px;}body.home-page .picker-card:last-child{border-right:0;}
+body.home-page .picker-card p::first-letter{font-size:52px;font-weight:900;float:left;line-height:.9;padding-right:8px;font-family:'Playfair Display',serif;}
+body.home-page .steps-grid{gap:0;}body.home-page .step-card{box-shadow:none;border-radius:0;border:0;border-right:1px solid #1A1A1A;}body.home-page .step-card:last-child{border-right:0;}body.home-page .step-num{border-radius:0;font-family:'Playfair Display',serif;}
+body.home-page .stats-band{border-radius:0;border-top:3px double #1A1A1A;border-bottom:3px double #1A1A1A;background:transparent;}body.home-page .cta-band{border-radius:0;}
+
+@media(max-width:700px){
+  body.home-page .picker-hero h1{font-size:38px;line-height:1.1;}
+  body.home-page .picker-hero .picker-grid{gap:20px;border-width:0;}
+  body.home-page .picker-card{transform:none !important;border-right:0 !important;margin-bottom:0;padding:34px 24px;}
+  body.home-page .steps-grid{gap:16px;}
+  body.home-page .step-card{border-right:0 !important;transform:none !important;}
+  body.home-page .stats-band{border-radius:28px;padding:50px 0;}
+  body.home-page .stats-grid b{font-size:34px;}
+  body.home-page .cta-band{padding-bottom:70px;}
+}

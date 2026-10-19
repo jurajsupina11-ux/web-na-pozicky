@@ -749,3 +749,20 @@ body .hero-visual{--vis-img:url('hero-art.svg');}
   body .btn,body .wallet-card,body .card{max-width:100%;box-sizing:border-box;}
   body .btn{white-space:normal;}
 }
+
+/* ===== DOMOVSKA STRANKA ===== */
+
+body.home-page .picker-card{border-radius:220px 220px 28px 28px;padding-top:70px;text-align:center;}body.home-page .picker-icon .ic{margin:0 auto;border-radius:50%;}
+body.home-page .step-card{border-radius:140px 140px 22px 22px;text-align:center;padding-top:44px;}body.home-page .step-num{margin:0 auto 14px;}
+body.home-page .stats-band{border-radius:200px;padding:60px 40px;margin:0 16px;}body.home-page .cta-band{border-radius:36px 36px 240px 240px;padding-bottom:120px;}
+
+@media(max-width:700px){
+  body.home-page .picker-hero h1{font-size:38px;line-height:1.1;}
+  body.home-page .picker-hero .picker-grid{gap:20px;border-width:0;}
+  body.home-page .picker-card{transform:none !important;border-right:0 !important;margin-bottom:0;padding:34px 24px;}
+  body.home-page .steps-grid{gap:16px;}
+  body.home-page .step-card{border-right:0 !important;transform:none !important;}
+  body.home-page .stats-band{border-radius:28px;padding:50px 0;}
+  body.home-page .stats-grid b{font-size:34px;}
+  body.home-page .cta-band{padding-bottom:70px;}
+}

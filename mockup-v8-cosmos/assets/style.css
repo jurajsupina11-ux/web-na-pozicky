@@ -756,3 +756,21 @@ body .hero-visual{--vis-img:url('hero-art.svg');}
   body .btn,body .wallet-card,body .card{max-width:100%;box-sizing:border-box;}
   body .btn{white-space:normal;}
 }
+
+/* ===== DOMOVSKA STRANKA ===== */
+
+body.home-page .picker-card{box-shadow:0 0 0 1px rgba(110,231,255,.35),0 0 40px rgba(110,231,255,.18);}body.home-page .picker-card.role-card-borrower{box-shadow:0 0 0 1px rgba(255,138,76,.45),0 0 40px rgba(255,138,76,.2);}
+body.home-page .picker-card::after{content:'';position:absolute;right:-70px;bottom:-70px;width:200px;height:200px;border:1px dashed rgba(110,231,255,.5);border-radius:50%;}
+body.home-page .step-num{border-radius:50%;box-shadow:0 0 0 6px rgba(110,231,255,.18),0 0 24px rgba(110,231,255,.5);}
+body.home-page .stats-band{background:url('img-stars.svg'),linear-gradient(120deg,#1B1F6B,#4A1B8A);border-radius:999px;padding:50px 20px;}body.home-page .cta-band{border-radius:40px;}
+
+@media(max-width:700px){
+  body.home-page .picker-hero h1{font-size:38px;line-height:1.1;}
+  body.home-page .picker-hero .picker-grid{gap:20px;border-width:0;}
+  body.home-page .picker-card{transform:none !important;border-right:0 !important;margin-bottom:0;padding:34px 24px;}
+  body.home-page .steps-grid{gap:16px;}
+  body.home-page .step-card{border-right:0 !important;transform:none !important;}
+  body.home-page .stats-band{border-radius:28px;padding:50px 0;}
+  body.home-page .stats-grid b{font-size:34px;}
+  body.home-page .cta-band{padding-bottom:70px;}
+}

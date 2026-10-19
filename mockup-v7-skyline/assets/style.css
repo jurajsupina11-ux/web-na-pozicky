@@ -752,3 +752,24 @@ body .hero-visual{--vis-img:url('hero-art.svg');}
   body .btn,body .wallet-card,body .card{max-width:100%;box-sizing:border-box;}
   body .btn{white-space:normal;}
 }
+
+/* ===== DOMOVSKA STRANKA ===== */
+
+body.home-page .picker-card{clip-path:polygon(0 0,calc(100% - 30px) 0,100% 30px,100% 100%,30px 100%,0 calc(100% - 30px));border:0;box-shadow:none;}
+body.home-page .picker-card.role-card-investor{background:linear-gradient(160deg,var(--surface),rgba(0,200,255,.12));}
+body.home-page .picker-card.role-card-borrower{background:linear-gradient(160deg,var(--surface),rgba(255,0,170,.12));}
+body.home-page .step-card{clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,0 100%);border:0;}
+body.home-page .step-num{border-radius:0;clip-path:polygon(0 0,100% 0,100% 70%,70% 100%,0 100%);}
+body.home-page .stats-band{border-radius:0;clip-path:polygon(0 0,100% 0,100% 70%,96% 100%,0 100%);}
+body.home-page .cta-band{clip-path:polygon(0 0,100% 0,100% 100%,3% 100%,0 85%);border-radius:0;}
+
+@media(max-width:700px){
+  body.home-page .picker-hero h1{font-size:38px;line-height:1.1;}
+  body.home-page .picker-hero .picker-grid{gap:20px;border-width:0;}
+  body.home-page .picker-card{transform:none !important;border-right:0 !important;margin-bottom:0;padding:34px 24px;}
+  body.home-page .steps-grid{gap:16px;}
+  body.home-page .step-card{border-right:0 !important;transform:none !important;}
+  body.home-page .stats-band{border-radius:28px;padding:50px 0;}
+  body.home-page .stats-grid b{font-size:34px;}
+  body.home-page .cta-band{padding-bottom:70px;}
+}

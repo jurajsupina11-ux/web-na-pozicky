@@ -751,3 +751,23 @@ body .hero-visual{--vis-img:url('hero-art.svg');}
   body .btn,body .wallet-card,body .card{max-width:100%;box-sizing:border-box;}
   body .btn{white-space:normal;}
 }
+
+/* ===== DOMOVSKA STRANKA ===== */
+
+body.home-page .picker-hero{border-bottom:6px double #C9A24B;}body.home-page .picker-hero .picker-head{max-width:640px;}
+body.home-page .picker-card{border-radius:2px;border:1px solid #C9A24B;outline:1px solid #C9A24B;outline-offset:-9px;padding:52px 44px;text-align:center;}body.home-page .picker-icon .ic{margin:0 auto;border-radius:50%;}
+body.home-page .picker-card.role-card-investor,body.home-page .picker-card.role-card-borrower{border-top-width:1px;}
+body.home-page .step-card{border-radius:2px;border-top:4px solid #C9A24B;text-align:center;}body.home-page .step-num{margin:0 auto 14px;border-radius:50%;background:#0F2A5C;color:#E3B84F;}
+body.home-page .stats-band{border-radius:0;background:#0F2A5C;border-top:4px solid #C9A24B;border-bottom:4px solid #C9A24B;}body.home-page .stats-grid b{color:#E3B84F;}body.home-page .stats-band span{color:#C9D6F0;}
+body.home-page .cta-band{border-radius:0;border-top:6px double #C9A24B;}
+
+@media(max-width:700px){
+  body.home-page .picker-hero h1{font-size:38px;line-height:1.1;}
+  body.home-page .picker-hero .picker-grid{gap:20px;border-width:0;}
+  body.home-page .picker-card{transform:none !important;border-right:0 !important;margin-bottom:0;padding:34px 24px;}
+  body.home-page .steps-grid{gap:16px;}
+  body.home-page .step-card{border-right:0 !important;transform:none !important;}
+  body.home-page .stats-band{border-radius:28px;padding:50px 0;}
+  body.home-page .stats-grid b{font-size:34px;}
+  body.home-page .cta-band{padding-bottom:70px;}
+}

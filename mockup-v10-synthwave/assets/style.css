@@ -751,3 +751,23 @@ body .hero-visual{--vis-img:url('hero-art.svg');}
   body .btn,body .wallet-card,body .card{max-width:100%;box-sizing:border-box;}
   body .btn{white-space:normal;}
 }
+
+/* ===== DOMOVSKA STRANKA ===== */
+
+body.home-page .picker-hero{background:linear-gradient(#140630 0,#2B1060 60%,#6B1B7A 100%);}
+body.home-page .picker-hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:140px;background:repeating-linear-gradient(90deg,rgba(255,60,172,.5) 0 2px,transparent 2px 60px),repeating-linear-gradient(0deg,rgba(255,60,172,.5) 0 2px,transparent 2px 28px);transform:perspective(200px) rotateX(55deg);transform-origin:bottom;opacity:.6;pointer-events:none;}
+body.home-page .picker-card{border-radius:0;clip-path:polygon(0 0,calc(100% - 24px) 0,100% 24px,100% 100%,24px 100%,0 calc(100% - 24px));box-shadow:none;border:0;background:linear-gradient(160deg,#2B1060,#1F0B47);outline:2px solid #28F2FF;}
+body.home-page .picker-card.role-card-borrower{outline-color:#FF3CAC;}body.home-page .step-card{border-radius:0;box-shadow:0 0 22px rgba(40,242,255,.25);}
+body.home-page .step-num{border-radius:0;box-shadow:0 0 18px currentColor;}body.home-page .stats-band{border-radius:0;background:linear-gradient(120deg,#2B1060,#6B1B7A);border:1px solid #FF3CAC;}
+body.home-page .stats-grid b{text-shadow:0 0 18px currentColor;}body.home-page .cta-band{border-radius:0;box-shadow:0 0 40px rgba(255,60,172,.4);}
+
+@media(max-width:700px){
+  body.home-page .picker-hero h1{font-size:38px;line-height:1.1;}
+  body.home-page .picker-hero .picker-grid{gap:20px;border-width:0;}
+  body.home-page .picker-card{transform:none !important;border-right:0 !important;margin-bottom:0;padding:34px 24px;}
+  body.home-page .steps-grid{gap:16px;}
+  body.home-page .step-card{border-right:0 !important;transform:none !important;}
+  body.home-page .stats-band{border-radius:28px;padding:50px 0;}
+  body.home-page .stats-grid b{font-size:34px;}
+  body.home-page .cta-band{padding-bottom:70px;}
+}

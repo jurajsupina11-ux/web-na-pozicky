@@ -751,3 +751,21 @@ body .hero-visual{--vis-img:url('hero-art.svg');}
   body .btn,body .wallet-card,body .card{max-width:100%;box-sizing:border-box;}
   body .btn{white-space:normal;}
 }
+
+/* ===== DOMOVSKA STRANKA ===== */
+
+body.home-page .picker-card{border-radius:8px;padding-top:64px;}body.home-page .picker-card::before{content:'\25CF  \25CF  \25CF   LIVE';position:absolute;left:0;right:0;top:0;padding:8px 16px;background:#0E1417;border-bottom:1px solid #23323A;font:11px 'IBM Plex Mono',monospace;color:#8DA3AB;letter-spacing:.15em;}
+body.home-page .step-card{border-radius:8px;border-left:3px solid var(--inv);}body.home-page .step-card:nth-child(2){border-left-color:#22D3EE;}body.home-page .step-card:nth-child(3){border-left-color:var(--bor);}
+body.home-page .step-num{font-family:'IBM Plex Mono',monospace;border-radius:4px;}
+body.home-page .stats-band{border-radius:8px;border:1px solid #2E4650;background:#0E1417;}body.home-page .stats-grid b{font-family:'IBM Plex Mono',monospace;text-shadow:0 0 16px rgba(198,255,61,.5);}body.home-page .cta-band{border-radius:8px;}
+
+@media(max-width:700px){
+  body.home-page .picker-hero h1{font-size:38px;line-height:1.1;}
+  body.home-page .picker-hero .picker-grid{gap:20px;border-width:0;}
+  body.home-page .picker-card{transform:none !important;border-right:0 !important;margin-bottom:0;padding:34px 24px;}
+  body.home-page .steps-grid{gap:16px;}
+  body.home-page .step-card{border-right:0 !important;transform:none !important;}
+  body.home-page .stats-band{border-radius:28px;padding:50px 0;}
+  body.home-page .stats-grid b{font-size:34px;}
+  body.home-page .cta-band{padding-bottom:70px;}
+}
